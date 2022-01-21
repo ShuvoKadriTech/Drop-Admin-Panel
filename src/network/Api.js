@@ -18,3 +18,8 @@ export const CREATE_IMAGE_FOLDER = ADMIN_ENDPOINT+"/image-folder/create";
 export const GET_GALLERY_LIST = ADMIN_ENDPOINT+"/image";
 
 
+
+// banner
+export const BANNER_LIST = ADMIN_ENDPOINT+"/banner";
+export const ADD_BANNER = ADMIN_ENDPOINT+"/banner/add";
+

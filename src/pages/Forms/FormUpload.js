@@ -105,7 +105,7 @@ const FormUpload = () => {
   const uploadImage = () => {
 
     if (selectedFiles.length <= 0) {
-      toast.warn('Select a Image', {
+      return toast.warn('Select a Image', {
         // position: "bottom-right",
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 3000,
@@ -115,8 +115,10 @@ const FormUpload = () => {
         draggable: true,
         progress: undefined,
       });
-    } else if (!selectedFolder) {
-      toast.warn('Select a Folder', {
+    }
+    
+    if (!selectedFolder) {
+      return toast.warn('Select a Folder', {
         // position: "bottom-right",
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 3000,
@@ -129,7 +131,7 @@ const FormUpload = () => {
     }
 
     if(selectedFolder.value==null){
-      toast.warn('Select a Folder', {
+      return toast.warn('Select a Folder', {
         // position: "bottom-right",
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 3000,
@@ -142,16 +144,10 @@ const FormUpload = () => {
     }
 
 
+
     if (selectedFiles.length > 0 && selectedFolder.value) {
       dispatch(uploadMultipleImage())
     }
-
-
-
-
-
-
-
 
 
   }

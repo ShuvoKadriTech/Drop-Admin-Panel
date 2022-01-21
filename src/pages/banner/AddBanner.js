@@ -14,6 +14,9 @@ import { stateToHTML } from 'draft-js-export-html';
 import { ContentState, convertToRaw, EditorState } from 'draft-js';
 import { convertToHTML } from 'draft-convert';
 // import { convertToHTML } from 'draft-convert';
+import requestApi from '../../network/httpRequest';
+import { ADD_BANNER } from '../../network/Api';
+import { useHistory } from 'react-router-dom';
 const AddBanner = () => {
 
     const [modal_fullscreen, setmodal_fullscreen] = useState(false)
@@ -21,11 +24,14 @@ const AddBanner = () => {
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
 
+    const route = useHistory()
+
     const [image, setImage] = useState();
     const [title, setTitle] = useState("");
     const [type, setType] = useState(2);
     const [status, setStatus] = useState(1);
     const [description, setDescription] = useState("");
+    const [loading, setLoading] = useState(false);
 
 
     const handleEditorChange = (state) => {
@@ -36,7 +42,7 @@ const AddBanner = () => {
     }
 
 
-    const submitBanner = () => {
+    const submitBanner = async () => {
         if (!title || title == "") {
             return toast.warn("enter a title ", {
                 // position: "bottom-right",
@@ -50,7 +56,7 @@ const AddBanner = () => {
             });
         }
 
-        if(!image){
+        if (!image) {
             return toast.warn("add a image ", {
                 // position: "bottom-right",
                 position: toast.POSITION.BOTTOM_RIGHT,
@@ -64,6 +70,63 @@ const AddBanner = () => {
         }
 
 
+
+
+        try {
+            
+
+            const { data } = await requestApi().request(ADD_BANNER, {
+                method: "POST",
+                data: {
+                    title: title,
+                    type: type,
+                    status: status,
+                    description: description,
+                    image: image
+                }
+            })
+    
+
+            console.log(data);
+    
+    
+            if (data.status) {
+    
+
+
+                route.push(`banner?type=${type}&status=${status}`)
+                
+
+                
+                
+            } else {
+                return toast.warn(data.error, {
+                    // position: "bottom-right",
+                    position: toast.POSITION.BOTTOM_RIGHT,
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+
+
+        } catch (error) {
+            return toast.warn(error.message, {
+                // position: "bottom-right",
+                position: toast.POSITION.BOTTOM_RIGHT,
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+
+        
 
 
     }
@@ -144,7 +207,7 @@ const AddBanner = () => {
                                 <Row className="mb-3">
                                     <label className="col-md-2 col-form-label">Type</label>
                                     <div className="col-md-10">
-                                        <select className="form-control" placeholder='Select a Type' value={type} onChange={(e)=>changeType(e)}>
+                                        <select className="form-control" placeholder='Select a Type' value={type} onChange={(e) => changeType(e)}>
                                             <option value={1}>User</option>
                                             <option value={2}>Partner</option>
                                         </select>
@@ -156,7 +219,7 @@ const AddBanner = () => {
                                 <Row className="mb-3">
                                     <label className="col-md-2 col-form-label">Status</label>
                                     <div className="col-md-10">
-                                        <select className="form-control" placeholder='Select a Type' value={status} onChange={(e)=>changeStatus(e)}>
+                                        <select className="form-control" placeholder='Select a Type' value={status} onChange={(e) => changeStatus(e)}>
                                             <option value={1}>Active</option>
                                             <option value={2}>DeActivate</option>
                                         </select>
@@ -179,10 +242,10 @@ const AddBanner = () => {
                                     </div>
                                 </Row>
 
-                               
 
 
-                                <Button color='primary w-100' onClick={submitBanner}>Submit</Button>
+
+                                <Button disabled={loading} color='primary w-100' onClick={submitBanner}> {!loading ? 'Submit' : 'loading....'} </Button>
 
 
                             </CardBody>

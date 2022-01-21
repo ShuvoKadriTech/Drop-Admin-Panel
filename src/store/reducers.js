@@ -15,6 +15,7 @@ import calendar from "./calendar/reducer"
 import galleryReducer from './reducer/imageGallery.reducer';
 import imageReducer from './reducer/image/imageFolder.reducer'
 import folderCreateReducer from './reducer/image/folderCreate.reducer'
+import bannerReducer from './banner/bannerReducer';
 
 const rootReducer = combineReducers({
   // public
@@ -27,7 +28,8 @@ const rootReducer = combineReducers({
   uploadImage:uploadImageReducer,
   galleryReducer:galleryReducer,
   imageReducer,
-  createFolder:folderCreateReducer
+  createFolder:folderCreateReducer,
+  bannerReducer
 })
 
 export default rootReducer

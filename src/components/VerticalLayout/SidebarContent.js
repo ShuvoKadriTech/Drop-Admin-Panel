@@ -144,9 +144,7 @@ const SidebarContent = props => {
                 <li>
                   <Link to="/image-upload">{props.t("Image Upload")} </Link>
                 </li>
-                <li>
-                  <Link to="/image-recycle-bin">{props.t("Recycle Bin")} </Link>
-                </li>
+                
               </ul>
             </li>
 
