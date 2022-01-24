@@ -1,5 +1,5 @@
-export const API_URL = "http://localhost:5000";
-export const FTP_URL = "http://localhost:1000";
+export const API_URL = "https://api.codepadding.com";
+export const FTP_URL = "https://ftp.codepadding.com";
 
 
 // FTP SERVER API
