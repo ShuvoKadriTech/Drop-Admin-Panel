@@ -260,6 +260,9 @@ const authRoutes = [
   { path: "/auth-email-verification-2", component: EmailVerification2 },
   { path: "/auth-two-step-verification", component: TwostepVerification },
   { path: "/auth-two-step-verification-2", component: TwostepVerification2 }
+
+  // this route should be at the end of all other routes
+  // { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> }
 ];
 
 export { userRoutes, authRoutes };

@@ -1,13 +1,13 @@
-import React from "react"
-import PropTypes from "prop-types"
-import { Route, Redirect } from "react-router-dom"
+import React from "react";
+import PropTypes from "prop-types";
+import { Route, Redirect } from "react-router-dom";
 
 const Authmiddleware = ({
   component: Component,
   layout: Layout,
   isAuthProtected,
   ...rest
-}) => (
+}) =>
   <Route
     {...rest}
     render={props => {
@@ -16,23 +16,22 @@ const Authmiddleware = ({
           <Redirect
             to={{ pathname: "/login", state: { from: props.location } }}
           />
-        )
+        );
+      } else {
+        return (
+          <Layout>
+            <Component {...props} />
+          </Layout>
+        );
       }
-
-      return (
-        <Layout>
-          <Component {...props} />
-        </Layout>
-      )
     }}
-  />
-)
+  />;
 
 Authmiddleware.propTypes = {
   isAuthProtected: PropTypes.bool,
   component: PropTypes.any,
   location: PropTypes.object,
-  layout: PropTypes.any,
-}
+  layout: PropTypes.any
+};
 
-export default Authmiddleware
+export default Authmiddleware;
