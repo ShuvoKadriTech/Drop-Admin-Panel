@@ -8,6 +8,7 @@ import {
   LOGOUT_USER_SUCCESS,
   API_ERROR
 } from "./actionTypes";
+import requestApi from "../../../network/httpRequest";
 
 export const loginUser = user => {
   // console.log("request", user);
@@ -17,11 +18,11 @@ export const loginUser = user => {
   };
 };
 
-export const loginSuccess = (user, accessToken) => {
+export const loginSuccess = (admin, accessToken, message) => {
   // console.log(user);
   return {
     type: LOGIN_SUCCESS,
-    payload: { user, accessToken }
+    payload: { admin, accessToken, message }
   };
 };
 
@@ -46,23 +47,35 @@ export const apiError = error => {
   };
 };
 
-export const adminAuth = (user, history) => async (dispatch, getState) => {
+export const adminAuth = (user) => async (dispatch, getState) => {
   try {
     dispatch(loginUser(user));
-    // console.log(JSON.stringify(user));
-    const result = await fetch(LOGIN, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user)
+
+
+    
+    const { data } = await requestApi().request(LOGIN,{
+        method:"POST",
+        data:user
     });
-    // console.log("result", result);
-    const response = await result.json();
-    // console.log(response);
-    const { status, accessToken, admin, message } = response;
+
+    // const result = await fetch(LOGIN, {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(user)
+    // });
+
+    // const response = await result.json();
+
+    const { status, accessToken, admin, message,error } = data;
     if (status) {
-      dispatch(loginSuccess(admin, accessToken));
+
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("admin", JSON.stringify(admin))
+
+
+      dispatch(loginSuccess(admin, accessToken, message));
     } else {
-      dispatch(apiError(message));
+      dispatch(apiError(error));
     }
   } catch (error) {
     dispatch(apiError(error.message));

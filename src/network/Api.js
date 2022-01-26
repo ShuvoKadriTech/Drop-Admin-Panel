@@ -13,7 +13,7 @@ const ADMIN_ENDPOINT = "/api/v1/admin";
 
 // LOGIN API
 
-export const LOGIN = API_URL + ADMIN_ENDPOINT + "/auth/login";
+export const LOGIN =  ADMIN_ENDPOINT + "/auth/login";
 
 // IMAGE UPLOAD
 export const IMAGE_UPLOAD = ADMIN_ENDPOINT + "/image/upload";

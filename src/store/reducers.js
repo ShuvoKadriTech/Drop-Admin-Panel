@@ -20,7 +20,7 @@ import bannerReducer from './banner/bannerReducer';
 const rootReducer = combineReducers({
   // public
   Layout,
-  Login,
+  Login:Login,
   Account,
   ForgetPassword,
   Profile,

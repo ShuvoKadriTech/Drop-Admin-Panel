@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
 import MetaTags from "react-meta-tags";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Row, Col, CardBody, Card, Alert, Container } from "reactstrap";
 
 // Redux
-import { connect } from "react-redux";
-import { withRouter, Link } from "react-router-dom";
+import { connect, useSelector } from "react-redux";
+import { withRouter, Link, useHistory } from "react-router-dom";
 
 // availity-reactstrap-validation
 import { AvForm, AvField } from "availity-reactstrap-validation";
@@ -16,18 +16,52 @@ import { adminAuth, apiError } from "../../store/actions";
 
 // import images
 import logoSm from "../../assets/images/logo-sm.png";
+import { toast } from 'react-toastify';
+import GlobalWrapper from './../../components/GlobalWrapper';
+import styled from "styled-components";
 
 const Login = props => {
   // handleValidSubmit
   const handleValidSubmit = (event, values) => {
-    props.adminAuth(values, props.history);
+    props.adminAuth(values, props.history)
+  
   };
+
+
+  const history = useHistory()
+
+  const {admin,message} = useSelector(state=>state.Login)
+
+
+
+  useEffect(()=>{
+    // console.log(admin);
+    if(admin){
+   
+      toast.success(message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
+
+      history.push("/dashboard")
+    }
+
+  },[admin]);
+
 
   return (
     <React.Fragment>
       <MetaTags>
         <title>Login | Veltrix - Responsive Bootstrap 5 Admin Dashboard</title>
       </MetaTags>
+
+      <GlobalWrapper>
       <div className="account-pages my-5 pt-sm-5">
         <Container>
           <Row className="justify-content-center">
@@ -98,20 +132,15 @@ const Login = props => {
               </Card>
               <div className="mt-5 text-center">
                 <p>
-                  Don&#39;t have an account ?{" "}
-                  <Link to="register" className="fw-medium text-primary">
-                    {" "}Signup now{" "}
-                  </Link>{" "}
-                </p>
-                <p>
-                  © {new Date().getFullYear()} Veltrix. Crafted with{" "}
-                  <i className="mdi mdi-heart text-danger" /> by Themesbrand
+                  © {new Date().getFullYear()} Quicar Crafted with{" "}
+                  <i className="mdi mdi-heart text-danger" /> by CODEPADDING
                 </p>
               </div>
             </Col>
           </Row>
         </Container>
       </div>
+        </GlobalWrapper>
     </React.Fragment>
   );
 };
@@ -130,3 +159,5 @@ Login.propTypes = {
   history: PropTypes.object,
   loginUser: PropTypes.func
 };
+
+

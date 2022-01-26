@@ -6,10 +6,14 @@ import {
   API_ERROR
 } from "./actionTypes";
 
+
+
 const initialState = {
   error: "",
   loading: false,
-  admin: null
+  admin:  localStorage.getItem('admin') ? JSON.parse(localStorage.getItem('admin'))  : null,
+  message:"",
+  accessToken: localStorage.getItem('accessToken')?localStorage.getItem('accessToken'):null
 };
 
 const login = (state = initialState, action) => {
@@ -21,13 +25,14 @@ const login = (state = initialState, action) => {
       };
       break;
     case LOGIN_SUCCESS:
-      const { admin, accessToken } = action.payload;
+      const { admin, accessToken, message } = action.payload;
 
-      localStorage.setItem("authUser", accessToken);
       state = {
         ...state,
         loading: false,
-        admin: admin
+         admin,
+        accessToken,
+        message
       };
       break;
     case LOGOUT_USER:
