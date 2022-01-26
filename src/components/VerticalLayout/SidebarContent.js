@@ -239,6 +239,30 @@ const SidebarContent = props => {
               </ul>
             </li>
 
+            {/* CAR TYPES */}
+
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="ti-car" />
+                <span>
+                  {props.t("Car")}
+                </span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/car-types">
+                    {props.t("Car Types")}{" "}
+                  </Link>
+                </li>
+                {/* <li>
+                  <Link to="/">{props.t("Email Read")} </Link>
+                </li>
+                <li>
+                  <Link to="/email-compose">{props.t("Email Compose")} </Link>
+                </li> */}
+              </ul>
+            </li>
+
             <li className="menu-title">
               {props.t("Components")}
             </li>

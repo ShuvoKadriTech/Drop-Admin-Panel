@@ -47,31 +47,19 @@ export const apiError = error => {
   };
 };
 
-export const adminAuth = (user) => async (dispatch, getState) => {
+export const adminAuth = user => async (dispatch, getState) => {
   try {
     dispatch(loginUser(user));
 
-
-    
-    const { data } = await requestApi().request(LOGIN,{
-        method:"POST",
-        data:user
+    const { data } = await requestApi().request(LOGIN, {
+      method: "POST",
+      data: user
     });
 
-    // const result = await fetch(LOGIN, {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(user)
-    // });
-
-    // const response = await result.json();
-
-    const { status, accessToken, admin, message,error } = data;
+    const { status, accessToken, admin, message, error } = data;
     if (status) {
-
       localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("admin", JSON.stringify(admin))
-
+      localStorage.setItem("admin", JSON.stringify(admin));
 
       dispatch(loginSuccess(admin, accessToken, message));
     } else {

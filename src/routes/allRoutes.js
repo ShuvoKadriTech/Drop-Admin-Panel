@@ -124,6 +124,8 @@ import Texteditor from "../pages/banner/Texteditor";
 
 import UsersList from "../pages/Users/UsersList/UsersList";
 import PartnersList from "../pages/Partners/PartnersList/PartnersList";
+import CarTypes from "../pages/Car/CarTypes/CarTypes";
+import AddCarType from "../pages/Car/AddCarType/AddCarType";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -145,6 +147,11 @@ const userRoutes = [
   // Partners
 
   { path: "/partner-list", component: PartnersList },
+
+  // CAR
+
+  { path: "/car-types", component: CarTypes },
+  { path: "/add-car-type", component: AddCarType },
 
   // //calendar
   { path: "/calendar", component: Calendar },
