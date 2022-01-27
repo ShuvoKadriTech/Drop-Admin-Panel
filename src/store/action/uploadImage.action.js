@@ -38,47 +38,13 @@ export const uploadMultipleImage = () => async (dispatch, getState) => {
             })
         }
 
-        console.log("response", response);
 
-
-
-        const request = requestApi()
-        const { data } = await request(IMAGE_UPLOAD, {
-            method: 'POST',
-            data: {
-                imagesList: response.data
-            }
-        });
-
-
-
-        console.log('====================================');
-        console.log("responseData", data);
-        console.log('====================================');
-
-        if (!data) {
-            dispatch({
-                type: actionType.UPLOAD_IMAGE_REQUEST_FAIL,
-                payload: "update data fail",
-            })
-        }
-
-        if (data.status) {
+        if (response.status) {
             dispatch({
                 type: actionType.UPLOAD_IMAGE_REQUEST_SUCCESS,
-                payload: data.data.imageList,
-            })
-        } else {
-            dispatch({
-                type: actionType.UPLOAD_IMAGE_REQUEST_FAIL,
-                payload: data.error,
+                payload: response.data.imageList,
             })
         }
-
-
-
-
-
 
 
     } catch (error) {
@@ -140,24 +106,24 @@ export const selectFolder = (item) => (dispatch, getState) => {
 }
 
 
-export const addFolderList =  (list)  => async (dispatch, getState) => {
+export const addFolderList = (list) => async (dispatch, getState) => {
     // const list = getState().uploadImage.selectedFiles
 
-    if(list.length>0){
+    if (list.length > 0) {
         dispatch({
             type: actionType.ADD_LIST_FOLDER,
             payload: list
         })
 
-       
 
-    }else{
+
+    } else {
         try {
-            
-    
+
+
             const request = requestApi()
             const { data } = await request(LIST_IMAGE_FOLDER);
-    
+
             if (data.status) {
 
                 dispatch({
@@ -171,12 +137,12 @@ export const addFolderList =  (list)  => async (dispatch, getState) => {
                 })
 
             }
-    
+
         } catch (error) {
             console.log(error);
         }
     }
-    
+
 }
 
 
