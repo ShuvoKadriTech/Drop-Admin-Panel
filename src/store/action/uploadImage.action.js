@@ -16,13 +16,52 @@ export const uploadMultipleImage = () => async (dispatch, getState) => {
 
     let formData = new FormData();
 
-    const selectedFiles = getState().uploadImage.selectedFiles;
-    const selectedFolder = getState().uploadImage.selectedFolder;
+    try {
+        dispatch({
+            type: actionType.UPLOAD_IMAGE_REQUEST_SEND
+        })
 
-    formData.append("folderPath", selectedFolder.value);
+        let formData = new FormData();
 
-    for (const key of Object.keys(selectedFiles)) {
-      formData.append("images", selectedFiles[key]);
+        const selectedFiles = getState().uploadImage.selectedFiles;
+        const selectedFolder = getState().uploadImage.selectedFolder;
+
+        formData.append('folderPath', selectedFolder.value);
+
+        for (const key of Object.keys(selectedFiles)) {
+            formData.append('images', selectedFiles[key])
+        }
+
+
+        const result = await fetch(MULTIPLE_IMAGE_UPLOAD, {
+            method: 'POST',
+            body: formData,
+        });
+
+        const response = await result.json();
+
+        if (!response.status) {
+            dispatch({
+                type: actionType.UPLOAD_IMAGE_REQUEST_FAIL,
+                payload: response.error,
+            })
+        }
+
+
+        if (response.status) {
+            dispatch({
+                type: actionType.UPLOAD_IMAGE_REQUEST_SUCCESS,
+                payload: response.data.imageList,
+            })
+        }
+
+
+    } catch (error) {
+        console.log(error);
+        dispatch({
+            type: actionType.UPLOAD_IMAGE_REQUEST_FAIL,
+            payload: error.message,
+        })
     }
 
     const result = await fetch(MULTIPLE_IMAGE_UPLOAD, {
@@ -136,6 +175,7 @@ export const addFolderList = list => async (dispatch, getState) => {
       const request = requestApi();
       const { data } = await request(LIST_IMAGE_FOLDER);
 
+<<<<<<< HEAD
       if (data.status) {
         dispatch({
           type: actionType.IMAGE_FOLDER_LIST_REQUEST_SUCCESS,
@@ -152,3 +192,45 @@ export const addFolderList = list => async (dispatch, getState) => {
     }
   }
 };
+=======
+export const addFolderList = (list) => async (dispatch, getState) => {
+    // const list = getState().uploadImage.selectedFiles
+
+    if (list.length > 0) {
+        dispatch({
+            type: actionType.ADD_LIST_FOLDER,
+            payload: list
+        })
+
+
+
+    } else {
+        try {
+
+
+            const request = requestApi()
+            const { data } = await request(LIST_IMAGE_FOLDER);
+
+            if (data.status) {
+
+                dispatch({
+                    type: actionType.IMAGE_FOLDER_LIST_REQUEST_SUCCESS,
+                    payload: data.data.imageFolder,
+                })
+
+                dispatch({
+                    type: actionType.ADD_LIST_FOLDER,
+                    payload: data.data.imageFolder,
+                })
+
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+}
+
+
+>>>>>>> 08231f847402f537407ce223e74baad935d05da7
