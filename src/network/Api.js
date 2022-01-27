@@ -13,7 +13,7 @@ const ADMIN_ENDPOINT = "/api/v1/admin";
 
 // LOGIN API
 
-export const LOGIN =  ADMIN_ENDPOINT + "/auth/login";
+export const LOGIN = ADMIN_ENDPOINT + "/auth/login";
 
 // IMAGE UPLOAD
 export const IMAGE_UPLOAD = ADMIN_ENDPOINT + "/image/upload";
@@ -26,5 +26,10 @@ export const GET_GALLERY_LIST = ADMIN_ENDPOINT + "/image";
 // banner
 export const BANNER_LIST = ADMIN_ENDPOINT + "/banner";
 export const ADD_BANNER = ADMIN_ENDPOINT + "/banner/add";
+
+// CAR TYPE
+
+export const ADD_CAR_TYPE = ADMIN_ENDPOINT + "/carType/addNew";
+export const GET_CAR_TYPES = ADMIN_ENDPOINT + "/carType/getCarTypes";
 
 // END ADMIN API

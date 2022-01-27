@@ -99,7 +99,7 @@ export const getGalleryList = ({ page = 1, folder }) => async (
       folder: folder ? folder.value : null
     };
 
-    console.log("params", params);
+    // console.log("params", params);
 
     const { data } = await request(GET_GALLERY_LIST, {
       params: params
