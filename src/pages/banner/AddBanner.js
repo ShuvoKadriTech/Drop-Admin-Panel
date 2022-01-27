@@ -253,12 +253,6 @@ const AddBanner = () => {
 
 
 
-
-
-
-
-
-
                     </Col>
                 </Row>
 

@@ -1,198 +1,320 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import Dropzone from "react-dropzone";
+import styled from "styled-components";
+
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  CardBody,
-  CardTitle,
-  CardSubtitle,
-  Container,
-  Button,
-  FormGroup,
-  Input,
-  InputGroup,
-  Label
-} from "reactstrap";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  removeImage,
-  selectImage
-} from "../../../store/action/uploadImage.action";
-import { Link } from "react-router-dom";
+import { Card, Col, Container, Row, Modal, Button, CardTitle, CardBody } from 'reactstrap';
+import ImageSelectionDialog from './../../Utility/ImageSelectionDialog';
+import { Editor, EditorState } from "react-draft-wysiwyg";
+import { convertToHTML } from 'draft-convert';
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
+import requestApi from "../../../network/httpRequest";
+import { ADD_BANNER } from "../../../network/Api";
+import { removeAllSelectedGalleryImage } from "../../../store/action/galleryAction";
 
 const AddCarType = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+
 
   const dispatch = useDispatch();
 
-  const {
-    loading,
-    selectedFiles,
-    error,
-    folderList,
-    selectedFolder,
-    uploadedImages
-  } = useSelector(state => state.uploadImage);
 
-  /**
-   * Formats the size
-   */
-  function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  const route = useHistory()
+
+  const [modal_fullscreen, setmodal_fullscreen] = useState(false)
+
+  const [image, setImage] = useState();
+  const [title, setTitle] = useState("");
+  const [minSeat, setMinSeat] = useState(0);
+  const [maxSeat, setMaxSeat] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+
+
+
+
+  const submitBanner = async () => {
+    if (!title || title == "") {
+      return toast.warn("enter a title ", {
+        // position: "bottom-right",
+        position: toast.POSITION.BOTTOM_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
+    // if (!image) {
+    //   return toast.warn("add a image ", {
+    //     // position: "bottom-right",
+    //     position: toast.POSITION.BOTTOM_RIGHT,
+    //     autoClose: 3000,
+    //     hideProgressBar: true,
+    //     closeOnClick: true,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //     progress: undefined,
+    //   });
+    // }
+
+
+
+
+    // try {
+
+
+    //   const { data } = await requestApi().request(ADD_BANNER, {
+    //     method: "POST",
+    //     data: {
+    //       title: title,
+    //       type: type,
+    //       status: status,
+    //       description: description,
+    //       image: image
+    //     }
+    //   })
+
+
+    //   console.log(data);
+
+
+    //   if (data.status) {
+
+
+
+    //     route.push(`banner?type=${type}&status=${status}`)
+
+
+
+
+    //   } else {
+    //     return toast.warn(data.error, {
+    //       // position: "bottom-right",
+    //       position: toast.POSITION.BOTTOM_RIGHT,
+    //       autoClose: 3000,
+    //       hideProgressBar: true,
+    //       closeOnClick: true,
+    //       pauseOnHover: true,
+    //       draggable: true,
+    //       progress: undefined,
+    //     });
+    //   }
+
+
+    // } catch (error) {
+    //   return toast.warn(error.message, {
+    //     // position: "bottom-right",
+    //     position: toast.POSITION.BOTTOM_RIGHT,
+    //     autoClose: 3000,
+    //     hideProgressBar: true,
+    //     closeOnClick: true,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //     progress: undefined,
+    //   });
+    // }
+
+
+
+
   }
 
-  //   UPLOAD IMAGE
 
-  function handleAcceptedFiles(files) {
-    // console.log(files);
-    files.map(file =>
-      Object.assign(file, {
-        preview: URL.createObjectURL(file),
-        formattedSize: formatBytes(file.size)
-      })
-    );
-    // setselectedFiles([...selectedFiles, ...files])
 
-    dispatch(selectImage(files));
-  }
 
-  //   REMOVE IMAGE
 
-  const removeSelection = index => {
-    dispatch(removeImage(index));
-  };
 
-  const onSubmit = () => {};
 
   return (
     <React.Fragment>
       <GlobalWrapper>
         <div className="page-content my-3">
-          <h4>Add Car Type</h4>
-          <form className="p-5 form" onSubmit={handleSubmit(onSubmit)}>
-            <div className="form-group">
-              <input
-                name="name"
-                className="form-control"
-                placeholder="Enter Car Type Name"
-                {...register("name", { required: true })}
-              />
-              {errors.name && <p>This field is required</p>}
-            </div>
-            <Row className="py-3">
-              <Col lg={6} sm={12} className="form-group">
-                <input
-                  name="minSeat"
-                  className="form-control"
-                  placeholder="Enter Min Seat"
-                  {...register("minSeat", { required: true })}
-                />
-                {errors.minSeat && <p>This field is required</p>}
+
+
+          <Container fluid={true}>
+
+
+            <Row>
+              <Col xl={4}>
+                <div >
+                  <h2>IMAGE UPLOAD </h2>
+                  <Card style={{ width: '200px', height: '230px' }} className='cursor-pointer' >
+                    <div className='d-flex justify-content-center align-content-center h-100percen' >
+                      <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '50px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeWidth="2" d="M12 4v16m8-8H4" />
+                      </svg>
+                    </div>
+                  </Card>
+
+                  <div>
+                    {
+                      image && <img className='img-100' src={image} alt="banner image" style={{ width: "100%" }} />
+                    }
+
+                  </div>
+                </div>
               </Col>
-              <Col lg={6} sm={12} className="form-group">
-                <input
-                  name="maxSeat"
-                  className="form-control"
-                  placeholder="Enter Max Seat"
-                  {...register("maxSeat", { required: true })}
-                />
-                {errors.maxSeat && <p>This field is required</p>}
+              <Col xl={8} md={12} sm={12}>
+
+
+
+
+
+
+                <Card className='mt-5'>
+                  <CardBody>
+                    <CardTitle className="h4">Add Car Type</CardTitle>
+
+
+                    {/* TITLE */}
+
+                    <Row className="mb-3">
+                      <label
+                        htmlFor="example-text-input"
+                        className="col-md-2 col-form-label"
+                      >
+                        Name
+                      </label>
+                      <div className="col-md-10">
+                        <input
+                          className="form-control"
+                          type="text"
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
+                          placeholder='Enter a Name'
+                          defaultValue=""
+                          onError={true}
+                        />
+                      </div>
+                    </Row>
+
+                    {/* MIN SEAT */}
+
+                    <Row className="mb-3">
+                      <label
+                        htmlFor="example-text-input"
+                        className="col-md-2 col-form-label"
+                      >
+                        Min Seat
+                      </label>
+                      <div className="col-md-10">
+                        <input
+                          className="form-control"
+                          type="text"
+                          value={minSeat}
+                          onChange={(e) => setMinSeat(e.target.value)}
+                          placeholder='Enter a Min Seat'
+                          defaultValue=""
+                          onError={true}
+                        />
+                      </div>
+                    </Row>
+
+                    <Row className="mb-3">
+                      <label
+                        htmlFor="example-text-input"
+                        className="col-md-2 col-form-label"
+                      >
+                        Max Seat
+                      </label>
+                      <div className="col-md-10">
+                        <input
+                          className="form-control"
+                          type="text"
+                          value={maxSeat}
+                          onChange={(e) => setMaxSeat(e.target.value)}
+                          placeholder='Enter a Max Seat'
+                          defaultValue=""
+                          onError={true}
+                        />
+                      </div>
+                    </Row>
+
+
+
+
+
+
+                    <Button disabled={loading} color='primary w-100' onClick={submitBanner}> {!loading ? 'Submit' : 'loading....'} </Button>
+
+
+                  </CardBody>
+                </Card>
+
+
+
               </Col>
             </Row>
 
-            <Dropzone
-              onDrop={acceptedFiles => {
-                handleAcceptedFiles(acceptedFiles);
-              }}
-            >
-              {({ getRootProps, getInputProps }) =>
-                <div className="dropzone">
-                  <div className="dz-message needsclick" {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    <div className="mb-3">
-                      <i className="mdi mdi-cloud-upload display-2 text-muted" />
-                    </div>
-                    <h4>Drop files here or click to upload.</h4>
-                  </div>
-                </div>}
-            </Dropzone>
+          </Container>
 
-            <div className="dropzone-previews mt-3" id="file-previews">
-              {selectedFiles.map((f, i) => {
-                return (
-                  <Card
-                    className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                    key={i + "-file"}
-                  >
-                    <div className="p-2">
-                      <Row className="align-items-center position-relative">
-                        <Col className="col-auto">
-                          <img
-                            data-dz-thumbnail=""
-                            // height="80"
-                            style={{
-                              maxWidth: "80px"
-                            }}
-                            className=" bg-light"
-                            alt={f.name}
-                            src={f.preview}
-                          />
-                        </Col>
-                        <Col>
-                          <Link to="#" className="text-muted font-weight-bold">
-                            {f.name}
-                          </Link>
-                          <p className="mb-0">
-                            <strong>
-                              {f.formattedSize}
-                            </strong>
-                          </p>
-                        </Col>
-
-                        <div
-                          className="position-absolute"
-                          style={{
-                            left: "0px",
-                            top: "0px",
-                            width: "100%",
-                            display: "flex",
-                            justifyContent: "flex-end"
-                          }}
-                        >
-                          <i
-                            onClick={() => removeSelection(i)}
-                            className="mdi mdi-delete text-danger "
-                            style={{ fontSize: "25px", cursor: "pointer" }}
-                          />
-                        </div>
-                      </Row>
-                    </div>
-                  </Card>
-                );
-              })}
+          {/* <Modal
+            size="xl"
+            isOpen={modal_fullscreen}
+            toggle={() => {
+              setmodal_fullscreen(!modal_fullscreen)
+            }}
+            className="modal-fullscreen"
+          >
+            <div className="modal-header">
+              <h5
+                className="modal-title mt-0"
+                id="exampleModalFullscreenLabel"
+              >
+                Select Image
+              </h5>
+              <button
+                onClick={() => {
+                  setmodal_fullscreen(false)
+                }}
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
+            <div className="modal-body">
+              <ImageSelectionDialog lisener={(list) => {
 
-            <div className="form-group mt-5">
-              <input
-                type="submit"
-                className="btn btn-info  text-white text-uppercase"
-              />
+                console.log(list);
+                console.log(list[0].path);
+                setImage(list[0].path)
+
+                dispatch(removeAllSelectedGalleryImage())
+                setmodal_fullscreen(!modal_fullscreen)
+              }} />
             </div>
-          </form>
+            <div className="modal-footer">
+              <button
+                type="button"
+                onClick={() => {
+                  setmodal_fullscreen(!modal_fullscreen)
+                }}
+                className="btn btn-secondary waves-effect"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </Modal> */}
+
+
         </div>
       </GlobalWrapper>
     </React.Fragment>
   );
 };
+
+
+const ImageVew = styled.img`
+    width:100% !important;
+    max-width: 300px;
+`
 
 export default AddCarType;
