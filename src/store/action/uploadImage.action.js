@@ -175,7 +175,6 @@ export const addFolderList = list => async (dispatch, getState) => {
       const request = requestApi();
       const { data } = await request(LIST_IMAGE_FOLDER);
 
-<<<<<<< HEAD
       if (data.status) {
         dispatch({
           type: actionType.IMAGE_FOLDER_LIST_REQUEST_SUCCESS,
@@ -192,45 +191,3 @@ export const addFolderList = list => async (dispatch, getState) => {
     }
   }
 };
-=======
-export const addFolderList = (list) => async (dispatch, getState) => {
-    // const list = getState().uploadImage.selectedFiles
-
-    if (list.length > 0) {
-        dispatch({
-            type: actionType.ADD_LIST_FOLDER,
-            payload: list
-        })
-
-
-
-    } else {
-        try {
-
-
-            const request = requestApi()
-            const { data } = await request(LIST_IMAGE_FOLDER);
-
-            if (data.status) {
-
-                dispatch({
-                    type: actionType.IMAGE_FOLDER_LIST_REQUEST_SUCCESS,
-                    payload: data.data.imageFolder,
-                })
-
-                dispatch({
-                    type: actionType.ADD_LIST_FOLDER,
-                    payload: data.data.imageFolder,
-                })
-
-            }
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-}
-
-
->>>>>>> 08231f847402f537407ce223e74baad935d05da7
