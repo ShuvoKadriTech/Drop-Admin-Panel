@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 import GlobalWrapper from "../../../components/GlobalWrapper";
@@ -10,34 +10,128 @@ import {
   Modal,
   Button,
   CardTitle,
-  CardBody
+  CardBody,
+  Spinner
 } from "reactstrap";
 import ImageSelectionDialog from "./../../Utility/ImageSelectionDialog";
 import { Editor, EditorState } from "react-draft-wysiwyg";
 import { convertToHTML } from "draft-convert";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import requestApi from "../../../network/httpRequest";
 import { ADD_CAR_TYPE } from "../../../network/Api";
 import { removeAllSelectedGalleryImage } from "../../../store/action/galleryAction";
+import { editCarType } from "../../../store/carTypes/carTypesAction";
 
 const AddCarType = () => {
   const dispatch = useDispatch();
 
   const route = useHistory();
+  const { id } = useParams();
+
+  const { loading, carTypes, message, error } = useSelector(
+    state => state.carTypesReducer
+  );
 
   const [modal_fullscreen, setmodal_fullscreen] = useState(false);
 
   const [image, setImage] = useState();
-  const [title, setTitle] = useState("");
+  const [name, setName] = useState("");
   const [minSeat, setMinSeat] = useState(0);
   const [maxSeat, setMaxSeat] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+
+  useEffect(
+    () => {
+      let getCarType = carTypes.find(type => type.id == id);
+      const { image, name, minSeat, maxSeat } = getCarType;
+      setName(name);
+      setMinSeat(minSeat);
+      setMaxSeat(maxSeat);
+      setImage(image);
+    },
+    [id]
+  );
+
+  const addNewCarType = async () => {
+    const { data } = await requestApi().request(ADD_CAR_TYPE, {
+      method: "POST",
+      data: {
+        name: name,
+        minSeat: minSeat,
+        maxSeat: maxSeat,
+        image: image
+      }
+    });
+
+    // console.log("new car type", data);
+
+    if (data.status) {
+      route.push("/car-types");
+      return toast.success(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    } else {
+      return toast.warn(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+  };
+
+  const editCarTypeById = () => {
+    const updateData = {
+      name: name,
+      minSeat: minSeat,
+      maxSeat: maxSeat,
+      image: image
+    };
+    dispatch(editCarType(id, updateData));
+
+    if (message) {
+      route.push("/car-types");
+      return toast.success(message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+    if (error) {
+      return toast.warn(error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+  };
 
   const submitCarType = async () => {
-    if (!title || title == "") {
-      return toast.warn("enter a title ", {
+    if (!name || name == "") {
+      return toast.warn("Enter a Name ", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
@@ -89,41 +183,10 @@ const AddCarType = () => {
     }
 
     try {
-      const { data } = await requestApi().request(ADD_CAR_TYPE, {
-        method: "POST",
-        data: {
-          name: title,
-          minSeat: minSeat,
-          maxSeat: maxSeat,
-          image: image
-        }
-      });
-
-      console.log("new car type", data);
-
-      if (data.status) {
-        route.push("/car-types");
-        return toast.warn(data.message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        });
+      if (id) {
+        editCarTypeById();
       } else {
-        return toast.warn(data.error, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        });
+        addNewCarType();
       }
     } catch (error) {
       return toast.warn(error.message, {
@@ -145,6 +208,10 @@ const AddCarType = () => {
         <div className="page-content my-3">
           <Container fluid={true}>
             <Row>
+              {loading &&
+                <div className="display: flex; justify-content-center; align-items-center">
+                  <Spinner animation="border" variant="info" />
+                </div>}
               <Col xl={4}>
                 <div>
                   <h2>IMAGE UPLOAD </h2>
@@ -205,8 +272,8 @@ const AddCarType = () => {
                         <input
                           className="form-control"
                           type="text"
-                          value={title}
-                          onChange={e => setTitle(e.target.value)}
+                          value={name}
+                          onChange={e => setName(e.target.value)}
                           placeholder="Enter a Name"
                           defaultValue=""
                           onError={true}
@@ -257,11 +324,11 @@ const AddCarType = () => {
                     </Row>
 
                     <Button
-                      disabled={loading}
+                      disabled={isLoading}
                       color="primary w-100"
                       onClick={submitCarType}
                     >
-                      {" "}{!loading ? "Submit" : "loading...."}{" "}
+                      {" "}{!isLoading ? "Submit" : "loading...."}{" "}
                     </Button>
                   </CardBody>
                 </Card>

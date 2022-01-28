@@ -31,5 +31,9 @@ export const ADD_BANNER = ADMIN_ENDPOINT + "/banner/add";
 
 export const ADD_CAR_TYPE = ADMIN_ENDPOINT + "/carType/addNew";
 export const GET_CAR_TYPES = ADMIN_ENDPOINT + "/carType/getCarTypes";
+export const DELETE_CAR_TYPE_PERMANENTLY =
+  ADMIN_ENDPOINT + "/carType/deleteCarTypepParmanently";
+
+export const EDIT_CAR_TYPE = ADMIN_ENDPOINT + "/carType/editCarType";
 
 // END ADMIN API

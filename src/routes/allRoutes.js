@@ -152,6 +152,7 @@ const userRoutes = [
 
   { path: "/car-types", component: CarTypes },
   { path: "/add-car-type", component: AddCarType },
+  { path: "/edit-car-type/:id", component: AddCarType },
 
   // //calendar
   { path: "/calendar", component: Calendar },
