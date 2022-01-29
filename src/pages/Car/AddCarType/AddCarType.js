@@ -17,15 +17,21 @@ import ImageSelectionDialog from "./../../Utility/ImageSelectionDialog";
 import { Editor, EditorState } from "react-draft-wysiwyg";
 import { convertToHTML } from "draft-convert";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams,useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import requestApi from "../../../network/httpRequest";
-import { ADD_CAR_TYPE } from "../../../network/Api";
+import { ADD_CAR_TYPE, GET_SINGLE_CAR_TYPE } from "../../../network/Api";
 import { removeAllSelectedGalleryImage } from "../../../store/action/galleryAction";
-import { editCarType } from "../../../store/carTypes/carTypesAction";
+import {
+  editCarType,
+  getCarTypes
+} from "../../../store/carTypes/carTypesAction";
 
 const AddCarType = () => {
+
+
   const dispatch = useDispatch();
+  
 
   const route = useHistory();
   const { id } = useParams();
@@ -44,15 +50,41 @@ const AddCarType = () => {
 
   useEffect(
     () => {
-      let getCarType = carTypes.find(type => type.id == id);
-      const { image, name, minSeat, maxSeat } = getCarType;
-      setName(name);
-      setMinSeat(minSeat);
-      setMaxSeat(maxSeat);
-      setImage(image);
+      if (carTypes) {
+        const findCarType = carTypes?.find(type => type?.id === id);
+
+        if(findCarType){
+          const { image, name, minSeat, maxSeat } = findCarType;
+        setName(name);
+        setMinSeat(minSeat);
+        setMaxSeat(maxSeat);
+        setImage(image);
+        }
+        else {
+          callApi(id);
+        }
+        
+      }
     },
-    [id]
+    [carTypes]
   );
+
+  // CALL API FOR GET CAR TYPE
+
+  const callApi = async carTypeId => {
+    const {data: {status, data}} = await requestApi().request(GET_SINGLE_CAR_TYPE,{ params: { id: carTypeId} })
+    if(status){
+      console.log(data)
+      const {image, name, minSeat, maxSeat} = data.carType;
+      setName(name);
+        setMinSeat(minSeat);
+        setMaxSeat(maxSeat);
+        setImage(image);
+    }
+    else{
+      route.push('/car-types',{ replace: true})
+    }
+  };
 
   const addNewCarType = async () => {
     const { data } = await requestApi().request(ADD_CAR_TYPE, {
@@ -328,7 +360,7 @@ const AddCarType = () => {
                       color="primary w-100"
                       onClick={submitCarType}
                     >
-                      {" "}{!isLoading ? "Submit" : "loading...."}{" "}
+                      {" "}{!loading ? "Submit" : "loading...."}{" "}
                     </Button>
                   </CardBody>
                 </Card>

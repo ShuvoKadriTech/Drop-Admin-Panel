@@ -81,7 +81,7 @@ export const editCarTypeRequestSuccess = (updateData, successMessage) => {
 
 export const editCarTypeRequestFail = error => {
   return {
-    type: EDIT_CAR_TYPE_REQUEST_SEND,
+    type: EDIT_CAR_TYPE_REQUEST_FAIL,
     payload: error
   };
 };

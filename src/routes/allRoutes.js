@@ -126,6 +126,7 @@ import UsersList from "../pages/Users/UsersList/UsersList";
 import PartnersList from "../pages/Partners/PartnersList/PartnersList";
 import CarTypes from "../pages/Car/CarTypes/CarTypes";
 import AddCarType from "../pages/Car/AddCarType/AddCarType";
+import Color from "../pages/Car/Color/Color";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -153,6 +154,10 @@ const userRoutes = [
   { path: "/car-types", component: CarTypes },
   { path: "/add-car-type", component: AddCarType },
   { path: "/edit-car-type/:id", component: AddCarType },
+
+  // COLOR
+
+  { path: "/color", component: Color },
 
   // //calendar
   { path: "/calendar", component: Calendar },

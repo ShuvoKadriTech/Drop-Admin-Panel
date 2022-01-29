@@ -54,7 +54,7 @@ const CarTypesReducer = (state = initialState, action) => {
       };
       break;
     case DELETE_CAR_TYPE_REQUEST_SUCCESS:
-      console.log(payload);
+      // console.log(payload);
       const { id, message } = payload;
       const filtered = state.carTypes.filter(type => type.id !== id);
       // console.log(filtered);

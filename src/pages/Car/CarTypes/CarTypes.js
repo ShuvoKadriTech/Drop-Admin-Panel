@@ -30,12 +30,12 @@ const CarTypes = () => {
 
   const history = useHistory();
 
-  const [open, setOpen] = React.useState(false);
+  // const [open, setOpen] = React.useState(false);
   const [typeId, setTypeId] = useState(null);
 
-  const closeDialog = () => {
-    setOpen(false);
-  };
+  // const closeDialog = () => {
+  //   setOpen(false);
+  // };
 
   useEffect(() => {
     // console.log(carTypes);
@@ -44,10 +44,10 @@ const CarTypes = () => {
 
   // CAR TYPE DELETE EVENT
 
-  const handleDeleteType = id => {
-    setOpen(true);
-    setTypeId(id);
-  };
+  // const handleDeleteType = id => {
+  //   setOpen(true);
+  //   setTypeId(id);
+  // };
 
   // CAR TYPE EDIT EVENT
 
@@ -116,13 +116,13 @@ const CarTypes = () => {
                           >
                             <i class="fa fa-edit" />
                           </button>
-                          <button
+                          {/* <button
                             type="button"
                             class="btn btn-danger btn-circle btn-lg ms-2"
                             onClick={() => handleDeleteType(type.id)}
                           >
                             <i class="fa fa-times" />
-                          </button>
+                          </button> */}
                         </td>
                       </tr>
                     )}
@@ -134,7 +134,7 @@ const CarTypes = () => {
                   </div>}
 
                 {/* Confirm Dialog */}
-                <ConfirmDialog
+                {/* <ConfirmDialog
                   isOpen={open}
                   title="Delete!"
                   closeDialog={closeDialog}
@@ -143,7 +143,7 @@ const CarTypes = () => {
                   error={error}
                   message={message}
                   content="Are You Sure You Want To Delete This Car Type?"
-                />
+                /> */}
               </CardBody>
             </Card>
           </Wrapper>

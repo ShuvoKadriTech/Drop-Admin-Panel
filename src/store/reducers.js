@@ -17,6 +17,7 @@ import imageReducer from "./reducer/image/imageFolder.reducer";
 import folderCreateReducer from "./reducer/image/folderCreate.reducer";
 import bannerReducer from "./banner/bannerReducer";
 import carTypesReducer from "./carTypes/carTypesReducer";
+import { colorReducers } from "./color/colorReducers";
 
 const rootReducer = combineReducers({
   // public
@@ -31,7 +32,8 @@ const rootReducer = combineReducers({
   imageReducer,
   createFolder: folderCreateReducer,
   bannerReducer,
-  carTypesReducer
+  carTypesReducer,
+  colorReducers
 });
 
 export default rootReducer;

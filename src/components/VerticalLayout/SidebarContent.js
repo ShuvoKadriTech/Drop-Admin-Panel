@@ -254,12 +254,16 @@ const SidebarContent = props => {
                     {props.t("Car Types")}{" "}
                   </Link>
                 </li>
-                {/* <li>
-                  <Link to="/">{props.t("Email Read")} </Link>
+                <li>
+                  <Link to="/color">
+                    {props.t("Color")}{" "}
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/email-compose">{props.t("Email Compose")} </Link>
-                </li> */}
+                  <Link to="/year">
+                    {props.t("Year")}{" "}
+                  </Link>
+                </li>
               </ul>
             </li>
 
