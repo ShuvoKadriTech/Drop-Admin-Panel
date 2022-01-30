@@ -4,6 +4,7 @@ import {
   ADD_COLOR_REQUEST_SUCCESS,
   GET_COLORS_REQUEST_SEND,
   GET_COLORS_REQUEST_SUCCESS,
+  ADD_COLOR_IN_COLOR_LIST,
   GET_COLORS_REQUEST_FAIL
 } from "../actionType";
 
@@ -19,37 +20,54 @@ export const colorReducers = (state = initialState, action) => {
 
   switch (type) {
     case ADD_COLOR_REQUEST_SEND:
-      state = { ...state, loading: true };
-      break;
+      return {
+        ...state,
+        loading: true
+      };
+
     case ADD_COLOR_REQUEST_SUCCESS:
-      state = {
+      return {
         ...state,
         loading: false,
-        message: payload.message,
+        message: payload,
         error: ""
       };
-      break;
+
+    case ADD_COLOR_IN_COLOR_LIST:
+      return {
+        ...state,
+        colors: [...state.colors, payload],
+        error: ""
+      };
+
     case ADD_COLOR_REQUEST_FAIL:
-      state = {
+      return {
         ...state,
         message: "",
         loading: false,
         error: payload
       };
-      break;
 
     case GET_COLORS_REQUEST_SEND:
-      state = { ...state, loading: true };
-      break;
+      return {
+        ...state,
+        loading: true
+      };
+
     case GET_COLORS_REQUEST_SUCCESS:
-      state = { ...state, loading: false, colors: payload };
-      break;
+      return {
+        ...state,
+        loading: false,
+        colors: payload
+      };
     case GET_COLORS_REQUEST_FAIL:
-      state = { ...state, loading: false, colors: [], error: payload };
-      break;
+      return {
+        ...state,
+        loading: false,
+        colors: [],
+        error: payload
+      };
     default:
-      state = { ...state };
-      break;
+      return state;
   }
-  return state;
 };

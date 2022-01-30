@@ -10,7 +10,9 @@ import {
   Input,
   Row,
   Table,
-  Spinner
+  Spinner,
+  Label,
+  FormGroup
 } from "reactstrap";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,6 +21,8 @@ import { toast } from "react-toastify";
 import { ADD_COLOR } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
 import styled from "styled-components";
+import { SketchPicker } from "react-color";
+import ColorPicker from "@vtaits/react-color-picker";
 
 const Color = () => {
   const dispatch = useDispatch();
@@ -28,8 +32,10 @@ const Color = () => {
   );
 
   const [colorName, setColorName] = useState("");
-  const [colorCode, setColorCode] = useState("");
+  const [simple_color1, setsimple_color1] = useState(0);
+  const [colorRgb, setcolorRgb] = useState("red");
 
+  // Add Color
   const handleAddColor = async () => {
     if (!colorName || colorName == "") {
       return toast.warn("Enter a Color Name ", {
@@ -43,7 +49,7 @@ const Color = () => {
         progress: undefined
       });
     }
-    if (!colorCode || colorCode == "") {
+    if (!colorRgb || colorRgb == "") {
       return toast.warn("Enter This Color Code ", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -58,8 +64,9 @@ const Color = () => {
     try {
       const newColor = {
         name: colorName,
-        colorCode: colorCode
+        colorCode: colorRgb
       };
+      // console.log(newColor);
       dispatch(addColor(newColor));
     } catch (error) {
       return toast.warn(error, {
@@ -86,7 +93,7 @@ const Color = () => {
       if (message) {
         // color.value = ''
         setColorName("");
-        setColorCode("");
+        setcolorRgb("red");
         return toast.success(message, {
           // position: "bottom-right",
           position: toast.POSITION.TOP_RIGHT,
@@ -97,14 +104,7 @@ const Color = () => {
           draggable: true,
           progress: undefined
         });
-      }
-    },
-    [message]
-  );
-
-  useEffect(
-    () => {
-      if (error) {
+      } else {
         return toast.warn(error, {
           // position: "bottom-right",
           position: toast.POSITION.TOP_RIGHT,
@@ -117,8 +117,18 @@ const Color = () => {
         });
       }
     },
-    [error]
+    [message || error]
   );
+
+  const onDragRgb = c1 => {
+    setcolorRgb(c1);
+  };
+
+  // HANDLE EDIT COLOR
+
+  const handleEditColor = colorId => {
+    console.log(colorId);
+  };
 
   return (
     <React.Fragment>
@@ -132,7 +142,7 @@ const Color = () => {
                     <CardTitle className="h4">Add Color</CardTitle>
 
                     <Row className="mb-3">
-                      <Col xl={6} sm={12} md={6}>
+                      <Col xl={12} sm={12} md={12}>
                         <Input
                           // style={{ border: '1px solid red' }}
                           value={colorName}
@@ -147,19 +157,46 @@ const Color = () => {
                           required
                         />
                       </Col>
-                      <Col xl={6} sm={12} md={6}>
-                        <Input
-                          // style={{ border: '1px solid red' }}
-                          onChange={event => {
-                            setColorCode(event.target.value);
-                          }}
-                          className="form-control"
-                          type="text"
-                          placeholder="Enter This Color Code"
-                          defaultValue={colorCode}
-                          value={colorCode}
-                          required
-                        />
+                      <Col xl={12} lg={12} sm={12} md={12} className="mt-3">
+                        <FormGroup className="m-b-0">
+                          <div
+                            className="input-group colorpicker-default"
+                            title="Using format option"
+                          >
+                            <input
+                              readOnly
+                              value={colorRgb}
+                              type="text"
+                              className="form-control input-lg"
+                            />
+                            <span className="input-group-append">
+                              <span
+                                className="input-group-text colorpicker-input-addon"
+                                onClick={() => {
+                                  setsimple_color1(!simple_color1);
+                                }}
+                                style={{ cursor: "pointer" }}
+                              >
+                                <i
+                                  style={{
+                                    height: "16px",
+                                    width: "16px",
+                                    background: colorRgb
+                                  }}
+                                />
+                              </span>
+                            </span>
+                          </div>
+
+                          {simple_color1
+                            ? <ColorPicker
+                                saturationHeight={100}
+                                saturationWidth={100}
+                                value={colorRgb}
+                                onDrag={onDragRgb}
+                              />
+                            : null}
+                        </FormGroup>
                       </Col>
                     </Row>
 
@@ -208,7 +245,10 @@ const Color = () => {
                                   {color.colorCode}
                                 </td>
                                 <td className="btn__wrapper">
-                                  <button className="btn btn-info ">
+                                  <button
+                                    className="btn btn-info "
+                                    onClick={() => handleEditColor(color.id)}
+                                  >
                                     <i class="fa fa-edit" />
                                   </button>
                                 </td>

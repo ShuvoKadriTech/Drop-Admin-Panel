@@ -6,6 +6,7 @@ import {
   ADD_COLOR_REQUEST_SUCCESS,
   GET_COLORS_REQUEST_SEND,
   GET_COLORS_REQUEST_SUCCESS,
+  ADD_COLOR_IN_COLOR_LIST,
   GET_COLORS_REQUEST_FAIL
 } from "../actionType";
 
@@ -22,6 +23,13 @@ export const addColorRequestSuccess = message => {
   return {
     type: ADD_COLOR_REQUEST_SUCCESS,
     payload: message
+  };
+};
+
+export const addColorInColorsList = newColor => {
+  return {
+    type: ADD_COLOR_IN_COLOR_LIST,
+    payload: newColor
   };
 };
 
@@ -75,6 +83,7 @@ export const getAllColors = () => async dispatch => {
 // ADD COLOR
 
 export const addColor = newColor => async dispatch => {
+  console.log(newColor);
   dispatch(addColorRequestSend(newColor));
 
   const {
@@ -86,6 +95,7 @@ export const addColor = newColor => async dispatch => {
 
   if (status) {
     dispatch(addColorRequestSuccess(message));
+    dispatch(addColorInColorsList(data));
   } else {
     dispatch(addColorRequestFail(error));
   }
