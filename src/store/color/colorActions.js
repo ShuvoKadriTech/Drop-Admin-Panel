@@ -1,4 +1,4 @@
-import { ADD_COLOR, GET_ALL_COLOR } from "../../network/Api";
+import { ADD_COLOR, DELETE_COLOR, EDIT_COLOR, GET_ALL_COLOR } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import {
   ADD_COLOR_REQUEST_FAIL,
@@ -6,7 +6,10 @@ import {
   ADD_COLOR_REQUEST_SUCCESS,
   GET_COLORS_REQUEST_SEND,
   GET_COLORS_REQUEST_SUCCESS,
-  GET_COLORS_REQUEST_FAIL
+  GET_COLORS_REQUEST_FAIL,
+  EDIT_COLOR_REQUEST_SEND,
+  EDIT_COLOR_REQUEST_SUCCESS,
+  EDIT_COLOR_REQUEST_FAIL
 } from "../actionType";
 
 // ADD COLOR
@@ -54,7 +57,54 @@ export const getColorsRequestFail = error => {
   };
 };
 
+// DELETE COLOR
+
+export const editColorRequestSend = () => {
+  return {
+    type: EDIT_COLOR_REQUEST_SEND,
+  }
+}
+
+export const editColorRequestSuccess = (data, message) => {
+  return {
+    type: EDIT_COLOR_REQUEST_SEND,
+    payload: {
+      data, message
+    }
+  }
+}
+export const editColorRequestFail = (error) => {
+  return {
+    type: EDIT_COLOR_REQUEST_FAIL,
+    payload: error
+  }
+}
+
+
 // HTTP REQUEST HANDELING
+
+
+// DELETE COLOR BY ID
+
+export const editColor = (id, updateData) => async dispatch => {
+  // console.log("id, updateData", id, updateData)
+  dispatch(editColorRequestSend)
+
+  const { data: { status, message, error } } = await requestApi().request(EDIT_COLOR, {
+    method: 'POST',
+    data: {
+      id: id,
+      data: updateData
+    }
+  })
+  // console.log("after data", data)
+  if (status) {
+    dispatch(editColorRequestSuccess(message))
+  }
+  // else {
+  //   dispatch(editColorRequestFail(error))
+  // }
+}
 
 // GET ALL COLOR
 
@@ -64,7 +114,7 @@ export const getAllColors = () => async dispatch => {
   const { data: { status, data, error } } = await requestApi().request(
     GET_ALL_COLOR
   );
-  console.log(data);
+  // console.log(data);
   if (status) {
     dispatch(getColorsRequestSuccess(data));
   } else {

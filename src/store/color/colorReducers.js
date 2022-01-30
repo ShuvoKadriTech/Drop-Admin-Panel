@@ -4,7 +4,10 @@ import {
   ADD_COLOR_REQUEST_SUCCESS,
   GET_COLORS_REQUEST_SEND,
   GET_COLORS_REQUEST_SUCCESS,
-  GET_COLORS_REQUEST_FAIL
+  GET_COLORS_REQUEST_FAIL,
+  EDIT_COLOR_REQUEST_SEND,
+  EDIT_COLOR_REQUEST_SUCCESS,
+  EDIT_COLOR_REQUEST_FAIL
 } from "../actionType";
 
 const initialState = {
@@ -37,7 +40,7 @@ export const colorReducers = (state = initialState, action) => {
         error: payload
       };
       break;
-
+    // GET ALL COLORS
     case GET_COLORS_REQUEST_SEND:
       state = { ...state, loading: true };
       break;
@@ -47,6 +50,9 @@ export const colorReducers = (state = initialState, action) => {
     case GET_COLORS_REQUEST_FAIL:
       state = { ...state, loading: false, colors: [], error: payload };
       break;
+
+
+
     default:
       state = { ...state };
       break;
