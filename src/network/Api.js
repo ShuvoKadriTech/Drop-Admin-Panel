@@ -41,5 +41,6 @@ export const GET_SINGLE_CAR_TYPE = ADMIN_ENDPOINT + "/carType/details";
 
 export const ADD_COLOR = ADMIN_ENDPOINT + "/color/addNew";
 export const GET_ALL_COLOR = ADMIN_ENDPOINT + "/color/getColors";
+export const EDIT_COLOR = ADMIN_ENDPOINT + "/color/editColor";
 
 // END ADMIN API

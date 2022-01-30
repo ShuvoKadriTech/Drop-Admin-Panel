@@ -16,13 +16,18 @@ import {
 } from "reactstrap";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { useDispatch, useSelector } from "react-redux";
-import { addColor, getAllColors } from "../../../store/color/colorActions";
+import {
+  addColor,
+  editColor,
+  getAllColors
+} from "../../../store/color/colorActions";
 import { toast } from "react-toastify";
 import { ADD_COLOR } from "../../../network/Api";
 import requestApi from "../../../network/httpRequest";
 import styled from "styled-components";
 import { SketchPicker } from "react-color";
 import ColorPicker from "@vtaits/react-color-picker";
+import Breadcrumbs from "../../../components/Common/Breadcrumb";
 
 const Color = () => {
   const dispatch = useDispatch();
@@ -34,6 +39,7 @@ const Color = () => {
   const [colorName, setColorName] = useState("");
   const [simple_color1, setsimple_color1] = useState(0);
   const [colorRgb, setcolorRgb] = useState("red");
+  const [colorId, setColorId] = useState(null);
 
   // Add Color
   const handleAddColor = async () => {
@@ -49,7 +55,7 @@ const Color = () => {
         progress: undefined
       });
     }
-    if (!colorRgb || colorRgb == "") {
+    if (!colorRgb || colorRgb == null) {
       return toast.warn("Enter This Color Code ", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -67,7 +73,11 @@ const Color = () => {
         colorCode: colorRgb
       };
       // console.log(newColor);
-      dispatch(addColor(newColor));
+      if (colorId) {
+        dispatch(editColor(colorId, newColor));
+      } else {
+        dispatch(addColor(newColor));
+      }
     } catch (error) {
       return toast.warn(error, {
         // position: "bottom-right",
@@ -94,18 +104,9 @@ const Color = () => {
         // color.value = ''
         setColorName("");
         setcolorRgb("red");
+        setColorId(null);
+        dispatch(getAllColors());
         return toast.success(message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        });
-      } else {
-        return toast.warn(error, {
           // position: "bottom-right",
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
@@ -117,7 +118,7 @@ const Color = () => {
         });
       }
     },
-    [message || error]
+    [message]
   );
 
   const onDragRgb = c1 => {
@@ -127,7 +128,15 @@ const Color = () => {
   // HANDLE EDIT COLOR
 
   const handleEditColor = colorId => {
-    console.log(colorId);
+    if (colorId) {
+      setColorId(colorId);
+      const { name, colorCode } = colors.find(color => color.id == colorId);
+      setColorName(name);
+      setcolorRgb(colorCode);
+      window.scrollTo(0, 0);
+    } else {
+      // setColorId(null);
+    }
   };
 
   return (
@@ -135,6 +144,11 @@ const Color = () => {
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid>
+            <Breadcrumbs
+              maintitle="Car"
+              breadcrumbItem="Color"
+              hideSettingBtn={true}
+            />
             <Row>
               <Col xl={4}>
                 <Card>
@@ -217,7 +231,7 @@ const Color = () => {
                   >
                     <Card>
                       <CardBody>
-                        <CardTitle className="h4"> Folder List</CardTitle>
+                        <CardTitle className="h4"> Color List</CardTitle>
                         <Table
                           bordered
                           hover
@@ -234,14 +248,14 @@ const Color = () => {
                           </thead>
                           <tbody className="table__data">
                             {colors.map((color, index) =>
-                              <tr className="data text-center">
+                              <tr key={index} className="data text-center">
                                 <td>
                                   {index + 1}
                                 </td>
                                 <td>
                                   {color.name}
                                 </td>
-                                <td>
+                                <td style={{ color: `${color.colorCode}` }}>
                                   {color.colorCode}
                                 </td>
                                 <td className="btn__wrapper">

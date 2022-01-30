@@ -127,6 +127,7 @@ import PartnersList from "../pages/Partners/PartnersList/PartnersList";
 import CarTypes from "../pages/Car/CarTypes/CarTypes";
 import AddCarType from "../pages/Car/AddCarType/AddCarType";
 import Color from "../pages/Car/Color/Color";
+import Year from "../pages/Car/Year/Year";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -158,6 +159,10 @@ const userRoutes = [
   // COLOR
 
   { path: "/color", component: Color },
+
+  // YEAR
+
+  { path: "/year", component: Year },
 
   // //calendar
   { path: "/calendar", component: Calendar },
