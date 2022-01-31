@@ -51,7 +51,10 @@ export const colorReducers = (state = initialState, action) => {
       state = { ...state, loading: false, colors: [], error: payload };
       break;
 
+      // EDIT COLOR
 
+      case EDIT_COLOR_REQUEST_SEND:
+      
 
     default:
       state = { ...state };

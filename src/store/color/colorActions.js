@@ -101,9 +101,9 @@ export const editColor = (id, updateData) => async dispatch => {
   if (status) {
     dispatch(editColorRequestSuccess(message))
   }
-  // else {
-  //   dispatch(editColorRequestFail(error))
-  // }
+  else {
+    dispatch(editColorRequestFail(error))
+  }
 }
 
 // GET ALL COLOR
