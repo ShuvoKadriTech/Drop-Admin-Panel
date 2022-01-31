@@ -15,17 +15,18 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import {
   getCarTypes,
-  deleteCarType
-} from "../../../store/carTypes/carTypesAction";
+} from "../../../store/Car/carTypes/carTypesAction";
 
 import Button from "@mui/material/Button";
 import ConfirmDialog from "../../../components/ConfirmDialog/ConfirmDialog";
 import { useHistory } from "react-router-dom";
+import CarTypesReducer from './../../../store/Car/carTypes/carTypesReducer';
+import Breadcrumbs from "../../../components/Common/Breadcrumb";
 
 const CarTypes = () => {
   const dispatch = useDispatch();
   const { loading, carTypes, error, message } = useSelector(
-    state => state.carTypesReducer
+    state => state.CarTypesReducer
   );
 
   const history = useHistory();
@@ -62,13 +63,18 @@ const CarTypes = () => {
           <Wrapper>
             <Row className="top__wrapper">
               <Col lg={6} md={6}>
-                <h3>Car Types</h3>
+                <Breadcrumbs
+                  maintitle="Car"
+                  breadcrumbItem="Car Types"
+                  hideSettingBtn={true}
+                />
               </Col>
+
               <Col lg={6} md={6} className="d-flex justify-content-end">
                 <Button
                   variant="contained"
                   color="primary"
-                  className="btn btn-success"
+                  className="btn btn-success add__btn"
                   component={Link}
                   to="/add-car-type"
                 >
@@ -79,7 +85,7 @@ const CarTypes = () => {
 
             <Card>
               <CardBody>
-                <CardTitle className="h4"> Banner List</CardTitle>
+                <CardTitle className="h4"> Car List</CardTitle>
                 <Table bordered hover responsive className="table__wrapper">
                   <thead>
                     <tr className="header">
@@ -91,8 +97,8 @@ const CarTypes = () => {
                     </tr>
                   </thead>
                   <tbody className="table__data">
-                    {carTypes.map(type =>
-                      <tr className="data">
+                    {carTypes.map((type, index) =>
+                      <tr className="data" key={index}>
                         <td>
                           <img
                             src={type.image}
@@ -114,15 +120,8 @@ const CarTypes = () => {
                             className="btn btn-info "
                             onClick={() => handleEdit(type.id)}
                           >
-                            <i class="fa fa-edit" />
+                            <i className="fa fa-edit" />
                           </button>
-                          {/* <button
-                            type="button"
-                            class="btn btn-danger btn-circle btn-lg ms-2"
-                            onClick={() => handleDeleteType(type.id)}
-                          >
-                            <i class="fa fa-times" />
-                          </button> */}
                         </td>
                       </tr>
                     )}
@@ -158,6 +157,10 @@ const Wrapper = styled.div`
   position: relative;
   .top__wrapper {
     padding-bottom: 20px;
+    .add__btn{
+      height: 50px;
+      align-self: center;
+    }
   }
 
   .loading__wrapper {

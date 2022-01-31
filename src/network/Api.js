@@ -43,4 +43,11 @@ export const ADD_COLOR = ADMIN_ENDPOINT + "/color/addNew";
 export const GET_ALL_COLOR = ADMIN_ENDPOINT + "/color/getColors";
 export const EDIT_COLOR = ADMIN_ENDPOINT + "/color/editColor";
 
+// YEAR 
+
+export const ADD_YEAR = ADMIN_ENDPOINT + "/year/add";
+export const GET_ALL_YEARS = ADMIN_ENDPOINT + "/year/getAll";
+
+export const EDIT_YEAR = ADMIN_ENDPOINT + "/year/update";
+
 // END ADMIN API

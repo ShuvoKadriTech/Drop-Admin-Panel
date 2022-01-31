@@ -3,33 +3,33 @@ import PropTypes from 'prop-types'
 import { Link } from "react-router-dom"
 import { Row, Col, BreadcrumbItem, Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "reactstrap"
 
-const Breadcrumb = props => {
+const Breadcrumb = ({breadcrumbItem, maintitle,title,hideSettingBtn}) => {
   const [setting_Menu, setsetting_Menu] = useState(false)
 
   return (
     <Row className="align-items-center">
       <Col sm={6}>
         <div className="page-title-box">
-          <h4 className="font-size-18">{props.breadcrumbItem}</h4>
+          <h4 className="font-size-18">{breadcrumbItem}</h4>
           <ol className="breadcrumb mb-0">
             {
-              (props.maintitle) ?
+              (maintitle) ?
                 <>
                   <BreadcrumbItem>
-                    <Link to="/#">{props.maintitle}</Link>
+                    <Link to="/">{maintitle}</Link>
                   </BreadcrumbItem>
                 </> : ''
             }
 
             {
-              props.title && <BreadcrumbItem>
-                <Link to="/#">{props.title}</Link>
+              title && <BreadcrumbItem>
+                <Link to="/#">{title}</Link>
               </BreadcrumbItem>
             }
 
 
             <BreadcrumbItem active>
-              {props.breadcrumbItem}
+              {breadcrumbItem}
             </BreadcrumbItem>
           </ol>
         </div>
@@ -37,7 +37,7 @@ const Breadcrumb = props => {
       <Col sm={6}>
 
         {
-          props.hideSettingBtn === true ?  <div></div> : <div className="float-end d-none d-md-block">
+          hideSettingBtn === true ?  <div></div> : <div className="float-end d-none d-md-block">
             <Dropdown
               isOpen={setting_Menu}
               toggle={() => {

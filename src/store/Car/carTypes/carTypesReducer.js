@@ -7,14 +7,17 @@ import {
   DELETE_CAR_TYPE_REQUEST_FAIL,
   EDIT_CAR_TYPE_REQUEST_SEND,
   EDIT_CAR_TYPE_REQUEST_SUCCESS,
-  EDIT_CAR_TYPE_REQUEST_FAIL
-} from "../actionType";
+  EDIT_CAR_TYPE_REQUEST_FAIL,
+  ADD_CAR_TYPE_REQUEST_SEND,
+  ADD_CAR_TYPE_REQUEST_SUCCESS,
+  ADD_CAR_TYPE_REQUEST_FAIL
+} from "../../actionType";
 
 const initialState = {
   loading: false,
   carTypes: [],
-  error: "",
-  message: ""
+  error: null,
+  message: null
 };
 
 const CarTypesReducer = (state = initialState, action) => {
@@ -33,7 +36,9 @@ const CarTypesReducer = (state = initialState, action) => {
       state = {
         ...state,
         loading: false,
-        carTypes: payload
+        carTypes: payload,
+        error: null,
+        message: null
       };
 
       break;
@@ -42,7 +47,8 @@ const CarTypesReducer = (state = initialState, action) => {
       state = {
         ...state,
         carTypes: [],
-        error: payload
+        error: payload,
+        message: null
       };
       break;
 
@@ -79,20 +85,50 @@ const CarTypesReducer = (state = initialState, action) => {
       break;
 
     case EDIT_CAR_TYPE_REQUEST_SUCCESS:
-      const { successMessage, updateDate } = payload;
+
       state = {
         ...state,
         loading: false,
-        message: successMessage
+        message: payload,
+        error: null
       };
       break;
     case EDIT_CAR_TYPE_REQUEST_FAIL:
       state = {
         ...state,
         loading: false,
-        error: payload
+        error: payload,
+        message: null
       };
       break;
+
+    // case ADD_CAR_TYPE_REQUEST_SEND:
+    //   state = {
+    //     ...state,
+    //     loading: true
+    //   };
+
+    //   break;
+
+    // case ADD_CAR_TYPE_REQUEST_SUCCESS:
+    //   const { carType, updateMessage } = payload;
+    //   state = {
+    //     ...state,
+    //     loading: false,
+    //     message: updateMessage,
+    //     carTypes: [...state.carTypes, carType]
+    //   };
+    //   break;
+
+    // case ADD_CAR_TYPE_REQUEST_FAIL:
+    //   state = {
+    //     ...state,
+    //     loading: false,
+    //     error: payload,
+    //     message: null
+    //   };
+    //   break;
+
     default:
       state = { ...state };
       break;

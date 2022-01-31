@@ -17,27 +17,27 @@ import ImageSelectionDialog from "./../../Utility/ImageSelectionDialog";
 import { Editor, EditorState } from "react-draft-wysiwyg";
 import { convertToHTML } from "draft-convert";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams,useNavigate } from "react-router-dom";
+import { useHistory, useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import requestApi from "../../../network/httpRequest";
 import { ADD_CAR_TYPE, GET_SINGLE_CAR_TYPE } from "../../../network/Api";
 import { removeAllSelectedGalleryImage } from "../../../store/action/galleryAction";
 import {
+  addCarType,
   editCarType,
-  getCarTypes
-} from "../../../store/carTypes/carTypesAction";
+} from "../../../store/Car/carTypes/carTypesAction";
 
 const AddCarType = () => {
 
 
   const dispatch = useDispatch();
-  
+
 
   const route = useHistory();
   const { id } = useParams();
 
-  const { loading, carTypes, message, error } = useSelector(
-    state => state.carTypesReducer
+  const { carTypes, message, error } = useSelector(
+    state => state.CarTypesReducer
   );
 
   const [modal_fullscreen, setmodal_fullscreen] = useState(false);
@@ -50,39 +50,39 @@ const AddCarType = () => {
 
   useEffect(
     () => {
-      if (carTypes) {
-        const findCarType = carTypes?.find(type => type?.id === id);
-
-        if(findCarType){
+      if (id) {
+        const findCarType = carTypes.find(type => type?.id === id);
+        if (findCarType) {
           const { image, name, minSeat, maxSeat } = findCarType;
-        setName(name);
-        setMinSeat(minSeat);
-        setMaxSeat(maxSeat);
-        setImage(image);
+          setName(name);
+          setMinSeat(minSeat);
+          setMaxSeat(maxSeat);
+          setImage(image);
         }
         else {
           callApi(id);
         }
-        
       }
+
+      // callApi(id);
     },
-    [carTypes]
+    [id]
   );
 
   // CALL API FOR GET CAR TYPE
 
-  const callApi = async carTypeId => {
-    const {data: {status, data}} = await requestApi().request(GET_SINGLE_CAR_TYPE,{ params: { id: carTypeId} })
-    if(status){
-      console.log(data)
-      const {image, name, minSeat, maxSeat} = data.carType;
+  const callApi = async (carTypeId) => {
+    const { data: { status, data } } = await requestApi().request(GET_SINGLE_CAR_TYPE, { params: { id: carTypeId } })
+    if (status) {
+      // console.log(data)
+      const { image, name, minSeat, maxSeat } = data.carType;
       setName(name);
-        setMinSeat(minSeat);
-        setMaxSeat(maxSeat);
-        setImage(image);
+      setMinSeat(minSeat);
+      setMaxSeat(maxSeat);
+      setImage(image);
     }
-    else{
-      route.push('/car-types',{ replace: true})
+    else {
+      route.push('/car-types', { replace: true })
     }
   };
 
@@ -95,6 +95,7 @@ const AddCarType = () => {
         maxSeat: maxSeat,
         image: image
       }
+
     });
 
     // console.log("new car type", data);
@@ -123,6 +124,15 @@ const AddCarType = () => {
         progress: undefined
       });
     }
+
+    // const data = {
+    //   name: name,
+    //   minSeat: minSeat,
+    //   maxSeat: maxSeat,
+    //   image: image
+    // }
+
+    // dispatch(addCarType(data))
   };
 
   const editCarTypeById = () => {
@@ -134,6 +144,9 @@ const AddCarType = () => {
     };
     dispatch(editCarType(id, updateData));
 
+  };
+
+  useEffect(() => {
     if (message) {
       route.push("/car-types");
       return toast.success(message, {
@@ -159,7 +172,7 @@ const AddCarType = () => {
         progress: undefined
       });
     }
-  };
+  }, [message || error])
 
   const submitCarType = async () => {
     if (!name || name == "") {
@@ -240,10 +253,10 @@ const AddCarType = () => {
         <div className="page-content my-3">
           <Container fluid={true}>
             <Row>
-              {loading &&
+              {/* {loading &&
                 <div className="display: flex; justify-content-center; align-items-center">
                   <Spinner animation="border" variant="info" />
-                </div>}
+                </div>} */}
               <Col xl={4}>
                 <div>
                   <h2>IMAGE UPLOAD </h2>
@@ -307,8 +320,7 @@ const AddCarType = () => {
                           value={name}
                           onChange={e => setName(e.target.value)}
                           placeholder="Enter a Name"
-                          defaultValue=""
-                          onError={true}
+                        // onError={true}
                         />
                       </div>
                     </Row>
@@ -329,8 +341,7 @@ const AddCarType = () => {
                           value={minSeat}
                           onChange={e => setMinSeat(e.target.value)}
                           placeholder="Enter a Min Seat"
-                          defaultValue=""
-                          onError={true}
+                        // onError={true}
                         />
                       </div>
                     </Row>
@@ -349,8 +360,7 @@ const AddCarType = () => {
                           value={maxSeat}
                           onChange={e => setMaxSeat(e.target.value)}
                           placeholder="Enter a Max Seat"
-                          defaultValue=""
-                          onError={true}
+                        // onError={true}
                         />
                       </div>
                     </Row>
@@ -360,7 +370,7 @@ const AddCarType = () => {
                       color="primary w-100"
                       onClick={submitCarType}
                     >
-                      {" "}{!loading ? "Submit" : "loading...."}{" "}
+                      {" "}{"Submit"}{" "}
                     </Button>
                   </CardBody>
                 </Card>
@@ -395,8 +405,8 @@ const AddCarType = () => {
             <div className="modal-body">
               <ImageSelectionDialog
                 lisener={list => {
-                  console.log(list);
-                  console.log(list[0].path);
+                  // console.log(list);
+                  // console.log(list[0].path);
                   setImage(list[0].path);
 
                   dispatch(removeAllSelectedGalleryImage());
