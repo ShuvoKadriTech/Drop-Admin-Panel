@@ -96,7 +96,7 @@ export const editColorRequestFail = error => {
 // EDIT COLOR BY ID
 
 export const editColor = (id, updateData) => async dispatch => {
-  // console.log("id, updateData", id, updateData)
+  // console.log("id, updateData", id, updateData);
   dispatch(editColorRequestSend());
 
   const {
