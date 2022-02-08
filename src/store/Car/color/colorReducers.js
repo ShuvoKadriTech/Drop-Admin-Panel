@@ -1,3 +1,4 @@
+import { getNativeSelectUtilityClasses } from "@mui/material";
 import {
   ADD_COLOR_REQUEST_FAIL,
   ADD_COLOR_REQUEST_SEND,
@@ -8,7 +9,8 @@ import {
   GET_COLORS_REQUEST_FAIL,
   EDIT_COLOR_REQUEST_SEND,
   EDIT_COLOR_REQUEST_SUCCESS,
-  EDIT_COLOR_REQUEST_FAIL
+  EDIT_COLOR_REQUEST_FAIL,
+  GET_UPDATE_COLOR_DATA
 } from "../../actionType";
 
 const initialState = {
@@ -33,20 +35,21 @@ const colorReducers = (state = initialState, action) => {
         ...state,
         loading: false,
         message: payload,
-        error: ""
+        error: null
       };
 
     case ADD_COLOR_IN_COLOR_LIST:
       return {
         ...state,
         colors: [...state.colors, payload],
-        error: ""
+        error: null,
+        message: null
       };
 
     case ADD_COLOR_REQUEST_FAIL:
       return {
         ...state,
-        message: "",
+        message: null,
         loading: false,
         error: payload
       };
@@ -60,17 +63,33 @@ const colorReducers = (state = initialState, action) => {
       };
 
     case EDIT_COLOR_REQUEST_SUCCESS:
+      // console.log(updateData);
       return {
         ...state,
         loading: false,
-        message: payload
+        message: payload,
+        error: null
+      };
+
+    case GET_UPDATE_COLOR_DATA:
+      const updateData = state.colors.map(
+        item => (item.id === payload.id ? payload : item)
+      );
+      // console.log(updateData);
+      return {
+        ...state,
+        loading: false,
+        message: null,
+        colors: updateData,
+        error: null
       };
 
     case EDIT_COLOR_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
-        error: payload
+        error: payload,
+        message: null
       };
 
     // GET ALL COLORS

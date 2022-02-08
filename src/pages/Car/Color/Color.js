@@ -67,15 +67,19 @@ const Color = () => {
       });
     }
     try {
-      const newColor = {
-        name: colorName,
-        colorCode: colorRgb
-      };
-      // console.log(newColor);
       if (colorId) {
-        dispatch(editColor(colorId, newColor));
+        const data = {
+          id: colorId,
+          name: colorName,
+          colorCode: colorRgb
+        };
+        dispatch(editColor(data));
       } else {
-        dispatch(addColor(newColor));
+        const data = {
+          name: colorName,
+          colorCode: colorRgb
+        };
+        dispatch(addColor(data));
       }
     } catch (error) {
       return toast.warn(error, {
@@ -105,7 +109,6 @@ const Color = () => {
         setColorName("");
         setcolorRgb("red");
         setColorId(null);
-        // dispatch(getAllColors());
         return toast.success(message, {
           // position: "bottom-right",
           position: toast.POSITION.TOP_RIGHT,
@@ -117,8 +120,15 @@ const Color = () => {
           progress: undefined
         });
       }
+    },
+    [message]
+  );
+
+  useEffect(
+    () => {
+      // console.log(message, error);
       if (error) {
-        return toast.success(error, {
+        return toast.warn(error, {
           // position: "bottom-right",
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
@@ -130,7 +140,7 @@ const Color = () => {
         });
       }
     },
-    [message || error]
+    [error]
   );
 
   const onDragRgb = c1 => {

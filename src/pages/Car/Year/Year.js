@@ -16,16 +16,20 @@ import {
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { useDispatch, useSelector } from "react-redux";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
-import { toast } from 'react-toastify';
-import { addYear, editYear, getAllYears } from "../../../store/Car/year/yearActions";
-import moment from 'moment';
-import styled from 'styled-components';
+import { toast } from "react-toastify";
+import {
+  addYear,
+  editYear,
+  getAllYears
+} from "../../../store/Car/year/yearActions";
+import moment from "moment";
+import styled from "styled-components";
 
 const Year = () => {
-
-
   const dispatch = useDispatch();
-  const { loading, years, message, error } = useSelector(state => state.yearReducer)
+  const { loading, years, message, error } = useSelector(
+    state => state.yearReducer
+  );
 
   const [year, setYear] = useState("");
   const [yearId, setYearId] = useState(null);
@@ -46,10 +50,16 @@ const Year = () => {
 
     try {
       if (yearId) {
-        dispatch(editYear(yearId, year))
-      }
-      else {
-        dispatch(addYear(year))
+        const data = {
+          id: yearId,
+          year: year
+        };
+        dispatch(editYear(data));
+      } else {
+        const data = {
+          year: year
+        };
+        dispatch(addYear(data));
       }
     } catch (error) {
       return toast.warn(error, {
@@ -63,54 +73,60 @@ const Year = () => {
         progress: undefined
       });
     }
-  }
+  };
 
   useEffect(() => {
-    dispatch(getAllYears())
-  }, [])
+    dispatch(getAllYears());
+  }, []);
 
-  // EDIT YEAR EVENT 
+  // EDIT YEAR EVENT
 
-  const handleEditYear = (id) => {
+  const handleEditYear = id => {
     if (id) {
       setYearId(id);
       const { year } = years.find(year => year.id === id);
       setYear(year);
       window.scroll(0, 0);
     }
-  }
+  };
 
-  useEffect(() => {
+  useEffect(
+    () => {
+      if (message) {
+        setYear("");
+        setYearId(null);
+        return toast.warn(message, {
+          // position: "bottom-right",
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        });
+      }
+    },
+    [message]
+  );
 
-    if (message) {
-      setYear("");
-      setYearId(null)
-      dispatch(getAllYears());
-      return toast.warn(message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-      });
-    }
-    if (error) {
-      return toast.warn(error, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-      });
-    }
-
-  }, [message || error])
+  useEffect(
+    () => {
+      if (error) {
+        return toast.warn(error, {
+          // position: "bottom-right",
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        });
+      }
+    },
+    [error]
+  );
 
   return (
     <React.Fragment>
@@ -169,23 +185,33 @@ const Year = () => {
                             <Thead>
                               <Tr>
                                 <Th>Serial No</Th>
-                                <Th >Year</Th>
-                                <Th >Created At</Th>
-                                <Th >Action</Th>
-
+                                <Th>Year</Th>
+                                <Th>Created At</Th>
+                                <Th>Action</Th>
                               </Tr>
                             </Thead>
                             <Tbody>
                               {years.map((item, index) => {
                                 return (
-                                  <Tr key={index} className="align-middle" style={{ fontSize: '15px', fontWeight: '500' }}>
+                                  <Tr
+                                    key={index}
+                                    className="align-middle"
+                                    style={{
+                                      fontSize: "15px",
+                                      fontWeight: "500"
+                                    }}
+                                  >
                                     <Th>
                                       {index + 1}
                                     </Th>
-                                    <Td>{item.year}</Td>
-                                    <Td>{moment(item.createdAt)
-                                      .utc()
-                                      .format("YYYY-MM-DD hh:mm:ss")}</Td>
+                                    <Td>
+                                      {item.year}
+                                    </Td>
+                                    <Td>
+                                      {moment(item.createdAt)
+                                        .utc()
+                                        .format("YYYY-MM-DD hh:mm:ss")}
+                                    </Td>
                                     <Td>
                                       <button
                                         className="btn btn-info "
@@ -194,13 +220,9 @@ const Year = () => {
                                         <i className="fa fa-edit" />
                                       </button>
                                     </Td>
-
-
                                   </Tr>
                                 );
                               })}
-
-
                             </Tbody>
                           </Table>
 
@@ -223,16 +245,13 @@ const Year = () => {
 };
 
 const CardWrapper = styled.div`
-
   position: relative;
 
-  .spinner{
+  .spinner {
     position: absolute;
     top: 50%;
     left: 50%;
   }
-
-`
-
+`;
 
 export default Year;

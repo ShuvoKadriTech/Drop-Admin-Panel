@@ -21,6 +21,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { useHistory } from "react-router-dom";
+import SweetAlert from "react-bootstrap-sweetalert";
 
 const BannerPage = () => {
   const dispatch = useDispatch();
@@ -28,6 +29,11 @@ const BannerPage = () => {
   const [type, setType] = useState(1);
   const [status, setStatus] = useState(1);
   const [sortBy, setSortBy] = useState("DESC");
+  const [confirm_alert, setconfirm_alert] = useState(false);
+  const [success_dlg, setsuccess_dlg] = useState(false);
+  const [dynamic_title, setdynamic_title] = useState("");
+  const [dynamic_description, setdynamic_description] = useState("");
+
   const route = useHistory();
 
   const [viewStyle, setViewStyle] = useState(
@@ -47,6 +53,19 @@ const BannerPage = () => {
     },
     [type, status, sortBy]
   );
+
+  const handleEdit = id => {
+    console.log(id);
+  };
+
+  // DELETE BANNER
+
+  const handleDelete = id => {
+    setconfirm_alert(false);
+    setsuccess_dlg(true);
+    setdynamic_title("Deleted");
+    setdynamic_description("Your file has been deleted.");
+  };
 
   const listViewBanner = () => {
     return (
@@ -89,6 +108,39 @@ const BannerPage = () => {
                             {moment(item.createdAt)
                               .utc()
                               .format("YYYY-MM-DD hh:mm:ss")}
+                          </Td>
+                          <Td>
+                            <button
+                              className="btn btn-info "
+                              onClick={() => handleEdit(item.id)}
+                            >
+                              <i className="fa fa-edit" />
+                            </button>
+                            <button
+                              className="btn btn-danger "
+                              // onClick={() => handleDelete(item.id)}
+                              onClick={() => {
+                                setconfirm_alert(true);
+                              }}
+                            >
+                              <i className="fa fa-trash" />
+                            </button>
+                            {confirm_alert
+                              ? <SweetAlert
+                                  title="Are you sure?"
+                                  warning
+                                  showCancel
+                                  confirmButtonText="Yes, delete it!"
+                                  confirmBtnBsStyle="success"
+                                  cancelBtnBsStyle="danger"
+                                  onConfirm={() => {
+                                    handleDelete(item.id);
+                                  }}
+                                  onCancel={() => setconfirm_alert(false)}
+                                >
+                                  You won't be able to revert this!
+                                </SweetAlert>
+                              : null}
                           </Td>
                         </Tr>
                       );
@@ -155,6 +207,17 @@ const BannerPage = () => {
     <React.Fragment>
       <div className="page-content">
         <Container fluid>
+          {success_dlg
+            ? <SweetAlert
+                success
+                title={dynamic_title}
+                onConfirm={() => {
+                  setsuccess_dlg(false);
+                }}
+              >
+                {dynamic_description}
+              </SweetAlert>
+            : null}
           <Row>
             <BreadcrumbsBanner
               maintitle="Banner"
