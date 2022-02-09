@@ -26,6 +26,7 @@ export const GET_GALLERY_LIST = ADMIN_ENDPOINT + "/image";
 // banner
 export const BANNER_LIST = ADMIN_ENDPOINT + "/banner";
 export const ADD_BANNER = ADMIN_ENDPOINT + "/banner/add";
+export const DELETE_BANNER = ADMIN_ENDPOINT + "/banner/delete";
 
 // CAR TYPE
 

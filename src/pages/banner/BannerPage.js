@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getBannerListAction } from "../../store/banner/bannerAction";
+import { deleteBanner, getBannerListAction } from "../../store/banner/bannerAction";
 import {
   Button,
   Input,
@@ -25,7 +25,6 @@ import SweetAlert from "react-bootstrap-sweetalert";
 
 const BannerPage = () => {
   const dispatch = useDispatch();
-  const { loading, list } = useSelector(state => state.bannerReducer);
   const [type, setType] = useState(1);
   const [status, setStatus] = useState(1);
   const [sortBy, setSortBy] = useState("DESC");
@@ -33,6 +32,7 @@ const BannerPage = () => {
   const [success_dlg, setsuccess_dlg] = useState(false);
   const [dynamic_title, setdynamic_title] = useState("");
   const [dynamic_description, setdynamic_description] = useState("");
+  const [bannerId, setBannerId] = useState(null);
 
   const route = useHistory();
 
@@ -42,7 +42,9 @@ const BannerPage = () => {
       : "list"
   );
 
-  useEffect(() => { }, []);
+  // useEffect(() => { }, []);
+
+  const { loading, message, list, error } = useSelector(state => state.bannerReducer)
 
   useEffect(
     () => {
@@ -54,19 +56,18 @@ const BannerPage = () => {
     [type, status, sortBy]
   );
 
-  const handleEdit = id => {
-    console.log(id);
+  const handleEdit = () => {
+    console.log(bannerId);
   };
 
   // DELETE BANNER
 
   const handleDelete = id => {
-    console.log(id);
-    setconfirm_alert(false);
-    setsuccess_dlg(true);
-    setdynamic_title("Deleted");
-    setdynamic_description("Your file has been deleted.");
+    // console.log(bannerId)
+    dispatch(deleteBanner(bannerId))
+
   };
+
 
   const listViewBanner = () => {
     return (
@@ -122,6 +123,7 @@ const BannerPage = () => {
                               // onClick={() => handleDelete(item.id)}
                               onClick={() => {
                                 setconfirm_alert(true);
+                                setBannerId(item.id)
                               }}
                             >
                               <i className="fa fa-trash" />
@@ -135,7 +137,12 @@ const BannerPage = () => {
                                 confirmBtnBsStyle="success"
                                 cancelBtnBsStyle="danger"
                                 onConfirm={() => {
-                                  handleDelete(item.id);
+                                  handleDelete();
+                                  setconfirm_alert(false);
+                                  setsuccess_dlg(true);
+                                  setdynamic_title("Deleted");
+                                  setdynamic_description("Your file has been deleted.");
+
                                 }}
                                 onCancel={() => setconfirm_alert(false)}
                               >
