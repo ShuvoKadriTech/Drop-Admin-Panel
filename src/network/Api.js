@@ -26,6 +26,8 @@ export const GET_GALLERY_LIST = ADMIN_ENDPOINT + "/image";
 // banner
 export const BANNER_LIST = ADMIN_ENDPOINT + "/banner";
 export const ADD_BANNER = ADMIN_ENDPOINT + "/banner/add";
+export const GET_SINGLE_BANNER = ADMIN_ENDPOINT + "/banner/";
+export const EDIT_BANNER = ADMIN_ENDPOINT + "/banner/edit";
 
 // CAR TYPE
 
@@ -43,7 +45,7 @@ export const ADD_COLOR = ADMIN_ENDPOINT + "/color/addNew";
 export const GET_ALL_COLOR = ADMIN_ENDPOINT + "/color/getColors";
 export const EDIT_COLOR = ADMIN_ENDPOINT + "/color/editColor";
 
-// YEAR 
+// YEAR
 
 export const ADD_YEAR = ADMIN_ENDPOINT + "/year/add";
 export const GET_ALL_YEARS = ADMIN_ENDPOINT + "/year/getAll";
