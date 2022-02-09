@@ -42,7 +42,7 @@ const BannerPage = () => {
       : "list"
   );
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   useEffect(
     () => {
@@ -61,6 +61,7 @@ const BannerPage = () => {
   // DELETE BANNER
 
   const handleDelete = id => {
+    console.log(id);
     setconfirm_alert(false);
     setsuccess_dlg(true);
     setdynamic_title("Deleted");
@@ -127,19 +128,19 @@ const BannerPage = () => {
                             </button>
                             {confirm_alert
                               ? <SweetAlert
-                                  title="Are you sure?"
-                                  warning
-                                  showCancel
-                                  confirmButtonText="Yes, delete it!"
-                                  confirmBtnBsStyle="success"
-                                  cancelBtnBsStyle="danger"
-                                  onConfirm={() => {
-                                    handleDelete(item.id);
-                                  }}
-                                  onCancel={() => setconfirm_alert(false)}
-                                >
-                                  You won't be able to revert this!
-                                </SweetAlert>
+                                title="Are you sure?"
+                                warning
+                                showCancel
+                                confirmButtonText="Yes, delete it!"
+                                confirmBtnBsStyle="success"
+                                cancelBtnBsStyle="danger"
+                                onConfirm={() => {
+                                  handleDelete(item.id);
+                                }}
+                                onCancel={() => setconfirm_alert(false)}
+                              >
+                                You won't be able to revert this!
+                              </SweetAlert>
                               : null}
                           </Td>
                         </Tr>
@@ -209,14 +210,14 @@ const BannerPage = () => {
         <Container fluid>
           {success_dlg
             ? <SweetAlert
-                success
-                title={dynamic_title}
-                onConfirm={() => {
-                  setsuccess_dlg(false);
-                }}
-              >
-                {dynamic_description}
-              </SweetAlert>
+              success
+              title={dynamic_title}
+              onConfirm={() => {
+                setsuccess_dlg(false);
+              }}
+            >
+              {dynamic_description}
+            </SweetAlert>
             : null}
           <Row>
             <BreadcrumbsBanner
