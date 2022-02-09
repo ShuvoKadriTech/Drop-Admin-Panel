@@ -3,7 +3,7 @@ import requestApi from '../../network/httpRequest';
 import * as actionType from '../actionType'
 
 
-export const getBannerListAction = ({type = 1,status =1,sortBy = "DESC"}) => async (dispatch, getState) => {
+export const getBannerListAction = ({ type = 1, status = 1, sortBy = "DESC" }) => async (dispatch, getState) => {
 
 
     try {
@@ -12,15 +12,15 @@ export const getBannerListAction = ({type = 1,status =1,sortBy = "DESC"}) => asy
         })
 
         const request = requestApi()
-        const { data } = await request(BANNER_LIST,{
-            params:{
-                type : type,
-                status:status,
-                sortBy:sortBy
+        const { data } = await request(BANNER_LIST, {
+            params: {
+                type: type,
+                status: status,
+                sortBy: sortBy
             }
         });
 
-        console.log(data);
+        // console.log(data);
 
         if (data.status) {
             dispatch({

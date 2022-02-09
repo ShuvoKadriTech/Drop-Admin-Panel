@@ -73,7 +73,7 @@ const AddBanner = () => {
 
 
         try {
-            
+
 
             const { data } = await requestApi().request(ADD_BANNER, {
                 method: "POST",
@@ -85,20 +85,20 @@ const AddBanner = () => {
                     image: image
                 }
             })
-    
+
 
             console.log(data);
-    
-    
+
+
             if (data.status) {
-    
+
 
 
                 route.push(`banner?type=${type}&status=${status}`)
-                
 
-                
-                
+
+
+
             } else {
                 return toast.warn(data.error, {
                     // position: "bottom-right",
@@ -126,7 +126,7 @@ const AddBanner = () => {
             });
         }
 
-        
+
 
 
     }
@@ -198,8 +198,7 @@ const AddBanner = () => {
                                             value={title}
                                             onChange={(e) => setTitle(e.target.value)}
                                             placeholder='Enter a Title'
-                                            defaultValue=""
-                                            onError={true}
+                                        // onError={true}
                                         />
                                     </div>
                                 </Row>
@@ -288,8 +287,8 @@ const AddBanner = () => {
                 <div className="modal-body">
                     <ImageSelectionDialog lisener={(list) => {
 
-                        console.log(list);
-                        console.log(list[0].path);
+                        // console.log(list);
+                        // console.log(list[0].path);
                         setImage(list[0].path)
 
                         dispatch(removeAllSelectedGalleryImage())

@@ -15,7 +15,8 @@ import {
   GET_COLORS_REQUEST_FAIL,
   EDIT_COLOR_REQUEST_SUCCESS,
   EDIT_COLOR_REQUEST_FAIL,
-  EDIT_COLOR_REQUEST_SEND
+  EDIT_COLOR_REQUEST_SEND,
+  GET_UPDATE_COLOR_DATA
 } from "../../actionType";
 
 // ADD COLOR
@@ -84,6 +85,14 @@ export const editColorRequestSuccess = message => {
     payload: message
   };
 };
+
+export const getUpdateColorData = color => {
+  return {
+    type: GET_UPDATE_COLOR_DATA,
+    payload: color
+  };
+};
+
 export const editColorRequestFail = error => {
   return {
     type: EDIT_COLOR_REQUEST_FAIL,
@@ -95,22 +104,25 @@ export const editColorRequestFail = error => {
 
 // EDIT COLOR BY ID
 
-export const editColor = (id, updateData) => async dispatch => {
-  // console.log("id, updateData", id, updateData)
+export const editColor = updateData => async dispatch => {
+  // console.log("id, updateData", id, updateData);
   dispatch(editColorRequestSend());
 
   const {
-    data: { status, message, error }
+    data: { status, message, data: { color } },
+    error
   } = await requestApi().request(EDIT_COLOR, {
     method: "POST",
-    data: {
-      id: id,
-      data: updateData
-    }
+    data: updateData
   });
-  // console.log("after data", status, message, error);
+  // console.log("after data", color);
   if (status) {
-    dispatch(editColorRequestSuccess(message));
+    if (message) {
+      dispatch(editColorRequestSuccess(message));
+    }
+    if (color) {
+      dispatch(getUpdateColorData(color));
+    }
   } else {
     dispatch(editColorRequestFail(error));
   }

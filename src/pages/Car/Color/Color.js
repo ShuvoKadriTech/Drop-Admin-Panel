@@ -54,7 +54,7 @@ const Color = () => {
         progress: undefined
       });
     }
-    if (!colorRgb || colorRgb == null) {
+    if (colorRgb == "" || colorRgb == null) {
       return toast.warn("Enter This Color Code ", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -67,15 +67,19 @@ const Color = () => {
       });
     }
     try {
-      const newColor = {
-        name: colorName,
-        colorCode: colorRgb
-      };
-      // console.log(newColor);
       if (colorId) {
-        dispatch(editColor(colorId, newColor));
+        const data = {
+          id: colorId,
+          name: colorName,
+          colorCode: colorRgb
+        };
+        dispatch(editColor(data));
       } else {
-        dispatch(addColor(newColor));
+        const data = {
+          name: colorName,
+          colorCode: colorRgb
+        };
+        dispatch(addColor(data));
       }
     } catch (error) {
       return toast.warn(error, {
@@ -99,12 +103,12 @@ const Color = () => {
 
   useEffect(
     () => {
+      // console.log(message, error);
       if (message) {
         // color.value = ''
         setColorName("");
         setcolorRgb("red");
         setColorId(null);
-        dispatch(getAllColors());
         return toast.success(message, {
           // position: "bottom-right",
           position: toast.POSITION.TOP_RIGHT,
@@ -116,9 +120,15 @@ const Color = () => {
           progress: undefined
         });
       }
-      if (error) {
+    },
+    [message]
+  );
 
-        return toast.success(error, {
+  useEffect(
+    () => {
+      // console.log(message, error);
+      if (error) {
+        return toast.warn(error, {
           // position: "bottom-right",
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
@@ -130,7 +140,7 @@ const Color = () => {
         });
       }
     },
-    [message || error]
+    [error]
   );
 
   const onDragRgb = c1 => {
@@ -213,11 +223,11 @@ const Color = () => {
 
                           {simple_color1
                             ? <ColorPicker
-                              saturationHeight={100}
-                              saturationWidth={100}
-                              value={colorRgb}
-                              onDrag={onDragRgb}
-                            />
+                                saturationHeight={100}
+                                saturationWidth={100}
+                                value={colorRgb}
+                                onDrag={onDragRgb}
+                              />
                             : null}
                         </FormGroup>
                       </Col>
@@ -242,7 +252,6 @@ const Color = () => {
                       <CardBody>
                         <CardTitle className="h4"> Color List</CardTitle>
 
-
                         <Table
                           id="tech-companies-1"
                           className="table table-striped table-bordered table-hover text-center"
@@ -250,21 +259,31 @@ const Color = () => {
                           <Thead>
                             <Tr>
                               <Th>Serial No</Th>
-                              <Th >Color Name</Th>
-                              <Th >Color Code</Th>
-                              <Th >Action</Th>
-
+                              <Th>Color Name</Th>
+                              <Th>Color Code</Th>
+                              <Th>Action</Th>
                             </Tr>
                           </Thead>
                           <Tbody>
                             {colors.map((color, index) => {
                               return (
-                                <Tr key={index} className="align-middle" style={{ fontSize: '15px', fontWeight: '500' }}>
+                                <Tr
+                                  key={index}
+                                  className="align-middle"
+                                  style={{
+                                    fontSize: "15px",
+                                    fontWeight: "500"
+                                  }}
+                                >
                                   <Th>
                                     {index + 1}
                                   </Th>
-                                  <Td>{color.name}</Td>
-                                  <Td style={{ color: `${color.colorCode}` }}>{color.colorCode}</Td>
+                                  <Td>
+                                    {color.name}
+                                  </Td>
+                                  <Td style={{ color: `${color.colorCode}` }}>
+                                    {color.colorCode}
+                                  </Td>
                                   <Td>
                                     <button
                                       className="btn btn-info "
@@ -273,13 +292,9 @@ const Color = () => {
                                       <i className="fa fa-edit" />
                                     </button>
                                   </Td>
-
-
                                 </Tr>
                               );
                             })}
-
-
                           </Tbody>
                         </Table>
 

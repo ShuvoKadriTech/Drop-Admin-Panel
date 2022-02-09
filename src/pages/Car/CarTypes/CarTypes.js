@@ -13,14 +13,12 @@ import GlobalWrapper from "../../../components/GlobalWrapper";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import {
-  getCarTypes,
-} from "../../../store/Car/carTypes/carTypesAction";
+import { getCarTypes } from "../../../store/Car/carTypes/carTypesAction";
 
 import Button from "@mui/material/Button";
 import ConfirmDialog from "../../../components/ConfirmDialog/ConfirmDialog";
 import { useHistory } from "react-router-dom";
-import CarTypesReducer from './../../../store/Car/carTypes/carTypesReducer';
+import CarTypesReducer from "./../../../store/Car/carTypes/carTypesReducer";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 
 const CarTypes = () => {
@@ -68,18 +66,6 @@ const CarTypes = () => {
                   breadcrumbItem="Car Types"
                   hideSettingBtn={true}
                 />
-              </Col>
-
-              <Col lg={6} md={6} className="d-flex justify-content-end">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className="btn btn-success add__btn"
-                  component={Link}
-                  to="/add-car-type"
-                >
-                  Add New
-                </Button>
               </Col>
             </Row>
 
@@ -157,7 +143,7 @@ const Wrapper = styled.div`
   position: relative;
   .top__wrapper {
     padding-bottom: 20px;
-    .add__btn{
+    .add__btn {
       height: 50px;
       align-self: center;
     }

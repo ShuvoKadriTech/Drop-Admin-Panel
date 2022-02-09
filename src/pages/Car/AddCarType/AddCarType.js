@@ -280,14 +280,14 @@ const AddCarType = () => {
 
                   <ImageView>
                     {image &&
+                      <>
                       <img
                         className="img_view"
                         src={image}
                         alt="banner image"
                         style={{ width: "100%" }}
-                      />}
-
-                    <div className="button__wrapper">
+                      />
+                      <div className="button__wrapper">
                       <Button
                         variant="contained"
                         color="danger"
@@ -296,6 +296,10 @@ const AddCarType = () => {
                         Delete
                       </Button>
                     </div>
+                      </>
+                      }
+
+                    
                   </ImageView>
                 </div>
               </Col>
@@ -436,14 +440,12 @@ const AddCarType = () => {
 const ImageView = styled.div`
   /* width: 100% !important;
   max-width: 300px; */
-
   position: relative;
+  
 
   .img_view {
+    
     opacity: 1;
-    /* display: block;
-  width: 100%;
-  height: auto; */
     transition: .5s ease;
     backface-visibility: hidden;
   }
