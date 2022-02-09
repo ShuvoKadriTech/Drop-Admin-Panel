@@ -28,12 +28,12 @@ const Login = props => {
 
   const history = useHistory();
 
-  const { admin, message } = useSelector(state => state.Login);
+  const { admin,accessToken,message } = useSelector(state => state.Login);
 
   useEffect(
     () => {
       // console.log(admin);
-      if (admin) {
+      if (accessToken) {
         toast.success(message, {
           // position: "bottom-right",
           position: toast.POSITION.TOP_RIGHT,
@@ -48,7 +48,7 @@ const Login = props => {
         history.push("/dashboard");
       }
     },
-    [admin]
+    [accessToken]
   );
 
   return (
