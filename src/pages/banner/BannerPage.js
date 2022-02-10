@@ -56,8 +56,8 @@ const BannerPage = () => {
     [type, status, sortBy]
   );
 
-  const handleEdit = () => {
-    console.log(bannerId);
+  const handleEdit = id => {
+    route.push(`/banner-edit/${id}`);
   };
 
   // DELETE BANNER

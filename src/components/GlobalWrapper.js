@@ -6,15 +6,17 @@ const GlobalWrapper = ({ children }) => {
   //   console.log(children);
   const history = useHistory();
 
-  const { accessToken, admin } = useSelector(state => state.Login);
+  const { accessToken } = useSelector(state => state.Login);
 
-  useEffect(
-    () => {
-      if (!accessToken || !admin) {
-        history.replace("/login");
-      }
-    },
-    [accessToken, admin]
+  useEffect(() => {
+
+    console.log("accessToken",accessToken);
+
+    if (!accessToken) {
+      history.replace("/login");
+    }
+  },
+    [accessToken]
   );
 
   return (

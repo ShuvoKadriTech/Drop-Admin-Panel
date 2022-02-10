@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState,useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Card, Col, Container, Row, Modal, Button, CardTitle, CardBody } from 'reactstrap';
 import { removeAllSelectedGalleryImage } from '../../store/action/galleryAction';
 import ImageSelectionDialog from '../Utility/ImageSelectionDialog';
@@ -16,15 +16,22 @@ import { convertToHTML } from 'draft-convert';
 // import { convertToHTML } from 'draft-convert';
 import requestApi from '../../network/httpRequest';
 import { ADD_BANNER } from '../../network/Api';
-import { useHistory } from 'react-router-dom';
+import { useHistory,useParams } from 'react-router-dom';
+import { GET_SINGLE_BANNER } from './../../network/Api';
+import {editBanner} from "../../store/banner/bannerAction";
+
+
 const AddBanner = () => {
 
     const [modal_fullscreen, setmodal_fullscreen] = useState(false)
-    const dispatch = useDispatch()
+    
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
+    const {list} = useSelector(state => state.bannerReducer)
 
-    const route = useHistory()
+    const dispatch = useDispatch()
+    const route = useHistory();
+    const {id} = useParams();
 
     const [image, setImage] = useState();
     const [title, setTitle] = useState("");
@@ -32,12 +39,56 @@ const AddBanner = () => {
     const [status, setStatus] = useState(1);
     const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false);
+    // const [descriptionText, setDescriptionText] = useState("");
+
+
+
+
+    useEffect(()=>{
+        if (id) {
+            const findBanner = list.find(type => type?.id === id);
+            if (findBanner) {
+              const { image, title, type,status,description  } = findBanner;
+            //   const convertToText =  description.replace(/<[^>]+>/g, '');
+              setImage(image);
+              setTitle(title);
+              setType(type);
+              setStatus(status);
+            //   setDescriptionText(convertToText)
+            //   setEditorState(convertToText)
+            }
+            else {
+              callApi(id);
+            }
+          } 
+    },[id])
+
+    // GET BANNER FROM SERVER 
+
+    const callApi = async (id) =>{
+        const {data: {status, data:{banner}}} = await requestApi().request(GET_SINGLE_BANNER + id);
+        // console.log(banner)
+        if(status){
+            const {type, title, image, description, status} = banner;
+            // const convertToText =  description.replace(/<[^>]+>/g, '');
+            //   console.log(convertToText);
+            setImage(image);
+              setTitle(title);
+              setType(type);
+              setStatus(status);
+            //   setDescriptionText(convertToText)
+        }
+        else{
+            route.push('/banner', {replace: true})
+        }
+    }
 
 
     const handleEditorChange = (state) => {
+        // console.log(state)
         setEditorState(state);
         let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
-        console.log(currentContentAsHTML);
+        // console.log(currentContentAsHTML);
         setDescription(currentContentAsHTML);
     }
 
@@ -74,7 +125,18 @@ const AddBanner = () => {
 
         try {
 
+            if(id){
+                const data = {
+                    id: id,
+                    title: title,
+                    description: description,
+                    image: image,
+                    type: type
+                }
+                dispatch(editBanner(data))
+            }
 
+           else{
             const { data } = await requestApi().request(ADD_BANNER, {
                 method: "POST",
                 data: {
@@ -85,10 +147,6 @@ const AddBanner = () => {
                     image: image
                 }
             })
-
-
-            console.log(data);
-
 
             if (data.status) {
 
@@ -111,6 +169,7 @@ const AddBanner = () => {
                     progress: undefined,
                 });
             }
+           }
 
 
         } catch (error) {
@@ -132,13 +191,13 @@ const AddBanner = () => {
     }
 
     const changeType = (e) => {
-        console.log(e.target.value);
+        // console.log(e.target.value);
         setType(e.target.value)
     }
 
 
     const changeStatus = (e) => {
-        console.log(e.target.value);
+        // console.log(e.target.value);
         setStatus(e.target.value)
     }
 
@@ -164,12 +223,28 @@ const AddBanner = () => {
                                 </div>
                             </Card>
 
-                            <div>
+                            <ImageView>
                                 {
-                                    image && <img className='img-100' src={image} alt="banner image" style={{ width: "100%" }} />
+                                    image && <>
+                                    <img
+                                      className="img_view"
+                                      src={image}
+                                      alt="banner image"
+                                      style={{ width: "100%" }}
+                                    />
+                                    <div className="button__wrapper">
+                                    <Button
+                                      variant="contained"
+                                      color="danger"
+                                      onClick={() => setImage(null)}
+                                    >
+                                      Delete
+                                    </Button>
+                                  </div>
+                                    </>
                                 }
 
-                            </div>
+                            </ImageView>
                         </div>
                     </Col>
                     <Col xl={8} md={12} sm={12}>
@@ -316,9 +391,44 @@ const AddBanner = () => {
 
 
 
-const ImageVew = styled.img`
-    width:100% !important;
-    max-width: 300px;
-`
+const ImageView = styled.div`
+  /* width: 100% !important;
+  max-width: 300px; */
+  position: relative;
+  
+
+  .img_view {
+    
+    opacity: 1;
+    transition: .5s ease;
+    backface-visibility: hidden;
+  }
+
+  .button__wrapper {
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+
+    .remove__btn {
+      /* background-color: yellow; */
+      font-size: 18px;
+      color: red;
+    }
+  }
+
+  &:hover {
+    .img_view {
+      opacity: 0.3;
+    }
+    .button__wrapper {
+      opacity: 1;
+    }
+  }
+`;
 
 export default AddBanner;
