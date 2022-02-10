@@ -1,5 +1,5 @@
 
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, Col, Container, Row, Modal, Button, CardTitle, CardBody } from 'reactstrap';
 import { removeAllSelectedGalleryImage } from '../../store/action/galleryAction';
@@ -16,70 +16,94 @@ import { convertToHTML } from 'draft-convert';
 // import { convertToHTML } from 'draft-convert';
 import requestApi from '../../network/httpRequest';
 import { ADD_BANNER } from '../../network/Api';
-import { useHistory,useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { GET_SINGLE_BANNER } from './../../network/Api';
-import {editBanner} from "../../store/banner/bannerAction";
+import { addBanner, editBanner } from "../../store/banner/bannerAction";
+import htmlToDraft from 'html-to-draftjs';
+import { OPEN_EDIT_PAGE } from '../../store/actionType';
+
+
 
 
 const AddBanner = () => {
 
     const [modal_fullscreen, setmodal_fullscreen] = useState(false)
-    
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-
-    const {list} = useSelector(state => state.bannerReducer)
-
+    const { list, message, loading, error } = useSelector(state => state.bannerReducer)
     const dispatch = useDispatch()
     const route = useHistory();
-    const {id} = useParams();
-
+    const { id } = useParams();
     const [image, setImage] = useState();
     const [title, setTitle] = useState("");
-    const [type, setType] = useState(2);
+    const [type, setType] = useState(1);
     const [status, setStatus] = useState(1);
     const [description, setDescription] = useState("");
-    const [loading, setLoading] = useState(false);
-    // const [descriptionText, setDescriptionText] = useState("");
 
 
+useEffect(()=>{
+        if (error) {
+            toast.warn(error, {
+                // position: "bottom-right",
+                position: toast.POSITION.BOTTOM_RIGHT,
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+
+        if(message){
+            route.push("banner")
+        }
+},[error,message])
 
 
-    useEffect(()=>{
+    useEffect(() => {
         if (id) {
-            const findBanner = list.find(type => type?.id === id);
+            const findBanner = list.find(item => item?.id === id);
             if (findBanner) {
-              const { image, title, type,status,description  } = findBanner;
-            //   const convertToText =  description.replace(/<[^>]+>/g, '');
-              setImage(image);
-              setTitle(title);
-              setType(type);
-              setStatus(status);
-            //   setDescriptionText(convertToText)
-            //   setEditorState(convertToText)
+                const { image, title, type, status, description } = findBanner;
+                setImage(image);
+                setTitle(title);
+                setType(type);
+                setStatus(status);
+                const contentBlock = htmlToDraft(description);
+            if (contentBlock) {
+                const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+                const outputEditorState = EditorState.createWithContent(contentState);
+                setEditorState(outputEditorState)
+            }
             }
             else {
-              callApi(id);
+                callApi(id);
             }
-          } 
-    },[id])
+        }
+    }, [id])
 
     // GET BANNER FROM SERVER 
 
-    const callApi = async (id) =>{
-        const {data: {status, data:{banner}}} = await requestApi().request(GET_SINGLE_BANNER + id);
+    const callApi = async (id) => {
+        const { data } = await requestApi().request(GET_SINGLE_BANNER + id);
         // console.log(banner)
-        if(status){
-            const {type, title, image, description, status} = banner;
-            // const convertToText =  description.replace(/<[^>]+>/g, '');
-            //   console.log(convertToText);
+        if (data.status) {
+            const { type, title, image, description, status } = data.data.banner;
+            // console.log(convertToRaw(description));
+            const contentBlock = htmlToDraft(description);
+            if (contentBlock) {
+                const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+                const outputEditorState = EditorState.createWithContent(contentState);
+                setEditorState(outputEditorState)
+            }
             setImage(image);
-              setTitle(title);
-              setType(type);
-              setStatus(status);
+            setTitle(title);
+            setType(type);
+            setStatus(status);
             //   setDescriptionText(convertToText)
         }
-        else{
-            route.push('/banner', {replace: true})
+        else {
+            route.push('/banner', { replace: true })
         }
     }
 
@@ -122,69 +146,24 @@ const AddBanner = () => {
 
 
 
-
-        try {
-
-            if(id){
-                const data = {
+            if (id) {
+                dispatch(editBanner({
                     id: id,
                     title: title,
                     description: description,
+                    status: status,
                     image: image,
                     type: type
-                }
-                dispatch(editBanner(data))
-            }
-
-           else{
-            const { data } = await requestApi().request(ADD_BANNER, {
-                method: "POST",
-                data: {
+                }))
+            }else {
+                dispatch(addBanner({
                     title: title,
                     type: type,
                     status: status,
                     description: description,
                     image: image
-                }
-            })
-
-            if (data.status) {
-
-
-
-                route.push(`banner?type=${type}&status=${status}`)
-
-
-
-
-            } else {
-                return toast.warn(data.error, {
-                    // position: "bottom-right",
-                    position: toast.POSITION.BOTTOM_RIGHT,
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                }))
             }
-           }
-
-
-        } catch (error) {
-            return toast.warn(error.message, {
-                // position: "bottom-right",
-                position: toast.POSITION.BOTTOM_RIGHT,
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-        }
-
 
 
 
@@ -226,21 +205,21 @@ const AddBanner = () => {
                             <ImageView>
                                 {
                                     image && <>
-                                    <img
-                                      className="img_view"
-                                      src={image}
-                                      alt="banner image"
-                                      style={{ width: "100%" }}
-                                    />
-                                    <div className="button__wrapper">
-                                    <Button
-                                      variant="contained"
-                                      color="danger"
-                                      onClick={() => setImage(null)}
-                                    >
-                                      Delete
-                                    </Button>
-                                  </div>
+                                        <img
+                                            className="img_view"
+                                            src={image}
+                                            alt="banner image"
+                                            style={{ width: "100%" }}
+                                        />
+                                        <div className="button__wrapper">
+                                            <Button
+                                                variant="contained"
+                                                color="danger"
+                                                onClick={() => setImage(null)}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </div>
                                     </>
                                 }
 
@@ -311,6 +290,7 @@ const AddBanner = () => {
                                             wrapperClassName="wrapperClassName"
                                             editorClassName="editorClassName"
                                             editorState={editorState}
+                                            defaultEditorState={editorState}
                                             onEditorStateChange={handleEditorChange}
                                         />
                                     </div>

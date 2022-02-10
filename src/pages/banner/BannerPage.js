@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteBanner, getBannerListAction } from "../../store/banner/bannerAction";
+import { deleteBanner, getBannerListAction , filterSelect } from "../../store/banner/bannerAction";
 import {
   Button,
   Input,
@@ -25,9 +25,12 @@ import SweetAlert from "react-bootstrap-sweetalert";
 
 const BannerPage = () => {
   const dispatch = useDispatch();
-  const [type, setType] = useState(1);
-  const [status, setStatus] = useState(1);
-  const [sortBy, setSortBy] = useState("DESC");
+
+  // const [type, setType] = useState(1);
+  // const [status, setStatus] = useState(1);
+  // const [sortBy, setSortBy] = useState("DESC");
+
+
   const [confirm_alert, setconfirm_alert] = useState(false);
   const [success_dlg, setsuccess_dlg] = useState(false);
   const [dynamic_title, setdynamic_title] = useState("");
@@ -44,17 +47,41 @@ const BannerPage = () => {
 
   // useEffect(() => { }, []);
 
-  const { loading, message, list, error } = useSelector(state => state.bannerReducer)
+  const { loading, message, list, error,type,activeStatus:status,sortBy } = useSelector(state => state.bannerReducer)
 
-  useEffect(
-    () => {
-      // dispatch(getBannerListAction({ type: type, status: status, sortBy: sortBy }))
-      dispatch(
-        getBannerListAction({ type: type, status: status, sortBy: sortBy })
-      );
-    },
-    [type, status, sortBy]
-  );
+
+
+
+
+  useEffect(() => {
+    callBanner()
+  }, []);
+
+
+  function callBanner(refresh = false) {
+    dispatch(
+      getBannerListAction({refresh })
+    );
+  }
+
+
+  const filter = (option, value) => {
+    if (option === "type") {
+        dispatch(filterSelect({
+          type:value
+        }))
+    } else if (option === "status") {
+      dispatch(filterSelect({
+          activeStatus:value
+        }))
+    } else if (option === "sortBy") {
+      dispatch(filterSelect({
+          sortBy:value
+        }))
+    }
+  }
+
+
 
   const handleEdit = id => {
     route.push(`/banner-edit/${id}`);
@@ -156,10 +183,10 @@ const BannerPage = () => {
                   </Tbody>
                 </Table>
 
-                {loading &&
+                {/* {loading &&
                   <div className="d-flex justify-content-center">
                     <Spinner animation="border" variant="info" />
-                  </div>}
+                  </div>} */}
               </CardBody>
             </Card>
           </div>
@@ -230,6 +257,8 @@ const BannerPage = () => {
             <BreadcrumbsBanner
               maintitle="Banner"
               breadcrumbItem="Banner list"
+              callBanner={callBanner}
+              loading={loading}
               lisener={vStyle => {
                 setViewStyle(vStyle);
               }}
@@ -242,7 +271,7 @@ const BannerPage = () => {
                   id="demo-simple-select"
                   value={type}
                   label="Type"
-                  onChange={e => setType(e.target.value)}
+                  onChange={e => filter("type", e.target.value)}
                   style={{ width: "100%" }}
                 >
                   <MenuItem value={1}>User</MenuItem>
@@ -256,7 +285,9 @@ const BannerPage = () => {
                   id="demo-simple-select"
                   value={status}
                   label="Type"
-                  onChange={e => setStatus(e.target.value)}
+                  onChange={e => {
+                    filter("status", e.target.value)
+                  }}
                   style={{ width: "100%" }}
                 >
                   <MenuItem value={1}>Active</MenuItem>
@@ -271,7 +302,9 @@ const BannerPage = () => {
                   id="demo-simple-select"
                   value={sortBy}
                   label="Type"
-                  onChange={e => setSortBy(e.target.value)}
+                  onChange={e => {
+                    filter("sortBy", e.target.value)
+                  }}
                   style={{ width: "100%" }}
                 >
                   <MenuItem value="ASC">ASC</MenuItem>
