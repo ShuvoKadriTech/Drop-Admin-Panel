@@ -251,7 +251,7 @@ const SidebarContent = props => {
               <ul className="sub-menu" aria-expanded="false">
                 <li />
                 <li>
-                  <Link to="/#">
+                  <Link to="/#" className="has-arrow waves-effect">
                     {props.t("Car Types")}
                   </Link>
                   <ul className="sub-menu" aria-expanded="true">
@@ -275,6 +275,41 @@ const SidebarContent = props => {
                 <li>
                   <Link to="/year">
                     {props.t("Year")}{" "}
+                  </Link>
+                </li>
+              </ul>
+            </li>
+
+            {/* Admin Controls */}
+
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="ti-user" />
+                <span>
+                  {props.t("Admin Control")}
+                </span>
+              </Link>
+              <ul className="sub-menu " aria-expanded="false">
+                <li>
+                  <Link to="/#" className="has-arrow waves-effect">
+                    {props.t("Admins")}
+                  </Link>
+                  <ul className="sub-menu" aria-expanded="true">
+                    <li>
+                      <Link to="/admin-list">
+                        {props.t("List")}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/create-admin">
+                        {props.t("Create")}
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <Link to="/role">
+                    {props.t("Role")}
                   </Link>
                 </li>
               </ul>

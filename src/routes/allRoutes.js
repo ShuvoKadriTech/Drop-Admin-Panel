@@ -128,6 +128,9 @@ import CarTypes from "../pages/Car/CarTypes/CarTypes";
 import AddCarType from "../pages/Car/AddCarType/AddCarType";
 import Color from "../pages/Car/Color/Color";
 import Year from "../pages/Car/Year/Year";
+import AdminList from "../pages/AdminControl/Admins/AdminList.js/AdminList";
+import CreateAdmin from "../pages/AdminControl/Admins/CreateAdmin/CreateAdmin";
+import Role from "../pages/AdminControl/Role/Role";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -164,6 +167,12 @@ const userRoutes = [
   // YEAR
 
   { path: "/year", component: Year },
+
+  // ADMIN CONTROL
+
+  { path: "/admin-list", component: AdminList },
+  { path: "/create-admin", component: CreateAdmin },
+  { path: "/role", component: Role },
 
   // //calendar
   { path: "/calendar", component: Calendar },

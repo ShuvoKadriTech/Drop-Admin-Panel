@@ -50,7 +50,11 @@ export const EDIT_COLOR = ADMIN_ENDPOINT + "/color/editColor";
 
 export const ADD_YEAR = ADMIN_ENDPOINT + "/year/add";
 export const GET_ALL_YEARS = ADMIN_ENDPOINT + "/year/getAll";
-
 export const EDIT_YEAR = ADMIN_ENDPOINT + "/year/update";
+
+// ADMIN ROLE
+
+export const ADD_ADMIN_ROLE = ADMIN_ENDPOINT + "/role/add";
+export const GET_ALL_ADMIN_ROLE = ADMIN_ENDPOINT + "/role";
 
 // END ADMIN API

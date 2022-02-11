@@ -25,7 +25,7 @@ const ProfileMenu = props => {
   const [menu, setMenu] = useState(false);
 
   const [username, setusername] = useState("Admin");
-  const { accessToken } = useSelector(state => state.login);
+  // const { accessToken } = useSelector(state => state.login);
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -49,11 +49,12 @@ const ProfileMenu = props => {
   );
 
   const logout = () => {
-    if (accessToken) {
-      dispatch(logoutAdmin);
-      localStorage.removeItem("accessToken");
-      // history.push("login");
-    }
+    // if (accessToken) {
+    //   dispatch(logoutAdmin);
+    //   localStorage.removeItem("accessToken");
+    //   // history.push("login");
+    // }
+    console.log("clicked");
   };
 
   return (

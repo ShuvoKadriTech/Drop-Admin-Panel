@@ -53,7 +53,7 @@ export const addColor = newColor => async dispatch => {
   } catch (error) {
     dispatch({
       type: ADD_COLOR_REQUEST_FAIL,
-      payload: error
+      payload: error.message
     });
   }
 };
