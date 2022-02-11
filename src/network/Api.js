@@ -5,7 +5,7 @@ export const API_URL = "https://api.codepadding.com";
 export const FTP_URL = "https://ftp.codepadding.com";
 
 // FTP SERVER API
-export const MULTIPLE_IMAGE_UPLOAD = FTP_URL + "/api/upload/image/multitple";
+export const MULTIPLE_IMAGE_UPLOAD = FTP_URL + "/api/upload/image/multitples";
 
 const ADMIN_ENDPOINT = "/api/v1/admin";
 
