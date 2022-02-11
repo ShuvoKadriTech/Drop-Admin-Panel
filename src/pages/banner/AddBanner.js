@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Card, Col, Container, Row, Modal, Button, CardTitle, CardBody } from 'reactstrap';
 import { removeAllSelectedGalleryImage } from '../../store/action/galleryAction';
 import ImageSelectionDialog from '../Utility/ImageSelectionDialog';
@@ -16,28 +16,103 @@ import { convertToHTML } from 'draft-convert';
 // import { convertToHTML } from 'draft-convert';
 import requestApi from '../../network/httpRequest';
 import { ADD_BANNER } from '../../network/Api';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
+import { GET_SINGLE_BANNER } from './../../network/Api';
+import { addBanner, editBanner } from "../../store/banner/bannerAction";
+import htmlToDraft from 'html-to-draftjs';
+import { OPEN_EDIT_PAGE } from '../../store/actionType';
+
+
+
+
 const AddBanner = () => {
 
     const [modal_fullscreen, setmodal_fullscreen] = useState(false)
-    const dispatch = useDispatch()
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-
-
-    const route = useHistory()
-
+    const { list, message, loading, error } = useSelector(state => state.bannerReducer)
+    const dispatch = useDispatch()
+    const route = useHistory();
+    const { id } = useParams();
     const [image, setImage] = useState();
     const [title, setTitle] = useState("");
-    const [type, setType] = useState(2);
+    const [type, setType] = useState(1);
     const [status, setStatus] = useState(1);
     const [description, setDescription] = useState("");
-    const [loading, setLoading] = useState(false);
+
+
+useEffect(()=>{
+        if (error) {
+            toast.warn(error, {
+                // position: "bottom-right",
+                position: toast.POSITION.BOTTOM_RIGHT,
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+
+        if(message){
+            route.push("banner")
+        }
+},[error,message])
+
+
+    useEffect(() => {
+        if (id) {
+            const findBanner = list.find(item => item?.id === id);
+            if (findBanner) {
+                const { image, title, type, status, description } = findBanner;
+                setImage(image);
+                setTitle(title);
+                setType(type);
+                setStatus(status);
+                const contentBlock = htmlToDraft(description);
+            if (contentBlock) {
+                const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+                const outputEditorState = EditorState.createWithContent(contentState);
+                setEditorState(outputEditorState)
+            }
+            }
+            else {
+                callApi(id);
+            }
+        }
+    }, [id])
+
+    // GET BANNER FROM SERVER 
+
+    const callApi = async (id) => {
+        const { data } = await requestApi().request(GET_SINGLE_BANNER + id);
+        // console.log(banner)
+        if (data.status) {
+            const { type, title, image, description, status } = data.data.banner;
+            // console.log(convertToRaw(description));
+            const contentBlock = htmlToDraft(description);
+            if (contentBlock) {
+                const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+                const outputEditorState = EditorState.createWithContent(contentState);
+                setEditorState(outputEditorState)
+            }
+            setImage(image);
+            setTitle(title);
+            setType(type);
+            setStatus(status);
+            //   setDescriptionText(convertToText)
+        }
+        else {
+            route.push('/banner', { replace: true })
+        }
+    }
 
 
     const handleEditorChange = (state) => {
+        // console.log(state)
         setEditorState(state);
         let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
-        console.log(currentContentAsHTML);
+        // console.log(currentContentAsHTML);
         setDescription(currentContentAsHTML);
     }
 
@@ -71,74 +146,37 @@ const AddBanner = () => {
 
 
 
-
-        try {
-
-
-            const { data } = await requestApi().request(ADD_BANNER, {
-                method: "POST",
-                data: {
+            if (id) {
+                dispatch(editBanner({
+                    id: id,
+                    title: title,
+                    description: description,
+                    status: status,
+                    image: image,
+                    type: type
+                }))
+            }else {
+                dispatch(addBanner({
                     title: title,
                     type: type,
                     status: status,
                     description: description,
                     image: image
-                }
-            })
-
-
-            console.log(data);
-
-
-            if (data.status) {
-
-
-
-                route.push(`banner?type=${type}&status=${status}`)
-
-
-
-
-            } else {
-                return toast.warn(data.error, {
-                    // position: "bottom-right",
-                    position: toast.POSITION.BOTTOM_RIGHT,
-                    autoClose: 3000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                }))
             }
-
-
-        } catch (error) {
-            return toast.warn(error.message, {
-                // position: "bottom-right",
-                position: toast.POSITION.BOTTOM_RIGHT,
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-        }
-
 
 
 
     }
 
     const changeType = (e) => {
-        console.log(e.target.value);
+        // console.log(e.target.value);
         setType(e.target.value)
     }
 
 
     const changeStatus = (e) => {
-        console.log(e.target.value);
+        // console.log(e.target.value);
         setStatus(e.target.value)
     }
 
@@ -164,12 +202,28 @@ const AddBanner = () => {
                                 </div>
                             </Card>
 
-                            <div>
+                            <ImageView>
                                 {
-                                    image && <img className='img-100' src={image} alt="banner image" style={{ width: "100%" }} />
+                                    image && <>
+                                        <img
+                                            className="img_view"
+                                            src={image}
+                                            alt="banner image"
+                                            style={{ width: "100%" }}
+                                        />
+                                        <div className="button__wrapper">
+                                            <Button
+                                                variant="contained"
+                                                color="danger"
+                                                onClick={() => setImage(null)}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </div>
+                                    </>
                                 }
 
-                            </div>
+                            </ImageView>
                         </div>
                     </Col>
                     <Col xl={8} md={12} sm={12}>
@@ -236,6 +290,7 @@ const AddBanner = () => {
                                             wrapperClassName="wrapperClassName"
                                             editorClassName="editorClassName"
                                             editorState={editorState}
+                                            defaultEditorState={editorState}
                                             onEditorStateChange={handleEditorChange}
                                         />
                                     </div>
@@ -316,9 +371,44 @@ const AddBanner = () => {
 
 
 
-const ImageVew = styled.img`
-    width:100% !important;
-    max-width: 300px;
-`
+const ImageView = styled.div`
+  /* width: 100% !important;
+  max-width: 300px; */
+  position: relative;
+  
+
+  .img_view {
+    
+    opacity: 1;
+    transition: .5s ease;
+    backface-visibility: hidden;
+  }
+
+  .button__wrapper {
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+
+    .remove__btn {
+      /* background-color: yellow; */
+      font-size: 18px;
+      color: red;
+    }
+  }
+
+  &:hover {
+    .img_view {
+      opacity: 0.3;
+    }
+    .button__wrapper {
+      opacity: 1;
+    }
+  }
+`;
 
 export default AddBanner;

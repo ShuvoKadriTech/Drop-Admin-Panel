@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getBannerListAction } from "../../store/banner/bannerAction";
+import { deleteBanner, getBannerListAction , filterSelect } from "../../store/banner/bannerAction";
 import {
   Button,
   Input,
@@ -25,14 +25,17 @@ import SweetAlert from "react-bootstrap-sweetalert";
 
 const BannerPage = () => {
   const dispatch = useDispatch();
-  const { loading, list } = useSelector(state => state.bannerReducer);
-  const [type, setType] = useState(1);
-  const [status, setStatus] = useState(1);
-  const [sortBy, setSortBy] = useState("DESC");
+
+  // const [type, setType] = useState(1);
+  // const [status, setStatus] = useState(1);
+  // const [sortBy, setSortBy] = useState("DESC");
+
+
   const [confirm_alert, setconfirm_alert] = useState(false);
   const [success_dlg, setsuccess_dlg] = useState(false);
   const [dynamic_title, setdynamic_title] = useState("");
   const [dynamic_description, setdynamic_description] = useState("");
+  const [bannerId, setBannerId] = useState(null);
 
   const route = useHistory();
 
@@ -42,31 +45,56 @@ const BannerPage = () => {
       : "list"
   );
 
-  useEffect(() => { }, []);
+  // useEffect(() => { }, []);
 
-  useEffect(
-    () => {
-      // dispatch(getBannerListAction({ type: type, status: status, sortBy: sortBy }))
-      dispatch(
-        getBannerListAction({ type: type, status: status, sortBy: sortBy })
-      );
-    },
-    [type, status, sortBy]
-  );
+  const { loading, message, list, error,type,activeStatus:status,sortBy } = useSelector(state => state.bannerReducer)
+
+
+
+
+
+  useEffect(() => {
+    callBanner()
+  }, []);
+
+
+  function callBanner(refresh = false) {
+    dispatch(
+      getBannerListAction({refresh })
+    );
+  }
+
+
+  const filter = (option, value) => {
+    if (option === "type") {
+        dispatch(filterSelect({
+          type:value
+        }))
+    } else if (option === "status") {
+      dispatch(filterSelect({
+          activeStatus:value
+        }))
+    } else if (option === "sortBy") {
+      dispatch(filterSelect({
+          sortBy:value
+        }))
+    }
+  }
+
+
 
   const handleEdit = id => {
-    console.log(id);
+    route.push(`/banner-edit/${id}`);
   };
 
   // DELETE BANNER
 
   const handleDelete = id => {
-    console.log(id);
-    setconfirm_alert(false);
-    setsuccess_dlg(true);
-    setdynamic_title("Deleted");
-    setdynamic_description("Your file has been deleted.");
+    // console.log(bannerId)
+    dispatch(deleteBanner(bannerId))
+
   };
+
 
   const listViewBanner = () => {
     return (
@@ -122,6 +150,7 @@ const BannerPage = () => {
                               // onClick={() => handleDelete(item.id)}
                               onClick={() => {
                                 setconfirm_alert(true);
+                                setBannerId(item.id)
                               }}
                             >
                               <i className="fa fa-trash" />
@@ -135,7 +164,12 @@ const BannerPage = () => {
                                 confirmBtnBsStyle="success"
                                 cancelBtnBsStyle="danger"
                                 onConfirm={() => {
-                                  handleDelete(item.id);
+                                  handleDelete();
+                                  setconfirm_alert(false);
+                                  setsuccess_dlg(true);
+                                  setdynamic_title("Deleted");
+                                  setdynamic_description("Your file has been deleted.");
+
                                 }}
                                 onCancel={() => setconfirm_alert(false)}
                               >
@@ -149,10 +183,10 @@ const BannerPage = () => {
                   </Tbody>
                 </Table>
 
-                {loading &&
+                {/* {loading &&
                   <div className="d-flex justify-content-center">
                     <Spinner animation="border" variant="info" />
-                  </div>}
+                  </div>} */}
               </CardBody>
             </Card>
           </div>
@@ -223,6 +257,8 @@ const BannerPage = () => {
             <BreadcrumbsBanner
               maintitle="Banner"
               breadcrumbItem="Banner list"
+              callBanner={callBanner}
+              loading={loading}
               lisener={vStyle => {
                 setViewStyle(vStyle);
               }}
@@ -235,7 +271,7 @@ const BannerPage = () => {
                   id="demo-simple-select"
                   value={type}
                   label="Type"
-                  onChange={e => setType(e.target.value)}
+                  onChange={e => filter("type", e.target.value)}
                   style={{ width: "100%" }}
                 >
                   <MenuItem value={1}>User</MenuItem>
@@ -249,7 +285,9 @@ const BannerPage = () => {
                   id="demo-simple-select"
                   value={status}
                   label="Type"
-                  onChange={e => setStatus(e.target.value)}
+                  onChange={e => {
+                    filter("status", e.target.value)
+                  }}
                   style={{ width: "100%" }}
                 >
                   <MenuItem value={1}>Active</MenuItem>
@@ -264,7 +302,9 @@ const BannerPage = () => {
                   id="demo-simple-select"
                   value={sortBy}
                   label="Type"
-                  onChange={e => setSortBy(e.target.value)}
+                  onChange={e => {
+                    filter("sortBy", e.target.value)
+                  }}
                   style={{ width: "100%" }}
                 >
                   <MenuItem value="ASC">ASC</MenuItem>
