@@ -9,114 +9,63 @@ const axios = require("axios").default;
 
 // INITIALIZES CLOCK ON SERVER
 export const uploadMultipleImage = () => async (dispatch, getState) => {
+
+
   try {
+
+
     dispatch({
       type: actionType.UPLOAD_IMAGE_REQUEST_SEND
-    });
+    })
 
     let formData = new FormData();
 
-    try {
-        dispatch({
-            type: actionType.UPLOAD_IMAGE_REQUEST_SEND
-        })
+    const selectedFiles = getState().uploadImage.selectedFiles;
+    const selectedFolder = getState().uploadImage.selectedFolder;
 
-        let formData = new FormData();
+    formData.append('folderPath', selectedFolder.value);
 
-        const selectedFiles = getState().uploadImage.selectedFiles;
-        const selectedFolder = getState().uploadImage.selectedFolder;
-
-        formData.append('folderPath', selectedFolder.value);
-
-        for (const key of Object.keys(selectedFiles)) {
-            formData.append('images', selectedFiles[key])
-        }
-
-
-        const result = await fetch(MULTIPLE_IMAGE_UPLOAD, {
-            method: 'POST',
-            body: formData,
-        });
-
-        const response = await result.json();
-
-        if (!response.status) {
-            dispatch({
-                type: actionType.UPLOAD_IMAGE_REQUEST_FAIL,
-                payload: response.error,
-            })
-        }
-
-
-        if (response.status) {
-            dispatch({
-                type: actionType.UPLOAD_IMAGE_REQUEST_SUCCESS,
-                payload: response.data.imageList,
-            })
-        }
-
-
-    } catch (error) {
-        console.log(error);
-        dispatch({
-            type: actionType.UPLOAD_IMAGE_REQUEST_FAIL,
-            payload: error.message,
-        })
+    for (const key of Object.keys(selectedFiles)) {
+      formData.append('images', selectedFiles[key])
     }
 
+
     const result = await fetch(MULTIPLE_IMAGE_UPLOAD, {
-      method: "POST",
-      body: formData
+      method: 'POST',
+      body: formData,
     });
 
     const response = await result.json();
 
+
+    console.log(response)
+
     if (!response.status) {
+
       dispatch({
         type: actionType.UPLOAD_IMAGE_REQUEST_FAIL,
-        payload: response.error
-      });
+        payload: response.error,
+      })
+
     }
 
-    console.log("response", response);
 
-    const request = requestApi();
-    const { data } = await request(IMAGE_UPLOAD, {
-      method: "POST",
-      data: {
-        imagesList: response.data
-      }
-    });
-
-    console.log("====================================");
-    console.log("responseData", data);
-    console.log("====================================");
-
-    if (!data) {
-      dispatch({
-        type: actionType.UPLOAD_IMAGE_REQUEST_FAIL,
-        payload: "update data fail"
-      });
-    }
-
-    if (data.status) {
+    if (response.status) {
       dispatch({
         type: actionType.UPLOAD_IMAGE_REQUEST_SUCCESS,
-        payload: data.data.imageList
-      });
-    } else {
-      dispatch({
-        type: actionType.UPLOAD_IMAGE_REQUEST_FAIL,
-        payload: data.error
-      });
+        payload: response.data.imageList,
+      })
     }
+
+
   } catch (error) {
     console.log(error);
     dispatch({
       type: actionType.UPLOAD_IMAGE_REQUEST_FAIL,
-      payload: error.message
-    });
+      payload: error.message,
+    })
   }
+
 };
 
 export const selectImage = files => async (dispatch, getState) => {
