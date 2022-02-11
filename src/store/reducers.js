@@ -18,8 +18,8 @@ import folderCreateReducer from "./reducer/image/folderCreate.reducer";
 import bannerReducer from "./banner/bannerReducer";
 
 import colorReducers from "./Car/color/colorReducers";
-import CarTypesReducer from './Car/carTypes/carTypesReducer';
-import yearReducer from './Car/year/yearReducer';
+import carTypesReducer from "./Car/carTypes/carTypesReducer";
+import yearReducer from "./Car/year/yearReducer";
 
 const rootReducer = combineReducers({
   // public
@@ -34,7 +34,7 @@ const rootReducer = combineReducers({
   imageReducer,
   createFolder: folderCreateReducer,
   bannerReducer,
-  CarTypesReducer,
+  carTypesReducer,
   colorReducers,
   yearReducer
 });

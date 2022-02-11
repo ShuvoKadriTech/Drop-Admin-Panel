@@ -10,11 +10,10 @@ import {
 } from "./actionTypes";
 import requestApi from "../../../network/httpRequest";
 
-export const loginUser = user => {
+export const loginUser = () => {
   // console.log("request", user);
   return {
-    type: LOGIN_USER,
-    payload: user
+    type: LOGIN_USER
   };
 };
 
@@ -35,8 +34,7 @@ export const logoutUser = history => {
 
 export const logoutUserSuccess = () => {
   return {
-    type: LOGOUT_USER_SUCCESS,
-    payload: {}
+    type: LOGOUT_USER_SUCCESS
   };
 };
 
@@ -45,6 +43,12 @@ export const apiError = error => {
     type: API_ERROR,
     payload: error
   };
+};
+
+export const logoutAdmin = () => dispatch => {
+  dispatch({
+    type: LOGOUT_USER_SUCCESS
+  });
 };
 
 export const adminAuth = user => async (dispatch, getState) => {

@@ -10,7 +10,9 @@ import {
   EDIT_CAR_TYPE_REQUEST_FAIL,
   ADD_CAR_TYPE_REQUEST_SEND,
   ADD_CAR_TYPE_REQUEST_SUCCESS,
-  ADD_CAR_TYPE_REQUEST_FAIL
+  ADD_CAR_TYPE_REQUEST_FAIL,
+  GET_SUCCESS_MESSAGE,
+  CLEAR_SUCCESS_MESSAGE
 } from "../../actionType";
 
 const initialState = {
@@ -20,20 +22,18 @@ const initialState = {
   message: null
 };
 
-const CarTypesReducer = (state = initialState, action) => {
+const carTypesReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
   switch (type) {
     case GET_CAR_TYPE_REQUEST_SEND:
-      state = {
+      return {
         ...state,
         loading: true
       };
 
-      break;
-
     case GET_CAR_TYPE_REQUEST_SUCCESS:
-      state = {
+      return {
         ...state,
         loading: false,
         carTypes: payload,
@@ -41,99 +41,93 @@ const CarTypesReducer = (state = initialState, action) => {
         message: null
       };
 
-      break;
-
     case GET_CAR_TYPE_REQUEST_FAIL:
-      state = {
+      return {
         ...state,
-        carTypes: [],
         error: payload,
         message: null
       };
-      break;
 
     // DELETE CAR TYPE BY ID
     case DELETE_CAR_TYPE_REQUEST_SEND:
-      state = {
+      return {
         ...state,
         loading: true
       };
-      break;
+
     case DELETE_CAR_TYPE_REQUEST_SUCCESS:
       // console.log(payload);
       const { id, message } = payload;
       const filtered = state.carTypes.filter(type => type.id !== id);
       // console.log(filtered);
-      state = {
+      return {
         ...state,
         loading: false,
         carTypes: filtered,
         message: message
       };
-      break;
+
     case DELETE_CAR_TYPE_REQUEST_FAIL:
-      state = { ...state, loading: false, error: payload };
-      break;
+      return { ...state, loading: false, error: payload };
 
     // EDIT CAR TYPE
 
     case EDIT_CAR_TYPE_REQUEST_SEND:
-      state = {
+      return {
         ...state,
         loading: true
       };
-      break;
 
     case EDIT_CAR_TYPE_REQUEST_SUCCESS:
-
-      state = {
+      return {
         ...state,
         loading: false,
         message: payload,
         error: null
       };
-      break;
+
     case EDIT_CAR_TYPE_REQUEST_FAIL:
-      state = {
+      return {
         ...state,
         loading: false,
         error: payload,
         message: null
       };
-      break;
 
-    // case ADD_CAR_TYPE_REQUEST_SEND:
-    //   state = {
-    //     ...state,
-    //     loading: true
-    //   };
+    case ADD_CAR_TYPE_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true
+      };
 
-    //   break;
+    case ADD_CAR_TYPE_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        carTypes: [...state.carTypes, payload.data],
+        error: null,
+        message: payload.message
+      };
 
-    // case ADD_CAR_TYPE_REQUEST_SUCCESS:
-    //   const { carType, updateMessage } = payload;
-    //   state = {
-    //     ...state,
-    //     loading: false,
-    //     message: updateMessage,
-    //     carTypes: [...state.carTypes, carType]
-    //   };
-    //   break;
+    case CLEAR_SUCCESS_MESSAGE:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        message: null
+      };
 
-    // case ADD_CAR_TYPE_REQUEST_FAIL:
-    //   state = {
-    //     ...state,
-    //     loading: false,
-    //     error: payload,
-    //     message: null
-    //   };
-    //   break;
+    case ADD_CAR_TYPE_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+        message: null
+      };
 
     default:
-      state = { ...state };
-      break;
+      return state;
   }
-  return state;
 };
 
-export default CarTypesReducer;
+export default carTypesReducer;

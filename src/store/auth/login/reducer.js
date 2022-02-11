@@ -6,49 +6,53 @@ import {
   API_ERROR
 } from "./actionTypes";
 
-
-
 const initialState = {
   error: "",
   loading: false,
-  admin:  localStorage.getItem('admin') ? JSON.parse(localStorage.getItem('admin'))  : null,
-  message:"",
-  accessToken: localStorage.getItem('accessToken')?localStorage.getItem('accessToken'):null
+  admin: localStorage.getItem("admin")
+    ? JSON.parse(localStorage.getItem("admin"))
+    : null,
+  message: "",
+  accessToken: localStorage.getItem("accessToken")
+    ? localStorage.getItem("accessToken")
+    : null
 };
 
 const login = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_USER:
-      state = {
+      return {
         ...state,
         loading: true
       };
-      break;
+
     case LOGIN_SUCCESS:
       const { admin, accessToken, message } = action.payload;
 
-      state = {
+      return {
         ...state,
         loading: false,
-         admin,
+        admin,
         accessToken,
         message
       };
-      break;
+
     case LOGOUT_USER:
-      state = { ...state };
-      break;
+      return { ...state };
+
     case LOGOUT_USER_SUCCESS:
-      state = { ...state };
-      break;
+      return {
+        ...state,
+        loading: false,
+        accessToken: null
+      };
+
     case API_ERROR:
-      state = { ...state, error: action.payload, loading: false };
-      break;
+      return { ...state, error: action.payload, loading: false };
+
     default:
-      state = { ...state };
-      break;
+      return state;
   }
-  return state;
 };
 
 export default login;

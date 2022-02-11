@@ -76,8 +76,14 @@ const Year = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllYears());
+    // console.log(carTypes);
+
+    callYearList();
   }, []);
+
+  const callYearList = (refresh = false) => {
+    dispatch(getAllYears(refresh));
+  };
 
   // EDIT YEAR EVENT
 
@@ -137,6 +143,8 @@ const Year = () => {
               maintitle="Car"
               breadcrumbItem="Year"
               hideSettingBtn={true}
+              loading={loading}
+              callList={callYearList}
             />
             <Row>
               <Col xl={4}>
@@ -225,11 +233,6 @@ const Year = () => {
                               })}
                             </Tbody>
                           </Table>
-
-                          {loading &&
-                            <div className=" spinner">
-                              <Spinner animation="border" variant="info" />
-                            </div>}
                         </CardBody>
                       </Card>
                     </CardWrapper>

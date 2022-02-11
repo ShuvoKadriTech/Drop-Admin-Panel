@@ -21,146 +21,118 @@ import {
 
 // ADD COLOR
 
-export const addColorRequestSend = data => {
-  return {
-    type: ADD_COLOR_REQUEST_SEND,
-    payload: data
-  };
-};
+export const addColor = newColor => async dispatch => {
+  // console.log(newColor);
+  try {
+    dispatch({
+      type: ADD_COLOR_REQUEST_SEND
+    });
 
-export const addColorRequestSuccess = message => {
-  return {
-    type: ADD_COLOR_REQUEST_SUCCESS,
-    payload: message
-  };
-};
+    const {
+      data: { status, message, error, data }
+    } = await requestApi().request(ADD_COLOR, {
+      method: "POST",
+      data: newColor
+    });
 
-export const addColorInColorsList = newColor => {
-  return {
-    type: ADD_COLOR_IN_COLOR_LIST,
-    payload: newColor
-  };
-};
-
-export const addColorRequestFail = error => {
-  return {
-    type: ADD_COLOR_REQUEST_FAIL,
-    payload: error
-  };
-};
-
-// GET ALL COLORS
-
-export const getColorsRequestSend = () => {
-  return {
-    type: GET_COLORS_REQUEST_SEND
-  };
-};
-
-export const getColorsRequestSuccess = colors => {
-  return {
-    type: GET_COLORS_REQUEST_SUCCESS,
-    payload: colors
-  };
-};
-
-export const getColorsRequestFail = error => {
-  return {
-    type: GET_COLORS_REQUEST_FAIL,
-    payload: error
-  };
-};
-
-// EDIT COLOR
-
-export const editColorRequestSend = () => {
-  return {
-    type: EDIT_COLOR_REQUEST_SEND
-  };
-};
-
-export const editColorRequestSuccess = message => {
-  return {
-    type: EDIT_COLOR_REQUEST_SUCCESS,
-    payload: message
-  };
-};
-
-export const getUpdateColorData = color => {
-  return {
-    type: GET_UPDATE_COLOR_DATA,
-    payload: color
-  };
-};
-
-export const editColorRequestFail = error => {
-  return {
-    type: EDIT_COLOR_REQUEST_FAIL,
-    payload: error
-  };
-};
-
-// HTTP REQUEST HANDELING
-
-// EDIT COLOR BY ID
-
-export const editColor = updateData => async dispatch => {
-  // console.log("id, updateData", id, updateData);
-  dispatch(editColorRequestSend());
-
-  const {
-    data: { status, message, data: { color } },
-    error
-  } = await requestApi().request(EDIT_COLOR, {
-    method: "POST",
-    data: updateData
-  });
-  // console.log("after data", color);
-  if (status) {
-    if (message) {
-      dispatch(editColorRequestSuccess(message));
+    if (status) {
+      dispatch({
+        type: ADD_COLOR_REQUEST_SUCCESS,
+        payload: message
+      });
+      dispatch({
+        type: ADD_COLOR_IN_COLOR_LIST,
+        payload: data
+      });
+    } else {
+      dispatch({
+        type: ADD_COLOR_REQUEST_FAIL,
+        payload: error
+      });
     }
-    if (color) {
-      dispatch(getUpdateColorData(color));
-    }
-  } else {
-    dispatch(editColorRequestFail(error));
+  } catch (error) {
+    dispatch({
+      type: ADD_COLOR_REQUEST_FAIL,
+      payload: error
+    });
   }
 };
 
 // GET ALL COLOR
 
-export const getAllColors = () => async dispatch => {
-  dispatch(getColorsRequestSend());
+export const getAllColors = refresh => async (dispatch, getState) => {
+  try {
+    const { colors } = getState().colorReducers;
 
-  const { data: { status, data, error } } = await requestApi().request(
-    GET_ALL_COLOR
-  );
-  // console.log(data);
-  if (status) {
-    dispatch(getColorsRequestSuccess(data));
-  } else {
-    dispatch(getColorsRequestFail(error));
+    if (colors.length <= 0 || refresh) {
+      dispatch({
+        type: GET_COLORS_REQUEST_SEND
+      });
+
+      const { data: { status, data, error } } = await requestApi().request(
+        GET_ALL_COLOR
+      );
+      // console.log(data);
+      if (status) {
+        dispatch({
+          type: GET_COLORS_REQUEST_SUCCESS,
+          payload: data
+        });
+      } else {
+        dispatch({
+          type: GET_COLORS_REQUEST_FAIL,
+          payload: error
+        });
+      }
+    }
+  } catch (error) {
+    dispatch({
+      type: GET_COLORS_REQUEST_FAIL,
+      payload: error
+    });
   }
 };
 
-// ADD COLOR
+// EDIT COLOR BY ID
 
-export const addColor = newColor => async dispatch => {
-  // console.log(newColor);
-  dispatch(addColorRequestSend(newColor));
+export const editColor = updateData => async dispatch => {
+  // console.log("id, updateData", id, updateData);
+  try {
+    dispatch({
+      type: EDIT_COLOR_REQUEST_SEND
+    });
 
-  const {
-    data: { status, message, error, data }
-  } = await requestApi().request(ADD_COLOR, {
-    method: "POST",
-    data: newColor
-  });
-
-  if (status) {
-    dispatch(addColorRequestSuccess(message));
-    dispatch(addColorInColorsList(data));
-  } else {
-    dispatch(addColorRequestFail(error));
+    const {
+      data: { status, message, data: { color } },
+      error
+    } = await requestApi().request(EDIT_COLOR, {
+      method: "POST",
+      data: updateData
+    });
+    // console.log("after data", color);
+    if (status) {
+      if (message) {
+        dispatch({
+          type: EDIT_COLOR_REQUEST_SUCCESS,
+          payload: message
+        });
+      }
+      if (color) {
+        dispatch({
+          type: GET_UPDATE_COLOR_DATA,
+          payload: color
+        });
+      }
+    } else {
+      dispatch({
+        type: EDIT_COLOR_REQUEST_FAIL,
+        payload: error
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: EDIT_COLOR_REQUEST_FAIL,
+      payload: error
+    });
   }
 };

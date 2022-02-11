@@ -87,78 +87,32 @@ const AddCarType = () => {
   };
 
   const addNewCarType = async () => {
-    const { data } = await requestApi().request(ADD_CAR_TYPE, {
-      method: "POST",
-      data: {
-        name: name,
+
+    dispatch(addCarType({
+      name: name,
         minSeat: minSeat,
         maxSeat: maxSeat,
         image: image
-      }
+    }))
 
-    });
-
-    // console.log("new car type", data);
-
-    if (data.status) {
-      route.push("/car-types");
-      return toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-      });
-    } else {
-      return toast.warn(data.error, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-      });
-    }
-
-    // const data = {
-    //   name: name,
-    //   minSeat: minSeat,
-    //   maxSeat: maxSeat,
-    //   image: image
-    // }
-
-    // dispatch(addCarType(data))
   };
 
   const editCarTypeById = () => {
-    const updateData = {
-      name: name,
+    dispatch(editCarType({
+      id: id,
+      data: {
+        name: name,
       minSeat: minSeat,
       maxSeat: maxSeat,
       image: image
-    };
-    dispatch(editCarType(id, updateData));
+      }
+    }));
 
   };
 
   useEffect(() => {
     if (message) {
       route.push("/car-types");
-      return toast.success(message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-      });
     }
     if (error) {
       return toast.warn(error, {

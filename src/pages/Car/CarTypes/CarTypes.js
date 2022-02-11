@@ -18,13 +18,14 @@ import { getCarTypes } from "../../../store/Car/carTypes/carTypesAction";
 import Button from "@mui/material/Button";
 import ConfirmDialog from "../../../components/ConfirmDialog/ConfirmDialog";
 import { useHistory } from "react-router-dom";
-import CarTypesReducer from "./../../../store/Car/carTypes/carTypesReducer";
+
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
+import carTypesReducer from "./../../../store/Car/carTypes/carTypesReducer";
 
 const CarTypes = () => {
   const dispatch = useDispatch();
   const { loading, carTypes, error, message } = useSelector(
-    state => state.CarTypesReducer
+    state => state.carTypesReducer
   );
 
   const history = useHistory();
@@ -32,21 +33,15 @@ const CarTypes = () => {
   // const [open, setOpen] = React.useState(false);
   const [typeId, setTypeId] = useState(null);
 
-  // const closeDialog = () => {
-  //   setOpen(false);
-  // };
-
   useEffect(() => {
     // console.log(carTypes);
-    dispatch(getCarTypes());
+
+    callCarList();
   }, []);
 
-  // CAR TYPE DELETE EVENT
-
-  // const handleDeleteType = id => {
-  //   setOpen(true);
-  //   setTypeId(id);
-  // };
+  const callCarList = (refresh = false) => {
+    dispatch(getCarTypes(refresh));
+  };
 
   // CAR TYPE EDIT EVENT
 
@@ -60,11 +55,13 @@ const CarTypes = () => {
         <div className="page-content">
           <Wrapper>
             <Row className="top__wrapper">
-              <Col lg={6} md={6}>
+              <Col lg={12}>
                 <Breadcrumbs
                   maintitle="Car"
                   breadcrumbItem="Car Types"
                   hideSettingBtn={true}
+                  loading={loading}
+                  callList={callCarList}
                 />
               </Col>
             </Row>
@@ -113,22 +110,6 @@ const CarTypes = () => {
                     )}
                   </tbody>
                 </Table>
-                {loading &&
-                  <div className="loading__wrapper">
-                    <Spinner animation="border" variant="info" />
-                  </div>}
-
-                {/* Confirm Dialog */}
-                {/* <ConfirmDialog
-                  isOpen={open}
-                  title="Delete!"
-                  closeDialog={closeDialog}
-                  typeId={typeId}
-                  dispatchFunc={deleteCarType}
-                  error={error}
-                  message={message}
-                  content="Are You Sure You Want To Delete This Car Type?"
-                /> */}
               </CardBody>
             </Card>
           </Wrapper>

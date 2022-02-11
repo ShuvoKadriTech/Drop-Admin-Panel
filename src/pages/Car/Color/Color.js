@@ -98,8 +98,14 @@ const Color = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllColors());
+    // console.log(carTypes);
+
+    callColorList();
   }, []);
+
+  const callColorList = (refresh = false) => {
+    dispatch(getAllColors(refresh));
+  };
 
   useEffect(
     () => {
@@ -168,6 +174,8 @@ const Color = () => {
               maintitle="Car"
               breadcrumbItem="Color"
               hideSettingBtn={true}
+              loading={loading}
+              callList={callColorList}
             />
             <Row>
               <Col xl={4}>
@@ -297,11 +305,6 @@ const Color = () => {
                             })}
                           </Tbody>
                         </Table>
-
-                        {loading &&
-                          <div className="d-flex justify-content-center">
-                            <Spinner animation="border" variant="info" />
-                          </div>}
                       </CardBody>
                     </Card>
                   </div>

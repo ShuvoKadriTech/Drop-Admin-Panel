@@ -8,14 +8,14 @@ const GlobalWrapper = ({ children }) => {
 
   const { accessToken } = useSelector(state => state.Login);
 
-  useEffect(() => {
+  useEffect(
+    () => {
+      // console.log("accessToken",accessToken);
 
-    console.log("accessToken",accessToken);
-
-    if (!accessToken) {
-      history.replace("/login");
-    }
-  },
+      if (!accessToken) {
+        history.replace("/login");
+      }
+    },
     [accessToken]
   );
 
