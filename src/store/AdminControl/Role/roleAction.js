@@ -1,11 +1,11 @@
 import * as actionType from "../../actionType";
 import requestApi from "./../../../network/httpRequest";
-import { ADD_ADMIN_ROLE, GET_ALL_ADMIN_ROLE } from "./../../../network/Api";
+import { ADD_ADMIN_ROLE, EDIT_ADMIN_ROLE, GET_ALL_ADMIN_ROLE } from "./../../../network/Api";
 
 // ADD ADMIN ROLE
 
 export const addAdmin = roleData => async dispatch => {
-  console.log(roleData);
+  // console.log(roleData);
   try {
     dispatch({
       type: actionType.CREATE_ADMIN_ROLE_REQUEST_SEND
@@ -49,26 +49,31 @@ export const addAdmin = roleData => async dispatch => {
 
 // GET ALL ROLES
 
-export const getAllRoles = () => async dispatch => {
+export const getAllRoles = refresh => async (dispatch, getState) => {
   try {
-    dispatch({
-      type: actionType.GET_ALL_ROLE_REQUEST_SEND
-    });
 
-    const {
-      data: { message, status, error, data: { roles } }
-    } = await requestApi().request(GET_ALL_ADMIN_ROLE);
+    const { roles } = getState().roleReducer;
 
-    if (status) {
+    if (roles.length <= 0 || refresh) {
       dispatch({
-        type: actionType.GET_ALL_ROLE_REQUEST_SUCCESS,
-        payload: roles
+        type: actionType.GET_ALL_ROLE_REQUEST_SEND
       });
-    } else {
-      dispatch({
-        type: actionType.GET_ALL_ROLE_REQUEST_FAIL,
-        payload: error
-      });
+
+      const {
+        data: { message, status, error, data: { roles } }
+      } = await requestApi().request(GET_ALL_ADMIN_ROLE);
+
+      if (status) {
+        dispatch({
+          type: actionType.GET_ALL_ROLE_REQUEST_SUCCESS,
+          payload: roles
+        });
+      } else {
+        dispatch({
+          type: actionType.GET_ALL_ROLE_REQUEST_FAIL,
+          payload: error
+        });
+      }
     }
   } catch (error) {
     dispatch({
@@ -77,3 +82,27 @@ export const getAllRoles = () => async dispatch => {
     });
   }
 };
+
+// EDIT ROLE BY ID
+
+export const editRole = roleData => async dispatch => {
+
+  console.log(roleData)
+  try {
+
+    dispatch({
+      type: actionType.EDIT_ADMIN_ROLE_REQUEST_SEND
+    })
+
+    const { data } = await requestApi().request(EDIT_ADMIN_ROLE, {
+      method: "POST",
+      data: roleData
+    })
+
+    console.log(data);
+
+  } catch (error) {
+
+  }
+
+}

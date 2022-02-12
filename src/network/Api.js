@@ -56,5 +56,6 @@ export const EDIT_YEAR = ADMIN_ENDPOINT + "/year/update";
 
 export const ADD_ADMIN_ROLE = ADMIN_ENDPOINT + "/role/add";
 export const GET_ALL_ADMIN_ROLE = ADMIN_ENDPOINT + "/role";
+export const EDIT_ADMIN_ROLE = ADMIN_ENDPOINT + "/role/edit";
 
 // END ADMIN API

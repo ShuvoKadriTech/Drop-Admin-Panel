@@ -10,8 +10,10 @@ import {
   Row,
   Spinner,
   Label,
-  FormGroup
+  FormGroup,
+  Form
 } from "reactstrap";
+
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -19,19 +21,32 @@ import { toast } from "react-toastify";
 
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import Select from 'react-select';
 import {
+
   addAdmin,
+  editRole,
   getAllRoles
 } from "../../../store/AdminControl/Role/roleAction";
 
 const Role = () => {
+
   const [role, setRole] = useState("");
+  const [roleId, setRoleId] = useState(null);
+  const [activeStatus, setActiveStatus] = useState(0)
 
   const dispatch = useDispatch();
 
   const { loading, roles, message, error } = useSelector(
     state => state.roleReducer
   );
+
+
+  const options = [
+    { label: "Active", value: 1 },
+    { label: "Deactive", value: 2 },
+
+  ]
 
   //   SUBMIT DATA
 
@@ -49,15 +64,45 @@ const Role = () => {
       });
     }
 
-    // console.log("role", role);
-    // ADD ADMIN ROLE
+    if (roleId) {
+      dispatch(editRole({
+        id: roleId,
+        name: role,
+        status: activeStatus
+      }))
+    }
 
-    dispatch(addAdmin({ name: role }));
+    if (!roleId) {
+      dispatch(addAdmin({ name: role }));
+    }
   };
 
   useEffect(() => {
-    dispatch(getAllRoles());
+    // console.log(carTypes);
+
+    callRoleList();
   }, []);
+
+  const callRoleList = (refresh = false) => {
+    dispatch(getAllRoles(refresh));
+  };
+
+
+
+
+
+  // EDIT ROLE 
+
+  const handleEdit = id => {
+    if (id) {
+      setRoleId(id);
+      const { name, status } = roles.find(color => color.id === id);
+      console.log(name, status)
+      setRole(name);
+      setActiveStatus(status)
+      window.scrollTo(0, 0);
+    }
+  }
 
   useEffect(
     () => {
@@ -98,8 +143,8 @@ const Role = () => {
             <Breadcrumbs
               maintitle="Admin Controls"
               breadcrumbItem="Role"
-              //   loading={loading}
-              //   callList={callColorList}
+              loading={loading}
+              callList={callRoleList}
             />
             <Row>
               <Col xl={4}>
@@ -120,11 +165,20 @@ const Role = () => {
                           required
                         />
                       </Col>
+
+                      {roleId && <Col xl={12} sm={12} md={12} className='mt-3'>
+                        <Select
+                          value={activeStatus}
+                          onChange={setActiveStatus()}
+                          options={options}
+                          classNamePrefix="select2-selection"
+                        />
+                      </Col>}
                     </Row>
 
                     <Row>
                       <Button color="primary" onClick={handleSubmit}>
-                        Add
+                        {roleId ? "Edit" : "Add"}
                       </Button>
                     </Row>
                   </CardBody>
@@ -171,10 +225,10 @@ const Role = () => {
                                     {role.name}
                                   </Td>
                                   <Td>
-                                    {role.createdAt}
+                                    {role.createdAt.toLocaleString()}
                                   </Td>
                                   <Td>
-                                    <button className="btn btn-info ">
+                                    <button className="btn btn-info " onClick={() => handleEdit(role.id)}>
                                       <i className="fa fa-edit" />
                                     </button>
                                   </Td>
