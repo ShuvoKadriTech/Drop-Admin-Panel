@@ -11,7 +11,8 @@ import {
   ADD_CAR_TYPE_REQUEST_SEND,
   ADD_CAR_TYPE_REQUEST_SUCCESS,
   ADD_CAR_TYPE_REQUEST_FAIL,
-  CLEAR_SUCCESS_MESSAGE
+  CLEAR_SUCCESS_MESSAGE,
+  GET_UPDATE_CAR_DATA
 } from "../../actionType";
 import requestApi from "../../../network/httpRequest";
 import carTypesReducer from "./carTypesReducer";
@@ -130,91 +131,46 @@ export const getCarTypes = refresh => async (dispatch, getState) => {
 //   };
 // };
 
-export const editCarTypeRequestSuccess = successMessage => {
-  console.logA(successMessage);
-  return {
-    type: EDIT_CAR_TYPE_REQUEST_SUCCESS,
-    payload: successMessage
-  };
-};
-
-export const editCarTypeRequestFail = error => {
-  return {
-    type: EDIT_CAR_TYPE_REQUEST_FAIL,
-    payload: error
-  };
-};
-
 // EDIT CAR TYPE
 
 export const editCarType = carData => async dispatch => {
-  // console.log("edit type", id, updateData);
   try {
     dispatch({
       type: EDIT_CAR_TYPE_REQUEST_SEND
     });
 
-    const {
-      data: { status, data }
-    } = await requestApi().request(EDIT_CAR_TYPE, {
+    const { data } = await requestApi().request(EDIT_CAR_TYPE, {
       method: "POST",
       data: carData
     });
 
     console.log(data);
 
-    // if (status) {
-    //   dispatch(editCarTypeRequestSuccess(message));
-    // } else {
-    //   dispatch(editCarTypeRequestFail(error));
-    // }
+    if (data.status) {
+      if (data.message) {
+        dispatch({
+          type: EDIT_CAR_TYPE_REQUEST_SUCCESS,
+          payload: data.message
+        });
+      }
+      if (data.data.carType) {
+        dispatch({
+          type: GET_UPDATE_CAR_DATA,
+          payload: data.data.carType
+        });
+      }
+    } else {
+      dispatch({
+        type: EDIT_CAR_TYPE_REQUEST_FAIL,
+        payload: data.error
+      });
+    }
   } catch (error) {
-    dispatch(editCarTypeRequestFail(error));
+    dispatch(
+      dispatch({
+        type: EDIT_CAR_TYPE_REQUEST_FAIL,
+        payload: error.message
+      })
+    );
   }
 };
-
-// HTTP REQUEST HANDELING
-
-// ADD CAR TYPE
-
-// export const addCarType = (newCar) => async dispatch => {
-//   dispatch(addCarTypeRequestSend())
-
-//   const { data: { status, data, message, error } } = await requestApi().request(ADD_CAR_TYPE, {
-//     method: "POST",
-//     data: newCar
-//   });
-
-//   if (status) {
-//     dispatch(addCarTypeRequestSuccess(data, message))
-//   }
-//   else {
-//     dispatch(addCarTypeRequestFailure(error))
-//   }
-
-// }
-
-// DELETE CAR TYPE
-
-// export const deleteCarType = id => async dispatch => {
-//   try {
-//     dispatch(deleteCarTypeRequestSend(id));
-//     // id = JSON.stringify(id);
-//     const {
-//       data: { status, message, error }
-//     } = await requestApi().request(DELETE_CAR_TYPE_PERMANENTLY, {
-//       method: "POST",
-//       data: {
-//         id: id
-//       }
-//     });
-
-//     if (status) {
-//       dispatch(deleteCarTypeRequestSuccess(id, message));
-//     } else {
-//       dispatch(deleteCarTypeRequestError(error));
-//     }
-//   } catch (error) {
-//     dispatch(deleteCarTypeRequestError(error));
-//   }
-// };

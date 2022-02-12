@@ -71,6 +71,44 @@ export const roleReducer = (state = initialState, action) => {
         message: null
       };
 
+    // EDIT ADMIN ROLE
+
+    case actionType.EDIT_ADMIN_ROLE_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        message: null
+      };
+
+    case actionType.EDIT_ADMIN_ROLE_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        message: payload
+      };
+
+    case actionType.GET_UPDATE_ADMIN_ROLE:
+      const updateData = state.roles.map(
+        item => (item.id === payload.id ? payload : item)
+      );
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        message: null,
+        roles: updateData
+      };
+
+    case actionType.EDIT_ADMIN_ROLE_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+        message: null
+      };
+
     default:
       return state;
   }

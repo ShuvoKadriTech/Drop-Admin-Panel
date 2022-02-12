@@ -37,7 +37,7 @@ const AddCarType = () => {
   const { id } = useParams();
 
   const { carTypes, message, error } = useSelector(
-    state => state.CarTypesReducer
+    state => state.carTypesReducer
   );
 
   const [modal_fullscreen, setmodal_fullscreen] = useState(false);
@@ -112,6 +112,16 @@ const AddCarType = () => {
 
   useEffect(() => {
     if (message) {
+      toast.warn(message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
       route.push("/car-types");
     }
     if (error) {

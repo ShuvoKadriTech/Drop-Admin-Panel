@@ -12,7 +12,8 @@ import {
   ADD_CAR_TYPE_REQUEST_SUCCESS,
   ADD_CAR_TYPE_REQUEST_FAIL,
   GET_SUCCESS_MESSAGE,
-  CLEAR_SUCCESS_MESSAGE
+  CLEAR_SUCCESS_MESSAGE,
+  GET_UPDATE_CAR_DATA
 } from "../../actionType";
 
 const initialState = {
@@ -49,26 +50,26 @@ const carTypesReducer = (state = initialState, action) => {
       };
 
     // DELETE CAR TYPE BY ID
-    case DELETE_CAR_TYPE_REQUEST_SEND:
-      return {
-        ...state,
-        loading: true
-      };
+    // case DELETE_CAR_TYPE_REQUEST_SEND:
+    //   return {
+    //     ...state,
+    //     loading: true
+    //   };
 
-    case DELETE_CAR_TYPE_REQUEST_SUCCESS:
-      // console.log(payload);
-      const { id, message } = payload;
-      const filtered = state.carTypes.filter(type => type.id !== id);
-      // console.log(filtered);
-      return {
-        ...state,
-        loading: false,
-        carTypes: filtered,
-        message: message
-      };
+    // case DELETE_CAR_TYPE_REQUEST_SUCCESS:
+    //   // console.log(payload);
+    //   const { id, message } = payload;
+    //   const filtered = state.carTypes.filter(type => type.id !== id);
+    //   // console.log(filtered);
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //     carTypes: filtered,
+    //     message: message
+    //   };
 
-    case DELETE_CAR_TYPE_REQUEST_FAIL:
-      return { ...state, loading: false, error: payload };
+    // case DELETE_CAR_TYPE_REQUEST_FAIL:
+    //   return { ...state, loading: false, error: payload };
 
     // EDIT CAR TYPE
 
@@ -86,6 +87,18 @@ const carTypesReducer = (state = initialState, action) => {
         error: null
       };
 
+    case GET_UPDATE_CAR_DATA:
+      const updateData = state.carTypes.map(
+        item => (item.id === payload.id ? payload : item)
+      );
+      return {
+        ...state,
+        loading: false,
+        message: null,
+        error: null,
+        carTypes: updateData
+      };
+
     case EDIT_CAR_TYPE_REQUEST_FAIL:
       return {
         ...state,
@@ -93,6 +106,8 @@ const carTypesReducer = (state = initialState, action) => {
         error: payload,
         message: null
       };
+
+    // ADD CAR TYPE
 
     case ADD_CAR_TYPE_REQUEST_SEND:
       return {

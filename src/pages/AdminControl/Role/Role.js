@@ -21,19 +21,23 @@ import { toast } from "react-toastify";
 
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import Select from 'react-select';
+import Select from "react-select";
 import {
-
   addAdmin,
+  deleteRole,
   editRole,
   getAllRoles
 } from "../../../store/AdminControl/Role/roleAction";
+import SweetAlert from "react-bootstrap-sweetalert";
 
 const Role = () => {
-
   const [role, setRole] = useState("");
   const [roleId, setRoleId] = useState(null);
-  const [activeStatus, setActiveStatus] = useState(0)
+  const [activeStatus, setActiveStatus] = useState(0);
+  const [confirm_alert, setconfirm_alert] = useState(false);
+  const [success_dlg, setsuccess_dlg] = useState(false);
+  const [dynamic_title, setdynamic_title] = useState("");
+  const [dynamic_description, setdynamic_description] = useState("");
 
   const dispatch = useDispatch();
 
@@ -41,12 +45,10 @@ const Role = () => {
     state => state.roleReducer
   );
 
-
   const options = [
     { label: "Active", value: 1 },
-    { label: "Deactive", value: 2 },
-
-  ]
+    { label: "Deactive", value: 2 }
+  ];
 
   //   SUBMIT DATA
 
@@ -65,11 +67,13 @@ const Role = () => {
     }
 
     if (roleId) {
-      dispatch(editRole({
-        id: roleId,
-        name: role,
-        status: activeStatus
-      }))
+      dispatch(
+        editRole({
+          id: roleId,
+          name: role,
+          status: activeStatus
+        })
+      );
     }
 
     if (!roleId) {
@@ -87,27 +91,25 @@ const Role = () => {
     dispatch(getAllRoles(refresh));
   };
 
-
-
-
-
-  // EDIT ROLE 
+  // EDIT ROLE
 
   const handleEdit = id => {
     if (id) {
       setRoleId(id);
-      const { name, status } = roles.find(color => color.id === id);
-      console.log(name, status)
+      const { status, name } = roles.find(role => role.id === id);
       setRole(name);
-      setActiveStatus(status)
+      setActiveStatus(status);
+      console.log(role, activeStatus);
       window.scrollTo(0, 0);
     }
-  }
+  };
 
   useEffect(
     () => {
       if (message) {
         setRole("");
+        setActiveStatus(0);
+        setRoleId(null);
         toast.warn(message, {
           // position: "bottom-right",
           position: toast.POSITION.TOP_RIGHT,
@@ -135,11 +137,28 @@ const Role = () => {
     [message, error]
   );
 
+  const handleDelete = () => {
+    // console.log(roleId);
+    dispatch(deleteRole(roleId));
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid>
+            {success_dlg
+              ? <SweetAlert
+                  success
+                  title={dynamic_title}
+                  onConfirm={() => {
+                    setsuccess_dlg(false);
+                  }}
+                >
+                  {dynamic_description}
+                </SweetAlert>
+              : null}
+
             <Breadcrumbs
               maintitle="Admin Controls"
               breadcrumbItem="Role"
@@ -166,14 +185,26 @@ const Role = () => {
                         />
                       </Col>
 
-                      {roleId && <Col xl={12} sm={12} md={12} className='mt-3'>
-                        <Select
-                          value={activeStatus}
-                          onChange={setActiveStatus()}
-                          options={options}
-                          classNamePrefix="select2-selection"
-                        />
-                      </Col>}
+                      {roleId &&
+                        <Col xl={12} sm={12} md={12} className="mt-3">
+                          <select
+                            style={{
+                              width: "100%",
+                              border: "1px solid lightgray",
+                              padding: "8px 0px",
+                              borderRadius: "6px"
+                            }}
+                            value={activeStatus}
+                            onChange={event =>
+                              setActiveStatus(event.target.value)}
+                          >
+                            {options.map((option, index) =>
+                              <option value={option.value} key={index}>
+                                {option.label}
+                              </option>
+                            )}
+                          </select>
+                        </Col>}
                     </Row>
 
                     <Row>
@@ -228,9 +259,45 @@ const Role = () => {
                                     {role.createdAt.toLocaleString()}
                                   </Td>
                                   <Td>
-                                    <button className="btn btn-info " onClick={() => handleEdit(role.id)}>
+                                    <button
+                                      className="btn btn-info "
+                                      onClick={() => handleEdit(role.id)}
+                                    >
                                       <i className="fa fa-edit" />
                                     </button>
+                                    <button
+                                      className="btn btn-danger "
+                                      // onClick={() => handleDelete(item.id)}
+                                      onClick={() => {
+                                        setconfirm_alert(true);
+                                        setRoleId(role.id);
+                                      }}
+                                    >
+                                      <i className="fa fa-trash" />
+                                    </button>
+                                    {confirm_alert
+                                      ? <SweetAlert
+                                          title="Are you sure?"
+                                          warning
+                                          showCancel
+                                          confirmButtonText="Yes, delete it!"
+                                          confirmBtnBsStyle="success"
+                                          cancelBtnBsStyle="danger"
+                                          onConfirm={() => {
+                                            handleDelete();
+                                            setconfirm_alert(false);
+                                            setsuccess_dlg(true);
+                                            setdynamic_title("Deleted");
+                                            setdynamic_description(
+                                              "Your file has been deleted."
+                                            );
+                                          }}
+                                          onCancel={() =>
+                                            setconfirm_alert(false)}
+                                        >
+                                          You won't be able to revert this!
+                                        </SweetAlert>
+                                      : null}
                                   </Td>
                                 </Tr>
                               );
