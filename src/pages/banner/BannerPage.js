@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteBanner, getBannerListAction , filterSelect } from "../../store/banner/bannerAction";
+import {
+  deleteBanner,
+  getBannerListAction,
+  filterSelect
+} from "../../store/banner/bannerAction";
 import {
   Button,
   Input,
@@ -22,6 +26,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { useHistory } from "react-router-dom";
 import SweetAlert from "react-bootstrap-sweetalert";
+import styled from "styled-components";
 
 const BannerPage = () => {
   const dispatch = useDispatch();
@@ -29,7 +34,6 @@ const BannerPage = () => {
   // const [type, setType] = useState(1);
   // const [status, setStatus] = useState(1);
   // const [sortBy, setSortBy] = useState("DESC");
-
 
   const [confirm_alert, setconfirm_alert] = useState(false);
   const [success_dlg, setsuccess_dlg] = useState(false);
@@ -47,43 +51,48 @@ const BannerPage = () => {
 
   // useEffect(() => { }, []);
 
-  const { loading, message, list, error,type,activeStatus:status,sortBy } = useSelector(state => state.bannerReducer)
-
-
-
-
+  const {
+    loading,
+    message,
+    list,
+    error,
+    type,
+    activeStatus: status,
+    sortBy
+  } = useSelector(state => state.bannerReducer);
 
   useEffect(() => {
-    callBanner()
+    callBanner();
   }, []);
 
-
   function callBanner(refresh = false) {
-    dispatch(
-      getBannerListAction({refresh })
-    );
+    dispatch(getBannerListAction({ refresh }));
   }
-
 
   const filter = (option, value) => {
     if (option === "type") {
-        dispatch(filterSelect({
-          type:value
-        }))
+      dispatch(
+        filterSelect({
+          type: value
+        })
+      );
     } else if (option === "status") {
-      dispatch(filterSelect({
-          activeStatus:value
-        }))
+      dispatch(
+        filterSelect({
+          activeStatus: value
+        })
+      );
     } else if (option === "sortBy") {
-      dispatch(filterSelect({
-          sortBy:value
-        }))
+      dispatch(
+        filterSelect({
+          sortBy: value
+        })
+      );
     }
-  }
-
-
+  };
 
   const handleEdit = id => {
+    // console.log(id)
     route.push(`/banner-edit/${id}`);
   };
 
@@ -91,10 +100,8 @@ const BannerPage = () => {
 
   const handleDelete = id => {
     // console.log(bannerId)
-    dispatch(deleteBanner(bannerId))
-
+    dispatch(deleteBanner(bannerId));
   };
-
 
   const listViewBanner = () => {
     return (
@@ -150,31 +157,32 @@ const BannerPage = () => {
                               // onClick={() => handleDelete(item.id)}
                               onClick={() => {
                                 setconfirm_alert(true);
-                                setBannerId(item.id)
+                                setBannerId(item.id);
                               }}
                             >
                               <i className="fa fa-trash" />
                             </button>
                             {confirm_alert
                               ? <SweetAlert
-                                title="Are you sure?"
-                                warning
-                                showCancel
-                                confirmButtonText="Yes, delete it!"
-                                confirmBtnBsStyle="success"
-                                cancelBtnBsStyle="danger"
-                                onConfirm={() => {
-                                  handleDelete();
-                                  setconfirm_alert(false);
-                                  setsuccess_dlg(true);
-                                  setdynamic_title("Deleted");
-                                  setdynamic_description("Your file has been deleted.");
-
-                                }}
-                                onCancel={() => setconfirm_alert(false)}
-                              >
-                                You won't be able to revert this!
-                              </SweetAlert>
+                                  title="Are you sure?"
+                                  warning
+                                  showCancel
+                                  confirmButtonText="Yes, delete it!"
+                                  confirmBtnBsStyle="success"
+                                  cancelBtnBsStyle="danger"
+                                  onConfirm={() => {
+                                    handleDelete();
+                                    setconfirm_alert(false);
+                                    setsuccess_dlg(true);
+                                    setdynamic_title("Deleted");
+                                    setdynamic_description(
+                                      "Your file has been deleted."
+                                    );
+                                  }}
+                                  onCancel={() => setconfirm_alert(false)}
+                                >
+                                  You won't be able to revert this!
+                                </SweetAlert>
                               : null}
                           </Td>
                         </Tr>
@@ -211,12 +219,55 @@ const BannerPage = () => {
                   {list.map((item, index) => {
                     return (
                       <Col key={index} xl={4} md={6} sm={12} key={index}>
-                        <Card>
-                          <img
-                            src={item.image}
-                            className="img-thumbnail"
-                            style={{ width: "100%" }}
-                          />
+                        <Card className="align-items-center">
+                          <ImageView>
+                            <>
+                            <img
+                              src={item.image}
+                              className="img-thumbnail img__view"
+                              style={{ width: "100%", height: "100%" }}
+                            />
+                            <div className="button__wrapper">
+                            <button
+                              className="btn btn-info me-2"
+                              onClick={() => handleEdit(item.id)}
+                            >
+                              <i className="fa fa-edit" />
+                            </button>
+                            <button
+                              className="btn btn-danger "
+                              // onClick={() => handleDelete(item.id)}
+                              onClick={() => {
+                                setconfirm_alert(true);
+                                setBannerId(item.id);
+                              }}
+                            ><i className="fa fa-trash" /></button>
+                            
+                            </div>
+                            {confirm_alert
+                              ? <SweetAlert
+                                  title="Are you sure?"
+                                  warning
+                                  showCancel
+                                  confirmButtonText="Yes, delete it!"
+                                  confirmBtnBsStyle="success"
+                                  cancelBtnBsStyle="danger"
+                                  onConfirm={() => {
+                                    handleDelete();
+                                    setconfirm_alert(false);
+                                    setsuccess_dlg(true);
+                                    setdynamic_title("Deleted");
+                                    setdynamic_description(
+                                      "Your file has been deleted."
+                                    );
+                                  }}
+                                  onCancel={() => setconfirm_alert(false)}
+                                >
+                                  You won't be able to revert this!
+                                </SweetAlert>
+                              : null}
+                            </>
+                          </ImageView>
                           <h4>
                             {item.title}
                           </h4>
@@ -244,14 +295,14 @@ const BannerPage = () => {
         <Container fluid>
           {success_dlg
             ? <SweetAlert
-              success
-              title={dynamic_title}
-              onConfirm={() => {
-                setsuccess_dlg(false);
-              }}
-            >
-              {dynamic_description}
-            </SweetAlert>
+                success
+                title={dynamic_title}
+                onConfirm={() => {
+                  setsuccess_dlg(false);
+                }}
+              >
+                {dynamic_description}
+              </SweetAlert>
             : null}
           <Row>
             <BreadcrumbsBanner
@@ -286,7 +337,7 @@ const BannerPage = () => {
                   value={status}
                   label="Type"
                   onChange={e => {
-                    filter("status", e.target.value)
+                    filter("status", e.target.value);
                   }}
                   style={{ width: "100%" }}
                 >
@@ -303,7 +354,7 @@ const BannerPage = () => {
                   value={sortBy}
                   label="Type"
                   onChange={e => {
-                    filter("sortBy", e.target.value)
+                    filter("sortBy", e.target.value);
                   }}
                   style={{ width: "100%" }}
                 >
@@ -320,5 +371,44 @@ const BannerPage = () => {
     </React.Fragment>
   );
 };
+
+const ImageView = styled.div`
+  width: 300px;
+  height: 150px;
+  position: relative;
+
+  .img__view {
+    
+    opacity: 1;
+    transition: .5s ease;
+    backface-visibility: hidden;
+  }
+
+  .button__wrapper {
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+
+    .remove__btn {
+      /* background-color: yellow; */
+      font-size: 18px;
+      color: red;
+    }
+  }
+
+  &:hover {
+    .img_view {
+      opacity: 0.3;
+    }
+    .button__wrapper {
+      opacity: 1;
+    }
+  }
+`;
 
 export default BannerPage;

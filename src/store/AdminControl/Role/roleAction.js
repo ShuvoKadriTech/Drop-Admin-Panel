@@ -1,10 +1,12 @@
 import * as actionType from "../../actionType";
 import requestApi from "./../../../network/httpRequest";
+import { toast } from "react-toastify";
 import {
   ADD_ADMIN_ROLE,
   DELETE_ADMIN_ROLE,
   EDIT_ADMIN_ROLE,
-  GET_ALL_ADMIN_ROLE
+  GET_ALL_ADMIN_ROLE,
+  RESTORE_ADMIN_ROLE
 } from "./../../../network/Api";
 
 // ADD ADMIN ROLE
@@ -18,7 +20,7 @@ export const addAdmin = roleData => async dispatch => {
       method: "POST",
       data: roleData
     });
-    // console.log(data);
+
     if (data.status) {
       dispatch({
         type: actionType.CREATE_ADMIN_ROLE_REQUEST_SUCCESS,
@@ -118,7 +120,7 @@ export const editRole = roleData => async dispatch => {
   }
 };
 
-// DELETE ROLE BY ID
+// DELETE ROLE
 
 export const deleteRole = id => async dispatch => {
   try {
@@ -131,6 +133,71 @@ export const deleteRole = id => async dispatch => {
         id: id
       }
     });
-    console.log(data);
-  } catch (error) {}
+    // console.log(data.data.role);
+    if (data.status) {
+      toast.warn(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+      dispatch({
+        type: actionType.DELETE_ROLE_REQUEST_SUCCESS,
+        payload: {
+          role: data.data.role,
+          message: data.message
+        }
+      });
+    } else {
+      dispatch({
+        type: actionType.DELETE_ROLE_REQUEST_FAIL,
+        payload: data.error
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.DELETE_ROLE_REQUEST_FAIL,
+      payload: error.message
+    });
+  }
+};
+
+// RESTORE ROLE
+
+export const restoreRole = id => async dispatch => {
+  try {
+    dispatch({
+      type: actionType.RESTORE_ROLE_REQUEST_SEND
+    });
+    const { data } = await requestApi().request(RESTORE_ADMIN_ROLE, {
+      method: "POST",
+      data: {
+        id: id
+      }
+    });
+    // console.log(data);
+    if (data.status) {
+      dispatch({
+        type: actionType.RESTORE_ROLE_REQUEST_SUCCESS,
+        payload: {
+          role: data.data.role,
+          message: data.message
+        }
+      });
+    } else {
+      dispatch({
+        type: actionType.RESTORE_ROLE_REQUEST_FAIL,
+        payload: data.error
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.RESTORE_ROLE_REQUEST_FAIL,
+      payload: error.message
+    });
+  }
 };

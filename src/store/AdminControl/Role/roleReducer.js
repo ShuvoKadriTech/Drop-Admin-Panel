@@ -109,6 +109,60 @@ export const roleReducer = (state = initialState, action) => {
         message: null
       };
 
+    //  DELETE ROLE
+
+    case actionType.DELETE_ROLE_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true
+      };
+
+    case actionType.DELETE_ROLE_REQUEST_SUCCESS:
+      const data = state.roles.map(
+        item => (item.id === payload.role.id ? payload.role : item)
+      );
+      return {
+        ...state,
+        loading: false,
+        roles: data,
+        message: payload.message,
+        error: null
+      };
+    case actionType.DELETE_ROLE_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        message: null,
+        error: payload
+      };
+
+    // RESTORE ROLE
+
+    case actionType.RESTORE_ROLE_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true
+      };
+
+    case actionType.RESTORE_ROLE_REQUEST_SUCCESS:
+      const newData = state.roles.map(
+        item => (item.id === payload.id ? payload.role : item)
+      );
+      return {
+        ...state,
+        loading: false,
+        roles: newData,
+        message: payload.message,
+        error: null
+      };
+    case actionType.RESTORE_ROLE_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        message: null,
+        error: payload
+      };
+
     default:
       return state;
   }

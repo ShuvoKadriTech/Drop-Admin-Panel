@@ -21,23 +21,18 @@ import { toast } from "react-toastify";
 
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-
+import { restoreRole } from "./../../../store/AdminControl/Role/roleAction";
 import {
   addAdmin,
   deleteRole,
   editRole,
   getAllRoles
 } from "../../../store/AdminControl/Role/roleAction";
-import SweetAlert from "react-bootstrap-sweetalert";
 
 const Role = () => {
   const [role, setRole] = useState("");
   const [roleId, setRoleId] = useState(null);
   const [activeStatus, setActiveStatus] = useState(0);
-  const [confirm_alert, setconfirm_alert] = useState(false);
-  const [success_dlg, setsuccess_dlg] = useState(false);
-  const [dynamic_title, setdynamic_title] = useState("");
-  const [dynamic_description, setdynamic_description] = useState("");
   const [isEdit, setIsEdit] = useState(false);
 
   const dispatch = useDispatch();
@@ -101,7 +96,7 @@ const Role = () => {
       setRole(name);
       setActiveStatus(status);
       // console.log(role, activeStatus);
-      setIsEdit(true)
+      setIsEdit(true);
       window.scrollTo(0, 0);
     }
   };
@@ -139,10 +134,16 @@ const Role = () => {
     [message, error]
   );
 
-  const handleDelete = () => {
-    // console.log(roleId);
+  // ROLE DELETE
 
-    dispatch(deleteRole(roleId));
+  const handleDelete = id => {
+    dispatch(deleteRole(id));
+  };
+
+  // RESTORE ROLE
+
+  const handleRestore = id => {
+    dispatch(restoreRole(id));
   };
 
   return (
@@ -150,18 +151,6 @@ const Role = () => {
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid>
-            {success_dlg
-              ? <SweetAlert
-                success
-                title={dynamic_title}
-                onConfirm={() => {
-                  setsuccess_dlg(false);
-                }}
-              >
-                {dynamic_description}
-              </SweetAlert>
-              : null}
-
             <Breadcrumbs
               maintitle="Admin Controls"
               breadcrumbItem="Role"
@@ -188,7 +177,8 @@ const Role = () => {
                         />
                       </Col>
 
-                      {roleId && isEdit &&
+                      {roleId &&
+                        isEdit &&
                         <Col xl={12} sm={12} md={12} className="mt-3">
                           <select
                             style={{
@@ -231,7 +221,7 @@ const Role = () => {
 
                         <Table
                           id="tech-companies-1"
-                          className="table table-striped table-bordered table-hover text-center"
+                          className="table  table-bordered table-hover text-center"
                         >
                           <Thead>
                             <Tr>
@@ -249,7 +239,8 @@ const Role = () => {
                                   className="align-middle"
                                   style={{
                                     fontSize: "15px",
-                                    fontWeight: "500"
+                                    fontWeight: "500",
+                                    disabled: true
                                   }}
                                 >
                                   <Th>
@@ -265,44 +256,28 @@ const Role = () => {
                                     <button
                                       className="btn btn-info "
                                       onClick={() => handleEdit(role.id)}
+                                      disabled={role.deletedAt !== null}
                                     >
                                       <i className="fa fa-edit" />
                                     </button>
                                     <button
+                                      disabled={role.deletedAt !== null}
                                       className="btn btn-danger "
                                       // onClick={() => handleDelete(item.id)}
                                       onClick={() => {
-                                        setconfirm_alert(true);
-                                        setRoleId(role.id);
                                         setIsEdit(false);
-
+                                        handleDelete(role.id);
                                       }}
                                     >
                                       <i className="fa fa-trash" />
                                     </button>
-                                    {confirm_alert
-                                      ? <SweetAlert
-                                        title="Are you sure?"
-                                        warning
-                                        showCancel
-                                        confirmButtonText="Yes, delete it!"
-                                        confirmBtnBsStyle="success"
-                                        cancelBtnBsStyle="danger"
-                                        onConfirm={() => {
-                                          handleDelete();
-                                          setconfirm_alert(false);
-                                          setsuccess_dlg(true);
-                                          setdynamic_title("Deleted");
-                                          setdynamic_description(
-                                            "Your file has been deleted."
-                                          );
-                                        }}
-                                        onCancel={() =>
-                                          setconfirm_alert(false)}
-                                      >
-                                        You won't be able to revert this!
-                                      </SweetAlert>
-                                      : null}
+                                    <button
+                                      disabled={role.deletedAt == null}
+                                      className="btn btn-primary "
+                                      onClick={() => handleRestore(role.id)}
+                                    >
+                                      <i className="fa fa-trash-restore" />
+                                    </button>
                                   </Td>
                                 </Tr>
                               );
