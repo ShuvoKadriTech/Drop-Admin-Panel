@@ -21,7 +21,7 @@ import { toast } from "react-toastify";
 
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import Select from "react-select";
+
 import {
   addAdmin,
   deleteRole,
@@ -38,6 +38,7 @@ const Role = () => {
   const [success_dlg, setsuccess_dlg] = useState(false);
   const [dynamic_title, setdynamic_title] = useState("");
   const [dynamic_description, setdynamic_description] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -99,7 +100,8 @@ const Role = () => {
       const { status, name } = roles.find(role => role.id === id);
       setRole(name);
       setActiveStatus(status);
-      console.log(role, activeStatus);
+      // console.log(role, activeStatus);
+      setIsEdit(true)
       window.scrollTo(0, 0);
     }
   };
@@ -139,6 +141,7 @@ const Role = () => {
 
   const handleDelete = () => {
     // console.log(roleId);
+
     dispatch(deleteRole(roleId));
   };
 
@@ -149,14 +152,14 @@ const Role = () => {
           <Container fluid>
             {success_dlg
               ? <SweetAlert
-                  success
-                  title={dynamic_title}
-                  onConfirm={() => {
-                    setsuccess_dlg(false);
-                  }}
-                >
-                  {dynamic_description}
-                </SweetAlert>
+                success
+                title={dynamic_title}
+                onConfirm={() => {
+                  setsuccess_dlg(false);
+                }}
+              >
+                {dynamic_description}
+              </SweetAlert>
               : null}
 
             <Breadcrumbs
@@ -185,7 +188,7 @@ const Role = () => {
                         />
                       </Col>
 
-                      {roleId &&
+                      {roleId && isEdit &&
                         <Col xl={12} sm={12} md={12} className="mt-3">
                           <select
                             style={{
@@ -271,32 +274,34 @@ const Role = () => {
                                       onClick={() => {
                                         setconfirm_alert(true);
                                         setRoleId(role.id);
+                                        setIsEdit(false);
+
                                       }}
                                     >
                                       <i className="fa fa-trash" />
                                     </button>
                                     {confirm_alert
                                       ? <SweetAlert
-                                          title="Are you sure?"
-                                          warning
-                                          showCancel
-                                          confirmButtonText="Yes, delete it!"
-                                          confirmBtnBsStyle="success"
-                                          cancelBtnBsStyle="danger"
-                                          onConfirm={() => {
-                                            handleDelete();
-                                            setconfirm_alert(false);
-                                            setsuccess_dlg(true);
-                                            setdynamic_title("Deleted");
-                                            setdynamic_description(
-                                              "Your file has been deleted."
-                                            );
-                                          }}
-                                          onCancel={() =>
-                                            setconfirm_alert(false)}
-                                        >
-                                          You won't be able to revert this!
-                                        </SweetAlert>
+                                        title="Are you sure?"
+                                        warning
+                                        showCancel
+                                        confirmButtonText="Yes, delete it!"
+                                        confirmBtnBsStyle="success"
+                                        cancelBtnBsStyle="danger"
+                                        onConfirm={() => {
+                                          handleDelete();
+                                          setconfirm_alert(false);
+                                          setsuccess_dlg(true);
+                                          setdynamic_title("Deleted");
+                                          setdynamic_description(
+                                            "Your file has been deleted."
+                                          );
+                                        }}
+                                        onCancel={() =>
+                                          setconfirm_alert(false)}
+                                      >
+                                        You won't be able to revert this!
+                                      </SweetAlert>
                                       : null}
                                   </Td>
                                 </Tr>
