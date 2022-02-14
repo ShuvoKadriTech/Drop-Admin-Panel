@@ -5,7 +5,7 @@ import { Row, Col, BreadcrumbItem, Dropdown, DropdownToggle, DropdownItem, Dropd
 import { Spinner, Button,Tooltip  } from "reactstrap";
 
 
-const Breadcrumb = ({breadcrumbItem, maintitle,title,hideSettingBtn, loading,callList}) => {
+const Breadcrumb = ({breadcrumbItem, maintitle,title,hideSettingBtn, loading,callList,titleRoute}) => {
   const [setting_Menu, setsetting_Menu] = useState(false)
 
 
@@ -37,7 +37,7 @@ toggle={function noRefCheck(){}}
 
             {
               title && <BreadcrumbItem>
-                <Link to="/#">{title}</Link>
+                <Link to={`/${titleRoute}`}>{title}</Link>
               </BreadcrumbItem>
             }
 

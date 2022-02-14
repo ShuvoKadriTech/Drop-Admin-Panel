@@ -131,6 +131,7 @@ import Year from "../pages/Car/Year/Year";
 import AdminList from "../pages/AdminControl/Admins/AdminList.js/AdminList";
 import CreateAdmin from "../pages/AdminControl/Admins/CreateAdmin/CreateAdmin";
 import Role from "../pages/AdminControl/Role/Role";
+import CarTypeDetails from "../pages/Car/CarTypeDetails/CarTypeDetails";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -159,6 +160,7 @@ const userRoutes = [
   { path: "/car-types", component: CarTypes },
   { path: "/add-car-type", component: AddCarType },
   { path: "/edit-car-type/:id", component: AddCarType },
+  { path: "/car-type/:id", component: CarTypeDetails },
 
   // COLOR
 

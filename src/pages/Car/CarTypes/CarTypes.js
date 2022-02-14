@@ -49,6 +49,12 @@ const CarTypes = () => {
     history.push(`/edit-car-type/${id}`);
   };
 
+  // CAR TYPE DETAILS EVENT HANDLE
+
+  const carTypeDetails = id => {
+    history.push(`car-type/${id}`);
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -81,7 +87,11 @@ const CarTypes = () => {
                   </thead>
                   <tbody className="table__data">
                     {carTypes.map((type, index) =>
-                      <tr className="data" key={index}>
+                      <tr
+                        className="data"
+                        key={index}
+                        onClick={() => carTypeDetails(type.id)}
+                      >
                         <td>
                           <img
                             src={type.image}

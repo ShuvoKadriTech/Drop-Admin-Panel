@@ -1,7 +1,7 @@
 import {
-  GET_CAR_TYPE_REQUEST_SEND,
-  GET_CAR_TYPE_REQUEST_SUCCESS,
-  GET_CAR_TYPE_REQUEST_FAIL,
+  GET_CAR_TYPES_REQUEST_SEND,
+  GET_CAR_TYPES_REQUEST_SUCCESS,
+  GET_CAR_TYPES_REQUEST_FAIL,
   DELETE_CAR_TYPE_REQUEST_SEND,
   DELETE_CAR_TYPE_REQUEST_SUCCESS,
   DELETE_CAR_TYPE_REQUEST_FAIL,
@@ -12,7 +12,10 @@ import {
   ADD_CAR_TYPE_REQUEST_SUCCESS,
   ADD_CAR_TYPE_REQUEST_FAIL,
   CLEAR_SUCCESS_MESSAGE,
-  GET_UPDATE_CAR_DATA
+  GET_UPDATE_CAR_DATA,
+  GET_CAR_TYPE_REQUEST_SEND,
+  GET_CAR_TYPE_REQUEST_SUCCESS,
+  GET_CAR_TYPE_REQUEST_FAIL
 } from "../../actionType";
 import requestApi from "../../../network/httpRequest";
 import carTypesReducer from "./carTypesReducer";
@@ -20,7 +23,9 @@ import carTypesReducer from "./carTypesReducer";
 import {
   EDIT_CAR_TYPE,
   GET_CAR_TYPES,
-  ADD_CAR_TYPE
+  ADD_CAR_TYPE,
+  GET_CAR_TYPE,
+  GET_SINGLE_CAR_TYPE
 } from "../../../network/Api";
 import { toast } from "react-toastify";
 
@@ -75,13 +80,13 @@ export const addCarType = carData => async (dispatch, getState) => {
 
 // GET CAR TYPES
 
-export const getCarTypes = refresh => async (dispatch, getState) => {
+export const getCarTypes = (refresh = false) => async (dispatch, getState) => {
   try {
     const { carTypes } = getState().carTypesReducer;
 
     if (carTypes.length <= 0 || refresh) {
       dispatch({
-        type: GET_CAR_TYPE_REQUEST_SEND
+        type: GET_CAR_TYPES_REQUEST_SEND
       });
 
       const { data: { data, status, error } } = await requestApi().request(
@@ -90,19 +95,19 @@ export const getCarTypes = refresh => async (dispatch, getState) => {
 
       if (status) {
         dispatch({
-          type: GET_CAR_TYPE_REQUEST_SUCCESS,
+          type: GET_CAR_TYPES_REQUEST_SUCCESS,
           payload: data
         });
       } else {
         dispatch({
-          type: GET_CAR_TYPE_REQUEST_FAIL,
-          payload: error.message
+          type: GET_CAR_TYPES_REQUEST_FAIL,
+          payload: error
         });
       }
     }
   } catch (error) {
     dispatch({
-      type: GET_CAR_TYPE_REQUEST_FAIL,
+      type: GET_CAR_TYPES_REQUEST_FAIL,
       payload: error.message
     });
   }
@@ -174,3 +179,40 @@ export const editCarType = carData => async dispatch => {
     );
   }
 };
+
+// // GET SINGLE CAR TYPE
+
+// export const getCarType = typeId => async (dispatch, getState) => {
+//   try {
+//     const { carType } = getState().carTypesReducer;
+
+//     if (carType == null || carType == {}) {
+//       dispatch({
+//         type: GET_CAR_TYPE_REQUEST_SEND
+//       });
+
+//       const { data } = await requestApi().request(GET_SINGLE_CAR_TYPE, {
+//         params: typeId
+//       });
+
+//       console.log(data);
+
+//       if (data.status) {
+//         dispatch({
+//           type: GET_CAR_TYPE_REQUEST_SUCCESS,
+//           payload: data.data.carType
+//         });
+//       } else {
+//         dispatch({
+//           type: GET_CAR_TYPE_REQUEST_FAIL,
+//           payload: data.error
+//         });
+//       }
+//     }
+//   } catch (error) {
+//     dispatch({
+//       type: GET_CAR_TYPE_REQUEST_FAIL,
+//       payload: error.message
+//     });
+//   }
+// };

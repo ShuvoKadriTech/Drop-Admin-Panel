@@ -1,7 +1,7 @@
 import {
-  GET_CAR_TYPE_REQUEST_SEND,
-  GET_CAR_TYPE_REQUEST_SUCCESS,
-  GET_CAR_TYPE_REQUEST_FAIL,
+  GET_CAR_TYPES_REQUEST_SEND,
+  GET_CAR_TYPES_REQUEST_SUCCESS,
+  GET_CAR_TYPES_REQUEST_FAIL,
   DELETE_CAR_TYPE_REQUEST_SEND,
   DELETE_CAR_TYPE_REQUEST_SUCCESS,
   DELETE_CAR_TYPE_REQUEST_FAIL,
@@ -13,27 +13,31 @@ import {
   ADD_CAR_TYPE_REQUEST_FAIL,
   GET_SUCCESS_MESSAGE,
   CLEAR_SUCCESS_MESSAGE,
-  GET_UPDATE_CAR_DATA
+  GET_UPDATE_CAR_DATA,
+  GET_CAR_TYPE_REQUEST_SEND,
+  GET_CAR_TYPE_REQUEST_SUCCESS,
+  GET_CAR_TYPE_REQUEST_FAIL
 } from "../../actionType";
 
 const initialState = {
   loading: false,
   carTypes: [],
   error: null,
-  message: null
+  message: null,
+  carType: null
 };
 
 const carTypesReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
   switch (type) {
-    case GET_CAR_TYPE_REQUEST_SEND:
+    case GET_CAR_TYPES_REQUEST_SEND:
       return {
         ...state,
         loading: true
       };
 
-    case GET_CAR_TYPE_REQUEST_SUCCESS:
+    case GET_CAR_TYPES_REQUEST_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -42,7 +46,7 @@ const carTypesReducer = (state = initialState, action) => {
         message: null
       };
 
-    case GET_CAR_TYPE_REQUEST_FAIL:
+    case GET_CAR_TYPES_REQUEST_FAIL:
       return {
         ...state,
         error: payload,
@@ -139,6 +143,31 @@ const carTypesReducer = (state = initialState, action) => {
         error: payload,
         message: null
       };
+
+    // GET CAR TYPE
+
+    // case GET_CAR_TYPE_REQUEST_SEND:
+    //   return {
+    //     ...state,
+    //     loading: true
+    //   };
+
+    // case GET_CAR_TYPE_REQUEST_SUCCESS:
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //     carType: payload,
+    //     error: null,
+    //     message: null
+    //   };
+
+    // case GET_CAR_TYPE_REQUEST_FAIL:
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //     error: payload,
+    //     message: null
+    //   };
 
     default:
       return state;
