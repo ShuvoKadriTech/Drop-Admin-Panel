@@ -112,7 +112,7 @@ const AddCarType = () => {
 
   useEffect(() => {
     if (message) {
-      toast.warn(message, {
+      toast.success(message, {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,

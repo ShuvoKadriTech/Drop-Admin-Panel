@@ -107,31 +107,31 @@ const Role = () => {
         setRole("");
         setActiveStatus(0);
         setRoleId(null);
-        toast.warn(message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        });
+        // toast.warn(message, {
+        //   // position: "bottom-right",
+        //   position: toast.POSITION.TOP_RIGHT,
+        //   autoClose: 3000,
+        //   hideProgressBar: true,
+        //   closeOnClick: true,
+        //   pauseOnHover: true,
+        //   draggable: true,
+        //   progress: undefined
+        // });
       }
-      if (error) {
-        toast.warn(error, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        });
-      }
+      // if (error) {
+      //   toast.warn(error, {
+      //     // position: "bottom-right",
+      //     position: toast.POSITION.TOP_RIGHT,
+      //     autoClose: 3000,
+      //     hideProgressBar: true,
+      //     closeOnClick: true,
+      //     pauseOnHover: true,
+      //     draggable: true,
+      //     progress: undefined
+      //   });
+      // }
     },
-    [message, error]
+    [message]
   );
 
   // ROLE DELETE
@@ -221,7 +221,7 @@ const Role = () => {
 
                         <Table
                           id="tech-companies-1"
-                          className="table  table-bordered table-hover text-center"
+                          className="table  table-bordered  text-center"
                         >
                           <Thead>
                             <Tr>
@@ -240,7 +240,8 @@ const Role = () => {
                                   style={{
                                     fontSize: "15px",
                                     fontWeight: "500",
-                                    disabled: true
+                                    backgroundColor: role.deletedAt !== null && role.deletedAt ? 'lightgray' : '',
+                                    cursor: "pointer"
                                   }}
                                 >
                                   <Th>
@@ -254,27 +255,36 @@ const Role = () => {
                                   </Td>
                                   <Td>
                                     <button
-                                      className="btn btn-info "
+                                      className={role.deletedAt !== null && role.deletedAt ? "btn btn-secondary" : "btn btn-info"}
                                       onClick={() => handleEdit(role.id)}
-                                      disabled={role.deletedAt !== null}
+                                      disabled={role.deletedAt !== null && role.deletedAt}
+                                      data-toggle="tooltip" 
+                                      data-placement="top" 
+                                      title="Edit"
                                     >
                                       <i className="fa fa-edit" />
                                     </button>
                                     <button
-                                      disabled={role.deletedAt !== null}
-                                      className="btn btn-danger "
+                                      disabled={role.deletedAt !== null && role.deletedAt}
+                                      className={role.deletedAt !== null && role.deletedAt ? "btn btn-secondary" : "btn btn-danger"}
                                       // onClick={() => handleDelete(item.id)}
                                       onClick={() => {
                                         setIsEdit(false);
                                         handleDelete(role.id);
                                       }}
+                                      data-toggle="tooltip" 
+                                      data-placement="top" 
+                                      title="Delete"
                                     >
                                       <i className="fa fa-trash" />
                                     </button>
                                     <button
-                                      disabled={role.deletedAt == null}
-                                      className="btn btn-primary "
+                                      disabled={role.deletedAt == null && !role.deletedAt}
+                                      className={role.deletedAt == null && !role.deletedAt ? "btn btn-secondary" : "btn btn-success"}
                                       onClick={() => handleRestore(role.id)}
+                                      data-toggle="tooltip" 
+                                      data-placement="top" 
+                                      title="Restore"
                                     >
                                       <i className="fa fa-trash-restore" />
                                     </button>

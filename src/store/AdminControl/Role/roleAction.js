@@ -22,15 +22,39 @@ export const addAdmin = roleData => async dispatch => {
     });
 
     if (data.status) {
-      dispatch({
-        type: actionType.CREATE_ADMIN_ROLE_REQUEST_SUCCESS,
-        payload: data.message
-      });
-      dispatch({
-        type: actionType.GET_CREATED_ADMIN_ROLE,
-        payload: data.data.role
-      });
+      if(data.message){
+        toast.warn(data.message, {
+          // position: "bottom-right",
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        });
+        dispatch({
+          type: actionType.CREATE_ADMIN_ROLE_REQUEST_SUCCESS,
+          payload: data.message
+        });
+      }
+      if(data.data.role){
+        dispatch({
+          type: actionType.GET_CREATED_ADMIN_ROLE,
+          payload: data.data.role
+        });
+      }
     } else {
+      toast.warn(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
       dispatch({
         type: actionType.CREATE_ADMIN_ROLE_REQUEST_FAIL,
         payload: data.error
@@ -94,20 +118,35 @@ export const editRole = roleData => async dispatch => {
     });
 
     if (data.status) {
-      if (data.message) {
+
+        toast.success(data.message, {
+          // position: "bottom-right",
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        });
         dispatch({
           type: actionType.EDIT_ADMIN_ROLE_REQUEST_SUCCESS,
-          payload: data.message
+          payload: {role:data.data.role, message: data.message}
         });
-      }
-      if (data.data.role) {
-        dispatch({
-          type: actionType.GET_UPDATE_ADMIN_ROLE,
-          payload: data.data.role
-        });
-      }
+      
     } else {
+      toast.warn(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
       dispatch({
+        
         type: actionType.EDIT_ADMIN_ROLE_REQUEST_FAIL,
         payload: data.error
       });
@@ -135,7 +174,7 @@ export const deleteRole = id => async dispatch => {
     });
     // console.log(data.data.role);
     if (data.status) {
-      toast.warn(data.message, {
+      toast.success(data.message, {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
@@ -153,6 +192,16 @@ export const deleteRole = id => async dispatch => {
         }
       });
     } else {
+      toast.warn(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
       dispatch({
         type: actionType.DELETE_ROLE_REQUEST_FAIL,
         payload: data.error
@@ -181,6 +230,16 @@ export const restoreRole = id => async dispatch => {
     });
     // console.log(data);
     if (data.status) {
+      toast.success(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
       dispatch({
         type: actionType.RESTORE_ROLE_REQUEST_SUCCESS,
         payload: {
@@ -189,6 +248,16 @@ export const restoreRole = id => async dispatch => {
         }
       });
     } else {
+      toast.warn(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
       dispatch({
         type: actionType.RESTORE_ROLE_REQUEST_FAIL,
         payload: data.error

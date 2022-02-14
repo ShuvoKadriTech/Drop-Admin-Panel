@@ -82,22 +82,14 @@ export const roleReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_ADMIN_ROLE_REQUEST_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        error: null,
-        message: payload
-      };
-
-    case actionType.GET_UPDATE_ADMIN_ROLE:
       const updateData = state.roles.map(
-        item => (item.id === payload.id ? payload : item)
+        item => (item.id === payload.role.id ? payload.role : item)
       );
       return {
         ...state,
         loading: false,
         error: null,
-        message: null,
+        message: payload.message,
         roles: updateData
       };
 
@@ -146,7 +138,7 @@ export const roleReducer = (state = initialState, action) => {
 
     case actionType.RESTORE_ROLE_REQUEST_SUCCESS:
       const newData = state.roles.map(
-        item => (item.id === payload.id ? payload.role : item)
+        item => (item.id === payload.role.id ? payload.role : item)
       );
       return {
         ...state,
