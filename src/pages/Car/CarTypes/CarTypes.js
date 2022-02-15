@@ -43,18 +43,6 @@ const CarTypes = () => {
     dispatch(getCarTypes(refresh));
   };
 
-  // CAR TYPE EDIT EVENT
-
-  const handleEdit = id => {
-    history.push(`/edit-car-type/${id}`);
-  };
-
-  // CAR TYPE DETAILS EVENT HANDLE
-
-  const carTypeDetails = id => {
-    history.push(`/car-type/${id}`);
-  };
-
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -88,16 +76,12 @@ const CarTypes = () => {
                   </thead>
                   <tbody className="table__data">
                     {carTypes.map((type, index) =>
-                      <tr
-                        className="data"
-                        key={index}
-                        onClick={() => carTypeDetails(type.id)}
-                      >
+                      <tr className="data" key={index}>
                         <td>
                           <img
                             src={type.image}
                             style={{ width: "75px" }}
-                            alt="image"
+                            alt=""
                           />
                         </td>
                         <td>
@@ -109,12 +93,19 @@ const CarTypes = () => {
                         <td>
                           {type.maxSeat}
                         </td>
-                        <td className="btn__wrapper"  >
+                        <td className="btn__wrapper">
                           <button
                             className="btn btn-info "
-                            onClick={() => handleEdit(type.id)}
+                            onClick={() =>
+                              history.push(`/car-type/edit/${type.id}`)}
                           >
                             <i className="fa fa-edit" />
+                          </button>
+                          <button
+                            className="btn btn-info "
+                            onClick={() => history.push(`/car-type/${type.id}`)}
+                          >
+                            <i className="fa fa-eye" />
                           </button>
                         </td>
                       </tr>

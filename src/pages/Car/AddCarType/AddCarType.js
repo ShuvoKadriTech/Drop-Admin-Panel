@@ -123,7 +123,7 @@ const AddCarType = () => {
         draggable: true,
         progress: undefined
       });
-      route.push("/car-types");
+      route.goBack();
     }
     if (error) {
       return toast.warn(error, {
@@ -225,7 +225,7 @@ const AddCarType = () => {
                   // loading={loading}
                   // callList={callCarList}
                   isRefresh={false}
-                  // titleRoute="/car-types"
+                  titleRoute="car-types"
                 />
             <Row>
               {/* {loading &&

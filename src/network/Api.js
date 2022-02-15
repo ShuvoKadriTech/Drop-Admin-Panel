@@ -60,4 +60,8 @@ export const EDIT_ADMIN_ROLE = ADMIN_ENDPOINT + "/role/edit";
 export const DELETE_ADMIN_ROLE = ADMIN_ENDPOINT + "/role/delete";
 export const RESTORE_ADMIN_ROLE = ADMIN_ENDPOINT + "/role/restore";
 
+// PARTNER
+
+export const ADD_PARTNER = ADMIN_ENDPOINT + "/partner/add";
+
 // END ADMIN API

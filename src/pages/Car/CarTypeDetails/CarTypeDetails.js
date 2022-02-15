@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import GlobalWrapper from "../../../components/GlobalWrapper";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import {
   Button,
   Card,
@@ -29,6 +29,7 @@ import { GET_SINGLE_CAR_TYPE } from "../../../network/Api";
 const CarTypeDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const { loading, carTypes } = useSelector(state => state.carTypesReducer);
 
@@ -63,10 +64,6 @@ const CarTypeDetails = () => {
     } else {
       //   route.push('/car-types', { replace: true })
     }
-  };
-
-  const getCarType = () => {
-    // console.log(carType);
   };
 
   return (
@@ -121,7 +118,11 @@ const CarTypeDetails = () => {
                       />
                     </div>
                   </Col>
-                  <Col md={6} sm={12} className="d-flex  align-items-center">
+                  <Col
+                    md={6}
+                    sm={12}
+                    className="d-flex justify-content-between  align-items-center"
+                  >
                     <div className="ps-4">
                       <Details>
                         <h5>Car Name:</h5>
@@ -141,6 +142,14 @@ const CarTypeDetails = () => {
                           {carType.maxSeat}
                         </Value>
                       </Details>
+                    </div>
+                    <div className="d-flex align-items-start h-100">
+                      <button
+                        onClick={() => history.push(`/car-type/edit/${id}`)}
+                        className="btn btn-success"
+                      >
+                        Edit
+                      </button>
                     </div>
                   </Col>
                 </Row>
