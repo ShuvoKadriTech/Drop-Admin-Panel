@@ -52,7 +52,7 @@ const CarTypes = () => {
   // CAR TYPE DETAILS EVENT HANDLE
 
   const carTypeDetails = id => {
-    history.push(`car-type/${id}`);
+    history.push(`/car-type/${id}`);
   };
 
   return (
@@ -68,6 +68,7 @@ const CarTypes = () => {
                   hideSettingBtn={true}
                   loading={loading}
                   callList={callCarList}
+                  isRefresh={true}
                 />
               </Col>
             </Row>
@@ -108,7 +109,7 @@ const CarTypes = () => {
                         <td>
                           {type.maxSeat}
                         </td>
-                        <td className="btn__wrapper">
+                        <td className="btn__wrapper"  >
                           <button
                             className="btn btn-info "
                             onClick={() => handleEdit(type.id)}

@@ -132,6 +132,7 @@ import AdminList from "../pages/AdminControl/Admins/AdminList.js/AdminList";
 import CreateAdmin from "../pages/AdminControl/Admins/CreateAdmin/CreateAdmin";
 import Role from "../pages/AdminControl/Role/Role";
 import CarTypeDetails from "../pages/Car/CarTypeDetails/CarTypeDetails";
+import PartnerAdd from "../pages/Partners/PartnerAdd/PartnerAdd";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -154,6 +155,7 @@ const userRoutes = [
   // Partners
 
   { path: "/partner-list", component: PartnersList },
+  { path: "/partner-add", component: PartnerAdd },
 
   // CAR
 

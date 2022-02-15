@@ -121,7 +121,7 @@ const CarTypeDetails = () => {
                       />
                     </div>
                   </Col>
-                  <Col md={6} sm={12} className="d-flex  align-items center">
+                  <Col md={6} sm={12} className="d-flex  align-items-center">
                     <div className="ps-4">
                       <Details>
                         <h5>Car Name:</h5>

@@ -1,17 +1,22 @@
 import React, { useState } from "react"
 import PropTypes from 'prop-types'
 import { Link, useHistory } from "react-router-dom"
-import { Row, Col, BreadcrumbItem, Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "reactstrap"
+import { Row, Col, BreadcrumbItem, Dropdown, DropdownToggle, DropdownItem, DropdownMenu, Modal, } from "reactstrap"
 
 import { useDispatch, useSelector } from 'react-redux'
 import { removeAllSelectedGalleryImage } from "../../store/action/galleryAction"
+import FormUpload from "../../pages/Forms/FormUpload"
+
 
 const BreadcrumbGallery = props => {
   const route = useHistory()
   const [setting_Menu, setsetting_Menu] = useState(false)
 
+
   const dispatch = useDispatch()
   const { selectedImages } = useSelector(state => state.galleryReducer)
+
+
 
   return (
     <Row className="align-items-center">
@@ -54,9 +59,7 @@ const BreadcrumbGallery = props => {
             <button
               type="button"
               className="btn btn-primary waves-effect waves-light"
-              onClick={() => {
-                route.push("/image-upload")
-              }}
+              onClick={() => props.setmodal_fullscreen(true)}
               style={{ height: '40px' }}>
               Upload Files
             </button>
@@ -117,9 +120,15 @@ const BreadcrumbGallery = props => {
 
 
       </Col>
+
     </Row>
+
+
   )
+
 }
+
+
 
 BreadcrumbGallery.propTypes = {
   breadcrumbItem: PropTypes.string,

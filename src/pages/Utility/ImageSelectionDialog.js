@@ -9,7 +9,8 @@ import {
   Pagination,
   PaginationItem,
   PaginationLink,
-  Label
+  Label,
+  Dropdown, DropdownToggle, DropdownItem, DropdownMenu, Modal,
 } from "reactstrap";
 import Select from "react-select";
 import { Link } from "react-router-dom";
@@ -33,6 +34,7 @@ import {
   addFolderList,
   selectFolder
 } from "../../store/action/uploadImage.action";
+import FormUpload from "../Forms/FormUpload";
 
 const ImageSelectionDialog = ({ lisener }) => {
   const {
@@ -59,6 +61,7 @@ const ImageSelectionDialog = ({ lisener }) => {
   // const [selectedFolder,setSelectedFolder] = useState(null);
 
   const [filter, setFilter] = useState(null);
+  const [modal_fullscreen, setmodal_fullscreen] = useState(false);
 
   useEffect(() => {
     dispatch(addFolderList(listFolder));
@@ -68,6 +71,10 @@ const ImageSelectionDialog = ({ lisener }) => {
   //  console.log(filter);
   // }, [filter]);
 
+  // const uploadImageToggle = () => {
+  //   modal_fullscreen
+  // }
+
   function setpopovertop(index) {
     setphotoIndex(index);
     setisGallery(true);
@@ -75,9 +82,11 @@ const ImageSelectionDialog = ({ lisener }) => {
 
   useEffect(
     () => {
-      dispatch(getGalleryList({ folder: selectedFolder }));
+      if(!modal_fullscreen){
+        dispatch(getGalleryList({ folder: selectedFolder }));
+      }
     },
-    [selectedFolder]
+    [selectedFolder,modal_fullscreen]
   );
 
   useEffect(
@@ -117,7 +126,7 @@ const ImageSelectionDialog = ({ lisener }) => {
         <Container fluid>
           {/* Render Breadcrumbs */}
 
-          <BreadcrumbGallery maintitle="Gallery" breadcrumbItem="Gallery" />
+          <BreadcrumbGallery maintitle="Gallery" breadcrumbItem="Gallery" setmodal_fullscreen={setmodal_fullscreen} />
 
           <Col
             className="d-flex overflow-auto"
@@ -308,6 +317,50 @@ const ImageSelectionDialog = ({ lisener }) => {
             </Col>
           </Row>
         </Container>
+
+        <Modal
+        size="xl"
+        isOpen={modal_fullscreen}
+        toggle={() => {
+          setmodal_fullscreen(!modal_fullscreen);
+        }}
+        className="modal-fullscreen"
+      >
+        <div className="modal-header">
+          <h5 className="modal-title mt-0" id="exampleModalFullscreenLabel">
+            Select Image
+          </h5>
+          <button
+            onClick={() => {
+              setmodal_fullscreen(false);
+            }}
+            type="button"
+            className="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="modal-body">
+          <FormUpload
+            lisener={() => setmodal_fullscreen(!modal_fullscreen)}
+          />
+        </div>
+        <div className="modal-footer">
+          <button
+            type="button"
+            onClick={() => {
+              setmodal_fullscreen(!modal_fullscreen);
+            }}
+            className="btn btn-secondary waves-effect"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+        </div>
+      </Modal>
+
       </div>
     </React.Fragment>
   );

@@ -29,7 +29,7 @@ import SweetAlert from "react-bootstrap-sweetalert"
 import { UPLOAD_IMAGE_DONE } from "../../store/actionType";
 
 
-const FormUpload = () => {
+const FormUpload = ({lisener}) => {
 
 
 
@@ -57,7 +57,13 @@ const FormUpload = () => {
 
     if(uploadedImages && uploadedImages.length>0){
       dispatch(clearUploadImage())
-      route.push("image-gallery")
+
+      if(lisener != null){
+        lisener()
+      }else{
+        route.push("image-gallery")
+      }
+      
     }
     
   }, [uploadedImages]);

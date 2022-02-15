@@ -26,6 +26,7 @@ import {
   addCarType,
   editCarType,
 } from "../../../store/Car/carTypes/carTypesAction";
+import Breadcrumbs from "../../../components/Common/Breadcrumb";
 
 const AddCarType = () => {
 
@@ -216,6 +217,16 @@ const AddCarType = () => {
       <GlobalWrapper>
         <div className="page-content my-3">
           <Container fluid={true}>
+          <Breadcrumbs
+                  maintitle="Car"
+                  breadcrumbItem={id ? "Edit" : "Add"}
+                  title="Car Types"
+                  hideSettingBtn={true}
+                  // loading={loading}
+                  // callList={callCarList}
+                  isRefresh={false}
+                  // titleRoute="/car-types"
+                />
             <Row>
               {/* {loading &&
                 <div className="display: flex; justify-content-center; align-items-center">
