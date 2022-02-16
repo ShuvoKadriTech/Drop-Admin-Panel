@@ -95,14 +95,14 @@ const CarTypes = () => {
                         </td>
                         <td className="btn__wrapper">
                           <button
-                            className="btn btn-info "
+                            className="btn btn-lg btn-info  me-2"
                             onClick={() =>
                               history.push(`/car-type/edit/${type.id}`)}
                           >
                             <i className="fa fa-edit" />
                           </button>
                           <button
-                            className="btn btn-info "
+                            className="btn btn-success "
                             onClick={() => history.push(`/car-type/${type.id}`)}
                           >
                             <i className="fa fa-eye" />

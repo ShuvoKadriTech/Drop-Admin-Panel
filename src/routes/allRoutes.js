@@ -154,8 +154,8 @@ const userRoutes = [
 
   // Partners
 
-  { path: "/partner-list", component: PartnersList },
-  { path: "/partner-add", component: PartnerAdd },
+  { path: "/partner/list", component: PartnersList },
+  { path: "/partner/add", component: PartnerAdd },
 
   // CAR
 

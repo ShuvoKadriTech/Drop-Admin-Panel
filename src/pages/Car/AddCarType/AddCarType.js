@@ -113,17 +113,26 @@ const AddCarType = () => {
 
   useEffect(() => {
     if (message) {
-      toast.success(message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-      });
-      route.goBack();
+      if(id){
+        route.goBack();
+      }
+      else{
+        toast.success(message, {
+          // position: "bottom-right",
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        });
+        setImage(null);
+        setMaxSeat(0);
+        setMinSeat(0);
+        setName("")
+      }
+      
     }
     if (error) {
       return toast.warn(error, {
@@ -137,7 +146,7 @@ const AddCarType = () => {
         progress: undefined
       });
     }
-  }, [message || error])
+  }, [message , error])
 
   const submitCarType = async () => {
     if (!name || name == "") {

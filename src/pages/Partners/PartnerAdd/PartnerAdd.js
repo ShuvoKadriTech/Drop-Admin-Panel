@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import "flatpickr/dist/themes/material_blue.css";
 import Flatpickr from "react-flatpickr";
@@ -19,7 +19,7 @@ import {
 } from "reactstrap";
 
 import { removeAllSelectedGalleryImage } from "../../../store/action/galleryAction";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import styled from "styled-components";
 import { toast } from "react-toastify";
 import { addPartner } from "../../../store/partner/partnerActions";
@@ -37,10 +37,15 @@ const PartnerAdd = () => {
   const [email, setEmail] =  useState("");
   const [nid, setNid] = useState("");
   const [phone, setPhone] = useState("");
-  const [dateOfBirth, setDateOfBirth] =  useState()
+  const [dateOfBirth, setDateOfBirth] =  useState("")
+
+
+  const {loading, message, error, partners} = useSelector(state => state.partnerReducer)
+
+
 
   const handleImage = id => {
-    setmodal_fullscreen(true);
+    
     if (id == 1) {
       setImageId(1);
     }
@@ -50,6 +55,7 @@ const PartnerAdd = () => {
     if (id == 3) {
       setImageId(3);
     }
+    setmodal_fullscreen(true);
   };
 
 //   HANDLE SUBMIT 
@@ -91,11 +97,28 @@ const handleSubmit = () => {
         nidFontPic: nidFrontImage,
         nidBackPic: nidBackImage
     }
-
+    // console.log(data);
     dispatch(addPartner(data))
     
 
 }
+
+useEffect(()=>{
+
+  if(message){
+    setName("");
+    setEmail("");
+    setNid("");
+    setPhone("");
+    setDateOfBirth("");
+    setPartnerImage("");
+    setNidFrontImage("");
+    setNidBackImage("");
+  }
+  
+
+},[message])
+
 
   return (
     <React.Fragment>
@@ -109,6 +132,7 @@ const handleSubmit = () => {
               isRefresh={false}
 
             />
+             
             <Card>
               <CardBody>
                 <Row className="pt-4">
@@ -201,14 +225,14 @@ const handleSubmit = () => {
                         style={{ width: "385px", height: "160px" }}
                         className="cursor-pointer"
                       >
-                        <div className="d-flex justify-content-center align-content-center h-100" style={{border: "1px solid #275c35"}}>
+                        <div  className="d-flex justify-content-center align-content-center h-100" style={{border: "1px solid rgb(207 207 207)"}}>
                           {partnerImage
                             ?  <ImageView>
                                 <>
                                 <img
                               src={partnerImage}
                               className="img-thumbnail img__view"
-                              style={{ width: "100%", height: "100%" }}
+                              style={{ width: "100%", height: "100%", objectFit: "contain" }}
                               alt=""
                             />
                             <div className="button__wrapper">
@@ -221,16 +245,21 @@ const handleSubmit = () => {
                             </div>
                                 </>
                             </ImageView>
-                            : <svg
+                            : <div
+                            style={{width: "100%", height: "100%"}}
+                            className="d-flex justify-content-center align-items-center"
+                            onClick={() => handleImage(1)}>
+                              <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 style={{ width: "50px" }}
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
-                                onClick={() => handleImage(1)}
+                                
                               >
                                 <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                              </svg>}
+                              </svg>
+                            </div> }
                         </div>
                       </Card>
                     </div>
@@ -243,14 +272,14 @@ const handleSubmit = () => {
                         style={{ width: "385px", height: "160px" }}
                         className="cursor-pointer"
                       >
-                        <div className="d-flex justify-content-center align-content-center h-100" style={{border: "1px solid #275c35"}}>
+                        <div className="d-flex justify-content-center align-content-center h-100" style={{border: "1px solid rgb(207 207 207)"}}>
                         {nidFrontImage
                             ?  <ImageView>
                                 <>
                                 <img
                               src={nidFrontImage}
                               className="img-thumbnail img__view"
-                              style={{ width: "100%", height: "100%" }}
+                              style={{ width: "100%", height: "100%",objectFit: "contain"  }}
                               alt=""
                             />
                             <div className="button__wrapper">
@@ -263,16 +292,21 @@ const handleSubmit = () => {
                             </div>
                                 </>
                             </ImageView>
-                            : <svg
+                            : <div
+                            style={{width: "100%", height: "100%"}}
+                            className="d-flex justify-content-center align-items-center"
+                            onClick={() => handleImage(2)}>
+                              <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 style={{ width: "50px" }}
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
-                                onClick={() => handleImage(2)}
+                                
                               >
                                 <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                              </svg>}
+                              </svg>
+                            </div>}
                         </div>
                       </Card>
                     </div>
@@ -285,14 +319,14 @@ const handleSubmit = () => {
                         style={{ width: "385px", height: "160px" }}
                         className="cursor-pointer"
                       >
-                        <div className="d-flex justify-content-center align-content-center h-100" style={{border: "1px solid #275c35"}}>
+                        <div className="d-flex justify-content-center align-content-center h-100" style={{border: "1px solid rgb(207 207 207)"}}>
                         {nidBackImage
                             ?  <ImageView>
                                 <>
                                 <img
                               src={nidBackImage}
                               className="img-thumbnail img__view"
-                              style={{ width: "100%", height: "100%" }}
+                              style={{ width: "100%", height: "100%",objectFit: "contain" }}
                               alt=""
                             />
                             <div className="button__wrapper">
@@ -305,23 +339,36 @@ const handleSubmit = () => {
                             </div>
                                 </>
                             </ImageView>
-                            : <svg
+                            : <div
+                            style={{width: "100%", height: "100%"}}
+                            className="d-flex justify-content-center align-items-center"
+                            onClick={() => handleImage(3)}>
+                              <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 style={{ width: "50px" }}
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
-                                onClick={() => handleImage(3)}
+                                
                               >
                                 <path strokeWidth="2" d="M12 4v16m8-8H4" />
-                              </svg>}
+                              </svg>
+                            </div>}
                         </div>
                       </Card>
                     </div>
                   </Col>
                 </Row>
-                <div className='d-flex'>
-                <Button onClick={handleSubmit} className='mt-5' color="primary" width={"250px"}>Add</Button>
+                <div className='d-flex justify-content-center'>
+                <Button onClick={handleSubmit} className='mt-5' color="primary" style={{width: "250px"}}>
+
+                {loading ?
+                
+                  <Spinner animation="border" variant="info" size='sm' />
+                : "Add"
+                
+                }
+                </Button>
                 </div>
               </CardBody>
             </Card>
@@ -394,7 +441,8 @@ const handleSubmit = () => {
 
 const ImageView = styled.div`
   /* width: 100% !important;
-  max-width: 300px; */
+  max-width: 300pximport partnerReducer from './../../../store/partner/partnerReducers';
+; */
   position: relative;
   width: 100%;
 

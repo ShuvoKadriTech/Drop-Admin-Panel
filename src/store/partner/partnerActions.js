@@ -4,6 +4,7 @@ import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 
 export const addPartner = partner => async dispatch => {
+  // console.log("before add",partner);
   try {
     dispatch({
       type: actionType.ADD_PARTNER_REQUEST_SEND
@@ -13,8 +14,9 @@ export const addPartner = partner => async dispatch => {
       method: "POST",
       data: partner
     });
+    // console.log("response",data);
     if (data.status) {
-      toast.warn(data.message, {
+      toast.success(data.message, {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
@@ -33,6 +35,16 @@ export const addPartner = partner => async dispatch => {
         }
       });
     } else {
+      toast.warn(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
       dispatch({
         type: actionType.ADD_PARTNER_REQUEST_FAIL,
         payload: data.error

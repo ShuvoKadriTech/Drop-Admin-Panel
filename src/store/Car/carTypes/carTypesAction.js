@@ -45,11 +45,6 @@ export const addCarType = carData => async (dispatch, getState) => {
     });
 
     if (status) {
-      dispatch({
-        type: ADD_CAR_TYPE_REQUEST_SUCCESS,
-        payload: { data, message }
-      });
-
       toast.success(data.message, {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -60,12 +55,29 @@ export const addCarType = carData => async (dispatch, getState) => {
         draggable: true,
         progress: undefined
       });
+      dispatch({
+        type: ADD_CAR_TYPE_REQUEST_SUCCESS,
+        payload: { data, message }
+      });
+
+      
 
       dispatch({
         type: CLEAR_SUCCESS_MESSAGE
       });
     } else {
+      toast.warn(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
       dispatch({
+        
         type: ADD_CAR_TYPE_REQUEST_FAIL,
         payload: error
       });
