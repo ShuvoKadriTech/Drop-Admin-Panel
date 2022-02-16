@@ -56,7 +56,6 @@ const CarTypes = () => {
                   hideSettingBtn={true}
                   loading={loading}
                   callList={callCarList}
-                  isRefresh={true}
                 />
               </Col>
             </Row>

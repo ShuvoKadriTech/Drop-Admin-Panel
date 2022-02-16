@@ -4,7 +4,8 @@ const initialState = {
   loading: false,
   partners: [],
   message: null,
-  error: null
+  error: null,
+  paginate: null
 };
 
 const partnerReducer = (state = initialState, action) => {
@@ -36,6 +37,31 @@ const partnerReducer = (state = initialState, action) => {
         loading: false,
         message: null,
         error: payload
+      };
+
+    // GET ALL PARTNERS
+
+    case actionType.GET_ALL_PARTNER_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true
+      };
+
+    case actionType.GET_ALL_PARTNER_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        partners: payload.partners,
+        error: null,
+        message: null,
+        paginate: payload.paginate
+      };
+
+    case actionType.GET_ALL_PARTNER_REQUEST_FAIL:
+      return {
+        ...state,
+        error: payload,
+        message: null
       };
 
     default:

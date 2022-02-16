@@ -1,7 +1,8 @@
 import { toast } from "react-toastify";
-import { ADD_PARTNER } from "../../network/Api";
+import { ADD_PARTNER, ALL_PARTNER } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
+import partnerReducer from "./partnerReducers";
 
 export const addPartner = partner => async dispatch => {
   // console.log("before add",partner);
@@ -53,6 +54,52 @@ export const addPartner = partner => async dispatch => {
   } catch (error) {
     dispatch({
       type: actionType.ADD_PARTNER_REQUEST_FAIL,
+      payload: error.message
+    });
+  }
+};
+
+// GET ALL PARTNER REQUEST
+
+export const getPartners = (refresh = false, searchKey) => async (
+  dispatch,
+  getState
+) => {
+  console.log(searchKey);
+  try {
+    const { partners } = getState().partnerReducer;
+
+    if (partners.length <= 0 || refresh) {
+      dispatch({
+        type: actionType.GET_ALL_PARTNER_REQUEST_SEND
+      });
+
+      const {
+        data: { data, status, error }
+      } = await requestApi().request(ALL_PARTNER, {
+        params: {
+          // searchKey: searchKey,
+          // page: 1
+        }
+      });
+
+      console.log(data);
+
+      if (status) {
+        dispatch({
+          type: actionType.GET_ALL_PARTNER_REQUEST_SUCCESS,
+          payload: data
+        });
+      } else {
+        dispatch({
+          type: actionType.GET_ALL_PARTNER_REQUEST_FAIL,
+          payload: error
+        });
+      }
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.GET_ALL_PARTNER_REQUEST_FAIL,
       payload: error.message
     });
   }
