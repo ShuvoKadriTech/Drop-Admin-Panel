@@ -5,7 +5,13 @@ const initialState = {
   partners: [],
   message: null,
   error: null,
-  paginate: null
+  paginate: null,
+  paging: [],
+  hasNextPage: true,
+  currentPage: 1,
+  hasPreviousPage: false,
+  searchKey: "",
+  statusKey: ""
 };
 
 const partnerReducer = (state = initialState, action) => {
@@ -54,7 +60,11 @@ const partnerReducer = (state = initialState, action) => {
         partners: payload.partners,
         error: null,
         message: null,
-        paginate: payload.paginate
+        paginate: payload.paginate,
+        paging: payload.paginate.metadata.paging,
+        hasNextPage: payload.paginate.metadata.hasNextPage,
+        currentPage: payload.paginate.metadata.page.currentPage,
+        hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
       };
 
     case actionType.GET_ALL_PARTNER_REQUEST_FAIL:
@@ -63,6 +73,21 @@ const partnerReducer = (state = initialState, action) => {
         error: payload,
         message: null
       };
+
+    case actionType.UPDATE_SEARCH_KEY:
+
+      return {
+        ...state,
+        searchKey: payload
+      }
+
+      case actionType.UPDATE_STATUS_KEY:
+
+      return {
+        ...state,
+        statusKey: payload
+      }
+
 
     default:
       return state;

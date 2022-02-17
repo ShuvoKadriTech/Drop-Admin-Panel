@@ -61,14 +61,14 @@ export const addPartner = partner => async dispatch => {
 
 // GET ALL PARTNER REQUEST
 
-export const getPartners = (refresh = false, searchKey) => async (
+export const getPartners = (refresh = false,page = 1) => async (
   dispatch,
   getState
 ) => {
-  console.log(searchKey);
+  // console.log("searchKey",searchKey);
   try {
-    const { partners } = getState().partnerReducer;
-
+    const { partners, searchKey, statusKey } = getState().partnerReducer;
+    // console.log("searchKey",searchKey);
     if (partners.length <= 0 || refresh) {
       dispatch({
         type: actionType.GET_ALL_PARTNER_REQUEST_SEND
@@ -78,12 +78,14 @@ export const getPartners = (refresh = false, searchKey) => async (
         data: { data, status, error }
       } = await requestApi().request(ALL_PARTNER, {
         params: {
-          // searchKey: searchKey,
-          // page: 1
+          searchKey: searchKey,
+          page: page,
+          pageSize: 5,
+          status: statusKey
         }
       });
 
-      console.log(data);
+      console.log("data",data);
 
       if (status) {
         dispatch({
@@ -104,3 +106,23 @@ export const getPartners = (refresh = false, searchKey) => async (
     });
   }
 };
+
+// SEARCH KEY UPDATE
+
+export const updateSearchKey = (value) => (dispatch) => {
+
+  dispatch({
+    type: actionType.UPDATE_SEARCH_KEY,
+    payload: value
+  })
+
+}
+
+// UPDATE STATUS KEY 
+
+export const updateStatusKey = (value) => dispatch =>{
+  dispatch({
+    type: actionType.UPDATE_STATUS_KEY,
+    payload: value
+  })
+}
