@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { ADD_PARTNER, ALL_PARTNER } from "../../network/Api";
+import { ADD_PARTNER, ALL_PARTNER, EDIT_PARTNER } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 import partnerReducer from "./partnerReducers";
@@ -67,7 +67,7 @@ export const getPartners = (refresh = false,page = 1) => async (
 ) => {
   // console.log("searchKey",searchKey);
   try {
-    const { partners, searchKey, statusKey } = getState().partnerReducer;
+    const { partners, searchKey, statusKey,createdByKey } = getState().partnerReducer;
     // console.log("searchKey",searchKey);
     if (partners.length <= 0 || refresh) {
       dispatch({
@@ -81,7 +81,8 @@ export const getPartners = (refresh = false,page = 1) => async (
           searchKey: searchKey,
           page: page,
           pageSize: 5,
-          status: statusKey
+          status: statusKey,
+          createdBy: createdByKey
         }
       });
 
@@ -107,6 +108,63 @@ export const getPartners = (refresh = false,page = 1) => async (
   }
 };
 
+// EDIT PARTNER
+
+export const editPartner = partnerData => async dispatch => {
+  try {
+    dispatch({
+      type: actionType.EDIT_PARTNER_REQUEST_SEND
+    });
+
+    const { data } = await requestApi().request(EDIT_PARTNER, {
+      method: "POST",
+      data: partnerData
+    });
+
+    console.log(data);
+
+    if (data.status) {
+      toast.success(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+        dispatch({
+          type: actionType.EDIT_PARTNER_REQUEST_SUCCESS,
+          payload: {message: data.message, partner: data.data.partner}
+        });
+      
+    } else {
+      toast.success(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+      dispatch({
+        type: actionType.EDIT_PARTNER_REQUEST_FAIL,
+        payload: data.error
+      });
+    }
+  } catch (error) {
+    dispatch(
+      dispatch({
+        type: actionType.EDIT_PARTNER_REQUEST_FAIL,
+        payload: error.message
+      })
+    );
+  }
+};
+
 // SEARCH KEY UPDATE
 
 export const updateSearchKey = (value) => (dispatch) => {
@@ -123,6 +181,15 @@ export const updateSearchKey = (value) => (dispatch) => {
 export const updateStatusKey = (value) => dispatch =>{
   dispatch({
     type: actionType.UPDATE_STATUS_KEY,
+    payload: value
+  })
+}
+
+// UPDATE CREATED BY KEY 
+
+export const updateCreatedByKey = (value) => dispatch =>{
+  dispatch({
+    type: actionType.UPDATE_CREATED_BY_KEY,
     payload: value
   })
 }

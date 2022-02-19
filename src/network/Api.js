@@ -64,5 +64,7 @@ export const RESTORE_ADMIN_ROLE = ADMIN_ENDPOINT + "/role/restore";
 
 export const ADD_PARTNER = ADMIN_ENDPOINT + "/partner/add";
 export const ALL_PARTNER = ADMIN_ENDPOINT + "/partner";
+export const SINGLE_PARTNER = ADMIN_ENDPOINT + "/partner/";
+export const EDIT_PARTNER = ADMIN_ENDPOINT + "/partner/edit";
 
 // END ADMIN API

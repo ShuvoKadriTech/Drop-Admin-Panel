@@ -11,7 +11,8 @@ const initialState = {
   currentPage: 1,
   hasPreviousPage: false,
   searchKey: "",
-  statusKey: ""
+  statusKey: "all",
+  createdByKey: ""
 };
 
 const partnerReducer = (state = initialState, action) => {
@@ -74,6 +75,37 @@ const partnerReducer = (state = initialState, action) => {
         message: null
       };
 
+
+      // EDIT PARTNER
+
+    case actionType.EDIT_PARTNER_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true
+      };
+
+
+    case actionType.EDIT_PARTNER_REQUEST_SUCCESS:
+      const updateData = state.partners.map(
+        item => (item.id === payload.partner.id ? payload.partner : item)
+      );
+      return {
+        ...state,
+        loading: false,
+        message: payload.message,
+        error: null,
+        partners: updateData
+      };
+
+    case actionType.EDIT_PARTNER_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+        message: null
+      };
+
+
     case actionType.UPDATE_SEARCH_KEY:
 
       return {
@@ -86,6 +118,13 @@ const partnerReducer = (state = initialState, action) => {
       return {
         ...state,
         statusKey: payload
+      }
+
+      case actionType.UPDATE_CREATED_BY_KEY:
+
+      return {
+        ...state,
+        createdByKey: payload
       }
 
 

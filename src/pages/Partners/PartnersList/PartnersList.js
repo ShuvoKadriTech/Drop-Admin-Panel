@@ -7,26 +7,33 @@ import {
   Col,
   Container,
   Row,
-  Table,
+
 
 } from "reactstrap";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
-import { getPartners, updateSearchKey,updateStatusKey } from "../../../store/partner/partnerActions";
+import { getPartners, updateSearchKey, updateStatusKey, updateCreatedByKey } from "../../../store/partner/partnerActions";
 import AppPagination from "../../../components/AppPagination";
 import styled from 'styled-components';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
+import Lightbox from "react-image-lightbox";
+import { useHistory } from "react-router-dom";
 
 
 const PartnersList = () => {
+
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [open, setOpen] = useState(false);
+  const [isZoom, setIsZoom] = useState(false);
+  const [partnerImage, setPartnerImage] = useState(null);
 
-  const { loading, message, error, paging, hasNextPage, currentPage, hasPreviousPage, partners, searchKey } = useSelector(
+  const { loading, message, error, paging, hasNextPage, currentPage, hasPreviousPage, partners, searchKey, statusKey, createdByKey } = useSelector(
     state => state.partnerReducer
   );
 
@@ -41,7 +48,7 @@ const PartnersList = () => {
 
 
   useEffect(() => {
-    if (searchKey) {
+    if ((searchKey && statusKey && createdByKey) || (searchKey && statusKey) || (searchKey && createdByKey) || (statusKey && createdByKey) || searchKey || statusKey || createdByKey) {
       callPartnerList(true);
     } else {
       if (open) {
@@ -51,7 +58,7 @@ const PartnersList = () => {
       }
 
     }
-  }, [searchKey]);
+  }, [searchKey, statusKey, createdByKey]);
 
   const searchKeyListener = (value) => {
 
@@ -64,6 +71,10 @@ const PartnersList = () => {
     // console.log(searchKey);
     dispatch(getPartners(refresh));
   };
+
+
+
+ 
 
   return (
     <React.Fragment>
@@ -79,24 +90,34 @@ const PartnersList = () => {
             addNewRoute="partner/add"
           />
 
+          {isZoom
+            ? <Lightbox
+              mainSrc={partnerImage}
+              enableZoom={true}
+              onCloseRequest={() => {
+                setIsZoom(!isZoom);
+              }}
+            />
+            : null}
+
           <Card>
             <CardBody>
               <Row>
                 <Col md={3}>
                   <div>
                     <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                      <InputLabel id="demo-simple-select-label">Status</InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        // value={age}
-                        label="Age"
-                      onChange={event => dispatch(updateStatusKey(event.target.value))}
+                        value={statusKey}
+                        label="Status"
+                        onChange={event => dispatch(updateStatusKey(event.target.value))}
                       >
-                        <MenuItem value={10} active>All</MenuItem>
-                        <MenuItem value={20}>Pending</MenuItem>
-                        <MenuItem value={30}>Block</MenuItem>
-                        <MenuItem value={30}>Permanent Block</MenuItem>
+                        <MenuItem value={"all"} active>All</MenuItem>
+                        <MenuItem value={"pending"}>Pending</MenuItem>
+                        <MenuItem value={"block"}>Block</MenuItem>
+                        <MenuItem value={"permanent-block"}>Permanent Block</MenuItem>
                       </Select>
                     </FormControl>
                   </div>
@@ -120,6 +141,23 @@ const PartnersList = () => {
 
                   </SearchWrapper>
                 </Col>
+                <Col md={3}>
+                  <div>
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">Created By</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={createdByKey}
+                        label="CreatedBy"
+                        onChange={event => dispatch(updateCreatedByKey(event.target.value))}
+                      >
+                        <MenuItem value={"admin"}>Admin</MenuItem>
+                        <MenuItem value={"self"}>Self</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </div>
+                </Col>
               </Row>
             </CardBody>
           </Card>
@@ -133,42 +171,74 @@ const PartnersList = () => {
                 </Col>
               </Row>
               <CardTitle className="h4"> Car List</CardTitle>
-              <Table bordered hover responsive className="table__wrapper">
-                <thead>
-                  <tr className="header">
-                    <th>Image</th>
-                    <th>Name</th>
-                    <th>Min Seat</th>
-                    <th>Max Seat</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody className="table__data">
-                  {partners.map((item, index) =>
-                    <tr className="data" key={index}>
-                      <td>
-                        <img src={item.img} style={{ width: "75px" }} alt="" />
-                      </td>
-                      <td>
-                        {item.name}
-                      </td>
-                      <td>
-                        {item.email}
-                      </td>
-                      <td>
-                        {item.phone}
-                      </td>
-                      <td className="btn__wrapper">
-                        <button className="btn  btn-info  me-2">
-                          <i className="fa fa-edit" />
-                        </button>
-                        <button className="btn btn-success ">
-                          <i className="fa fa-eye" />
-                        </button>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
+              <Table
+                id="tech-companies-1"
+                className="table table__wrapper table-striped table-bordered table-hover text-center"
+              >
+                <Thead>
+                  <Tr>
+                    <Th>Image</Th>
+                    <Th>Name</Th>
+                    <Th>Email</Th>
+                    <Th>Phone</Th>
+                    <Th>Action</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {partners.map((partner, index) => {
+                    return (
+                      <Tr
+                        key={index}
+                        className="align-middle"
+                        style={{
+                          fontSize: "15px",
+                          fontWeight: "500"
+                        }}
+                      >
+                        <Th>
+                          <div style={{ width: "50px", height: "50px" }}>
+                            <img
+                              onClick={() => {
+                                setIsZoom(true);
+                                setPartnerImage(partner.img)
+                              }}
+                              className="img-fluid cursor-pointer"
+                              alt=""
+                              src={partner.img}
+                              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                            />
+
+                          </div>
+
+                        </Th>
+
+                        <Td>
+                          {partner.name}
+                        </Td>
+                        <Td >
+                          {partner.email}
+                        </Td>
+                        <Td >
+                          {partner.phone}
+                        </Td>
+                        <Td>
+                          <button
+                            className="btn btn-info me-3"
+                          onClick={() => history.push(`/partner/edit/${partner.id}`)}
+                          >
+                            <i className="fa fa-edit" />
+                          </button>
+                          <button
+                            className="btn btn-info "
+                          // onClick={() => handleEditColor(color.id)}
+                          >
+                            <i className="fa fa-eye" />
+                          </button>
+                        </Td>
+                      </Tr>
+                    );
+                  })}
+                </Tbody>
               </Table>
             </CardBody>
           </Card>

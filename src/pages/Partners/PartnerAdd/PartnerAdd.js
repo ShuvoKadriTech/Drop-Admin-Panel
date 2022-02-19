@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import "flatpickr/dist/themes/material_blue.css";
 import Flatpickr from "react-flatpickr";
@@ -19,14 +19,22 @@ import {
 } from "reactstrap";
 
 import { removeAllSelectedGalleryImage } from "../../../store/action/galleryAction";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { toast } from "react-toastify";
-import { addPartner } from "../../../store/partner/partnerActions";
+import { addPartner, editPartner } from "../../../store/partner/partnerActions";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
+import { useParams, useHistory } from "react-router-dom"
+import requestApi from "../../../network/httpRequest";
+import { SINGLE_PARTNER } from "../../../network/Api";
 
 const PartnerAdd = () => {
+
+
   const dispatch = useDispatch();
+  const history = useHistory();
+
+  const { id } = useParams();
 
   const [modal_fullscreen, setmodal_fullscreen] = useState(false);
   const [imageId, setImageId] = useState(null);
@@ -34,18 +42,70 @@ const PartnerAdd = () => {
   const [nidFrontImage, setNidFrontImage] = useState("");
   const [nidBackImage, setNidBackImage] = useState("");
   const [name, setName] = useState("");
-  const [email, setEmail] =  useState("");
+  const [email, setEmail] = useState("");
   const [nid, setNid] = useState("");
   const [phone, setPhone] = useState("");
-  const [dateOfBirth, setDateOfBirth] =  useState("")
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [biddingPercent, setBiddingPercent] = useState("")
 
 
-  const {loading, message, error, partners} = useSelector(state => state.partnerReducer)
+  const { loading, message, error, partners } = useSelector(state => state.partnerReducer)
+
+
+  useEffect(
+    () => {
+      if (id) {
+        const findPartner = partners.find(type => type.id === id);
+        // console.log("findPartner",findPartner)
+        if (findPartner) {
+          const { img, name, email, phone, dob, nid, nidFrontPic, nidBackPic, biddingPercent } = findPartner;
+          setName(name);
+          setEmail(email);
+          setNid(nid);
+          setPhone(phone);
+          setDateOfBirth(dob);
+          setPartnerImage(img);
+          setNidFrontImage(nidFrontPic);
+          setNidBackImage(nidBackPic);
+          setBiddingPercent(biddingPercent);
+
+        }
+        else {
+          callApi(id);
+        }
+      }
+
+      // callApi(id);
+    },
+    [id]
+  );
+
+  const callApi = async (partnerId) => {
+    const { data: { status, data } } = await requestApi().request(SINGLE_PARTNER + partnerId);
+    if (status) {
+
+      const { img, name, email, phone, dob, nid, nidFontPic, nidBackPic, biddingPercent } = data.partner;
+      console.log("data", nidFontPic)
+      setName(name);
+      setEmail(email);
+      setNid(nid);
+      setPhone(phone);
+      setDateOfBirth(dob);
+      setPartnerImage(img);
+      setNidFrontImage(nidFontPic);
+      setNidBackImage(nidBackPic);
+      setBiddingPercent(biddingPercent);
+    }
+    else {
+      history.push('/partners-list', { replace: true })
+    }
+  }
+
 
 
 
   const handleImage = id => {
-    
+
     if (id == 1) {
       setImageId(1);
     }
@@ -58,36 +118,53 @@ const PartnerAdd = () => {
     setmodal_fullscreen(true);
   };
 
-//   HANDLE SUBMIT 
+  //   HANDLE SUBMIT 
 
-const handleSubmit = () => {
-    
-    if(name ==null || name == ""){
-        return toast.warn("Enter Partner Name", {
-            // position: "bottom-right",
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined
-          });
+  const handleSubmit = () => {
+
+    if (name == null || name == "") {
+      return toast.warn("Enter Partner Name", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
     }
-    if(phone == null || phone == "" || phone.length !==11 ){
-        return toast.warn("Enter Partner Valid Phone number", {
-            // position: "bottom-right",
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined
-          });
+    if (phone == null || phone == "" || phone.length !== 11) {
+      return toast.warn("Enter Partner Valid Phone number", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
     }
 
-    const data = {
+    if (partnerImage == null || partnerImage == "") {
+      return toast.warn("Enter Partner Image", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+
+    // console.log(data);
+
+    if (id) {
+      dispatch(editPartner({
+        id: id,
         name,
         email,
         nid,
@@ -96,28 +173,38 @@ const handleSubmit = () => {
         img: partnerImage,
         nidFontPic: nidFrontImage,
         nidBackPic: nidBackImage
+      }))
     }
-    // console.log(data);
-    dispatch(addPartner(data))
-    
+    else {
+      dispatch(addPartner(
+        {
+          name,
+          email,
+          nid,
+          phone,
+          dob: dateOfBirth,
+          img: partnerImage,
+          nidFontPic: nidFrontImage,
+          nidBackPic: nidBackImage
+        }
+      ))
+    }
 
-}
 
-useEffect(()=>{
-
-  if(message){
-    setName("");
-    setEmail("");
-    setNid("");
-    setPhone("");
-    setDateOfBirth("");
-    setPartnerImage("");
-    setNidFrontImage("");
-    setNidBackImage("");
   }
-  
 
-},[message])
+  useEffect(() => {
+
+    if (message) {
+ 
+      history.push("/partner/list");
+    }
+
+
+  }, [message])
+
+
+
 
 
   return (
@@ -125,25 +212,25 @@ useEffect(()=>{
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true} className="py-4">
-          <Breadcrumbs
+            <Breadcrumbs
               maintitle="Partner"
-              breadcrumbItem="Add Partner"
+              breadcrumbItem={id ? "Edit" : "Add"}
               hideSettingBtn={true}
               isRefresh={false}
 
             />
-             
+
             <Card>
               <CardBody>
                 <Row className="pt-4">
                   <Col lg={6}>
                     <Row>
-                      <Col  xl={6}>
+                      <Col xl={6}>
                         <Input
 
                           value={name}
                           onChange={event => {
-                              setName(event.target.value);
+                            setName(event.target.value);
                           }}
                           id="name"
 
@@ -153,12 +240,12 @@ useEffect(()=>{
                           required
                         />
                       </Col>
-                      <Col xl={6}  className="my-4 my-xl-0">
+                      <Col xl={6} className="my-4 my-xl-0">
                         <Input
                           // style={{ border: '1px solid red' }}
                           value={email}
                           onChange={event => {
-                              setEmail(event.target.value);
+                            setEmail(event.target.value);
                           }}
                           id="email"
                           className="form-control"
@@ -173,13 +260,13 @@ useEffect(()=>{
                           // style={{ border: '1px solid red' }}
                           value={nid}
                           onChange={event => {
-                              setNid(event.target.value);
+                            setNid(event.target.value);
                           }}
                           id="nid"
                           className="form-control"
                           type="number"
                           placeholder="Enter  NID Number"
-               
+
                         />
                       </Col>
                       <Col lx={6} className="my-4 my-xl-0">
@@ -187,7 +274,7 @@ useEffect(()=>{
                           // style={{ border: '1px solid red' }}
                           value={phone}
                           onChange={event => {
-                              setPhone((event.target.value).toString());
+                            setPhone((event.target.value).toString());
                           }}
                           id="phone"
                           className="form-control"
@@ -198,7 +285,7 @@ useEffect(()=>{
                       </Col>
                     </Row>
                     <Row>
-                      <Col>
+                      <Col >
                         <div className="form-group mb-0">
                           <Flatpickr
                             className="form-control d-block"
@@ -215,7 +302,31 @@ useEffect(()=>{
                         </div>
                       </Col>
                     </Row>
-                    
+
+                    {
+                      id && <Row className="my-4">
+                        <Col lx={6} className="d-flex">
+                          <Input
+                            // style={{ border: '1px solid red' }}
+                            value={biddingPercent}
+                            onChange={event => {
+                              setBiddingPercent((event.target.value).toString());
+                            }}
+                            id="biddingPercent"
+                            className="form-control"
+                            type="number"
+                            placeholder="Enter Bidding %"
+                            required
+                          />
+                          <div className="input-group-append">
+                            <span className="input-group-text h-100">
+                              <i className="fa fa-percent" />
+                            </span>
+                          </div>
+                        </Col>
+                      </Row>
+                    }
+
                   </Col>
                   <Col lg={6} className="d-flex flex-column align-items-center mt-md-4 mt-lg-0">
                     {/* PARTNER IMAGE */}
@@ -225,41 +336,41 @@ useEffect(()=>{
                         style={{ width: "385px", height: "160px" }}
                         className="cursor-pointer"
                       >
-                        <div  className="d-flex justify-content-center align-content-center h-100" style={{border: "1px solid rgb(207 207 207)"}}>
+                        <div className="d-flex justify-content-center align-content-center h-100" style={{ border: "1px solid rgb(207 207 207)" }}>
                           {partnerImage
-                            ?  <ImageView>
-                                <>
+                            ? <ImageView>
+                              <>
                                 <img
-                              src={partnerImage}
-                              className="img-thumbnail img__view"
-                              style={{ width: "100%", height: "100%", objectFit: "contain" }}
-                              alt=""
-                            />
-                            <div className="button__wrapper">
-                            <button
-                              className="btn btn-danger "
-                              // onClick={() => handleDelete(item.id)}
-                              onClick={() => setPartnerImage("")}
-                            ><i className="fa fa-trash" /></button>
-                            
-                            </div>
-                                </>
+                                  src={partnerImage}
+                                  className="img-thumbnail img__view"
+                                  style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                                  alt=""
+                                />
+                                <div className="button__wrapper">
+                                  <button
+                                    className="btn btn-danger "
+                                    // onClick={() => handleDelete(item.id)}
+                                    onClick={() => setPartnerImage("")}
+                                  ><i className="fa fa-trash" /></button>
+
+                                </div>
+                              </>
                             </ImageView>
                             : <div
-                            style={{width: "100%", height: "100%"}}
-                            className="d-flex justify-content-center align-items-center"
-                            onClick={() => handleImage(1)}>
+                              style={{ width: "100%", height: "100%" }}
+                              className="d-flex justify-content-center align-items-center"
+                              onClick={() => handleImage(1)}>
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 style={{ width: "50px" }}
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
-                                
+
                               >
                                 <path strokeWidth="2" d="M12 4v16m8-8H4" />
                               </svg>
-                            </div> }
+                            </div>}
                         </div>
                       </Card>
                     </div>
@@ -272,37 +383,37 @@ useEffect(()=>{
                         style={{ width: "385px", height: "160px" }}
                         className="cursor-pointer"
                       >
-                        <div className="d-flex justify-content-center align-content-center h-100" style={{border: "1px solid rgb(207 207 207)"}}>
-                        {nidFrontImage
-                            ?  <ImageView>
-                                <>
+                        <div className="d-flex justify-content-center align-content-center h-100" style={{ border: "1px solid rgb(207 207 207)" }}>
+                          {nidFrontImage
+                            ? <ImageView>
+                              <>
                                 <img
-                              src={nidFrontImage}
-                              className="img-thumbnail img__view"
-                              style={{ width: "100%", height: "100%",objectFit: "contain"  }}
-                              alt=""
-                            />
-                            <div className="button__wrapper">
-                            <button
-                              className="btn btn-danger "
-                              // onClick={() => handleDelete(item.id)}
-                              onClick={() => setNidFrontImage("")}
-                            ><i className="fa fa-trash" /></button>
-                            
-                            </div>
-                                </>
+                                  src={nidFrontImage}
+                                  className="img-thumbnail img__view"
+                                  style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                                  alt=""
+                                />
+                                <div className="button__wrapper">
+                                  <button
+                                    className="btn btn-danger "
+                                    // onClick={() => handleDelete(item.id)}
+                                    onClick={() => setNidFrontImage("")}
+                                  ><i className="fa fa-trash" /></button>
+
+                                </div>
+                              </>
                             </ImageView>
                             : <div
-                            style={{width: "100%", height: "100%"}}
-                            className="d-flex justify-content-center align-items-center"
-                            onClick={() => handleImage(2)}>
+                              style={{ width: "100%", height: "100%" }}
+                              className="d-flex justify-content-center align-items-center"
+                              onClick={() => handleImage(2)}>
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 style={{ width: "50px" }}
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
-                                
+
                               >
                                 <path strokeWidth="2" d="M12 4v16m8-8H4" />
                               </svg>
@@ -319,37 +430,37 @@ useEffect(()=>{
                         style={{ width: "385px", height: "160px" }}
                         className="cursor-pointer"
                       >
-                        <div className="d-flex justify-content-center align-content-center h-100" style={{border: "1px solid rgb(207 207 207)"}}>
-                        {nidBackImage
-                            ?  <ImageView>
-                                <>
+                        <div className="d-flex justify-content-center align-content-center h-100" style={{ border: "1px solid rgb(207 207 207)" }}>
+                          {nidBackImage
+                            ? <ImageView>
+                              <>
                                 <img
-                              src={nidBackImage}
-                              className="img-thumbnail img__view"
-                              style={{ width: "100%", height: "100%",objectFit: "contain" }}
-                              alt=""
-                            />
-                            <div className="button__wrapper">
-                            <button
-                              className="btn btn-danger "
-                              // onClick={() => handleDelete(item.id)}
-                              onClick={() => setNidBackImage("")}
-                            ><i className="fa fa-trash" /></button>
-                            
-                            </div>
-                                </>
+                                  src={nidBackImage}
+                                  className="img-thumbnail img__view"
+                                  style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                                  alt=""
+                                />
+                                <div className="button__wrapper">
+                                  <button
+                                    className="btn btn-danger "
+                                    // onClick={() => handleDelete(item.id)}
+                                    onClick={() => setNidBackImage("")}
+                                  ><i className="fa fa-trash" /></button>
+
+                                </div>
+                              </>
                             </ImageView>
                             : <div
-                            style={{width: "100%", height: "100%"}}
-                            className="d-flex justify-content-center align-items-center"
-                            onClick={() => handleImage(3)}>
+                              style={{ width: "100%", height: "100%" }}
+                              className="d-flex justify-content-center align-items-center"
+                              onClick={() => handleImage(3)}>
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 style={{ width: "50px" }}
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
-                                
+
                               >
                                 <path strokeWidth="2" d="M12 4v16m8-8H4" />
                               </svg>
@@ -360,15 +471,15 @@ useEffect(()=>{
                   </Col>
                 </Row>
                 <div className='d-flex justify-content-center'>
-                <Button onClick={handleSubmit} className='mt-5' color="primary" style={{width: "250px"}}>
+                  <Button onClick={handleSubmit} className='mt-5' color="primary" style={{ width: "250px" }}>
 
-                {loading ?
-                
-                  <Spinner animation="border" variant="info" size='sm' />
-                : "Add"
-                
-                }
-                </Button>
+                    {loading ?
+
+                      <Spinner animation="border" variant="info" size='sm' />
+                      : id ? "Edit" : "Add"
+
+                    }
+                  </Button>
                 </div>
               </CardBody>
             </Card>
@@ -440,9 +551,10 @@ useEffect(()=>{
 
 
 const ImageView = styled.div`
-  /* width: 100% !important;
-  max-width: 300pximport partnerReducer from './../../../store/partner/partnerReducers';
-; */
+   width: 100% !important;
+  max-width: 300px;
+
+
   position: relative;
   width: 100%;
 
@@ -464,8 +576,8 @@ const ImageView = styled.div`
     text-align: center;
 
     .remove__btn {
-      /* background-color: yellow; */
-      font-size: 18px;
+      background-color: yellow;
+       font-size: 18px; 
       color: red;
     }
   }
@@ -477,7 +589,7 @@ const ImageView = styled.div`
     .button__wrapper {
       opacity: 1;
     }
-  }
+  } 
 `;
 
 
