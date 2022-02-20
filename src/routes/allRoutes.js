@@ -133,7 +133,8 @@ import CreateAdmin from "../pages/AdminControl/Admins/CreateAdmin/CreateAdmin";
 import Role from "../pages/AdminControl/Role/Role";
 import CarTypeDetails from "../pages/Car/CarTypeDetails/CarTypeDetails";
 import PartnerAdd from "../pages/Partners/PartnerAdd/PartnerAdd";
-import PartnerEdit from "../pages/Partners/PartnerEdit/PartnerEdit"
+
+import PartnerDetails from "../pages/Partners/PartnerDetails/PartnerDetails";
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
 
@@ -157,6 +158,7 @@ const userRoutes = [
   { path: "/partner/list", component: PartnersList },
   { path: "/partner/add", component: PartnerAdd },
   { path: "/partner/edit/:id", component: PartnerAdd },
+  { path: "/partner/:id", component: PartnerDetails },
 
   // CAR
 

@@ -7,6 +7,7 @@ import {
   Col,
   Container,
   Row,
+  Spinner,
 
 
 } from "reactstrap";
@@ -60,6 +61,13 @@ const PartnersList = () => {
     }
   }, [searchKey, statusKey, createdByKey]);
 
+
+
+  const callPartnerList = (refresh = false) => {
+    // console.log(searchKey);
+    dispatch(getPartners(refresh));
+  };
+
   const searchKeyListener = (value) => {
 
     setOpen(true)
@@ -67,14 +75,27 @@ const PartnersList = () => {
 
   }
 
-  const callPartnerList = (refresh = false) => {
-    // console.log(searchKey);
-    dispatch(getPartners(refresh));
-  };
+
+
+  // DEBOUNCE SEARCH 
+
+  const debounce = (func, delay) => {
+    // console.log("yes");
+    let timer;
+    return (() => {
+
+      if (timer) {
+        clearTimeout(timer);
+      }
+
+      timer = setTimeout(() => {
+        func();
+      }, delay)
+    })
+  }
 
 
 
- 
 
   return (
     <React.Fragment>
@@ -174,6 +195,7 @@ const PartnersList = () => {
               <Table
                 id="tech-companies-1"
                 className="table table__wrapper table-striped table-bordered table-hover text-center"
+                
               >
                 <Thead>
                   <Tr>
@@ -184,7 +206,7 @@ const PartnersList = () => {
                     <Th>Action</Th>
                   </Tr>
                 </Thead>
-                <Tbody>
+                <Tbody style={{position: 'relative'}}>
                   {partners.map((partner, index) => {
                     return (
                       <Tr
@@ -223,14 +245,14 @@ const PartnersList = () => {
                         </Td>
                         <Td>
                           <button
-                            className="btn btn-info me-3"
-                          onClick={() => history.push(`/partner/edit/${partner.id}`)}
+                             className="btn btn-info me-3"
+                            onClick={() => history.push(`/partner/edit/${partner.id}`)}
                           >
                             <i className="fa fa-edit" />
                           </button>
                           <button
                             className="btn btn-info "
-                          // onClick={() => handleEditColor(color.id)}
+                          onClick={() =>  history.push(`/partner/${partner.id}`)}
                           >
                             <i className="fa fa-eye" />
                           </button>
@@ -239,6 +261,14 @@ const PartnersList = () => {
                     );
                   })}
                 </Tbody>
+                {loading && 
+                  <Spinner
+                  style={{position: "fixed", left: "50%", top: "50%"}}
+                  animation="border"
+                  variant="success"
+                  
+                />
+                 }
               </Table>
             </CardBody>
           </Card>

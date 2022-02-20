@@ -86,7 +86,7 @@ export const getPartners = (refresh = false,page = 1) => async (
         }
       });
 
-      console.log("data",data);
+      // console.log("data",data);
 
       if (status) {
         dispatch({
@@ -121,7 +121,6 @@ export const editPartner = partnerData => async dispatch => {
       data: partnerData
     });
 
-    console.log(data);
 
     if (data.status) {
       toast.success(data.message, {
@@ -134,10 +133,12 @@ export const editPartner = partnerData => async dispatch => {
         draggable: true,
         progress: undefined
       });
-        dispatch({
-          type: actionType.EDIT_PARTNER_REQUEST_SUCCESS,
-          payload: {message: data.message, partner: data.data.partner}
-        });
+        if(data.data.partner){
+          dispatch({
+            type: actionType.EDIT_PARTNER_REQUEST_SUCCESS,
+            payload: {message: data.message, partner: data.data.partner}
+          });
+        }
       
     } else {
       toast.success(data.error, {
