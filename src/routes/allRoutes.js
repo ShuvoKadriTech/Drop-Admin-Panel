@@ -135,6 +135,7 @@ import CarTypeDetails from "../pages/Car/CarTypeDetails/CarTypeDetails";
 import PartnerAdd from "../pages/Partners/PartnerAdd/PartnerAdd";
 
 import PartnerDetails from "../pages/Partners/PartnerDetails/PartnerDetails";
+import DriverAdd from "../pages/Driver/DriverAdd/DriverAdd";
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
 
@@ -159,6 +160,10 @@ const userRoutes = [
   { path: "/partner/add", component: PartnerAdd },
   { path: "/partner/edit/:id", component: PartnerAdd },
   { path: "/partner/:id", component: PartnerDetails },
+
+  // DRIVER
+
+  {path: "/driver/add", component: DriverAdd },
 
   // CAR
 

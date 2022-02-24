@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardBody, Col, Container, Row } from "reactstrap";
+import { Card, CardBody, CardTitle, Col, Container, Row, Table } from "reactstrap";
 import styled from "styled-components";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
@@ -8,6 +8,7 @@ import { useHistory, useParams } from "react-router-dom";
 import requestApi from "../../../network/httpRequest";
 import { GET_SINGLE_CAR_TYPE, SINGLE_PARTNER } from "../../../network/Api";
 import Lightbox from "react-image-lightbox";
+import { Tbody, Th, Thead, Tr } from "react-super-responsive-table";
 
 
 const PartnerDetails = () => {
@@ -57,7 +58,15 @@ const PartnerDetails = () => {
     }
   };
 
+// ADD NEW DRIVER 
 
+const addNewDriver = () =>{
+  history.push({
+    pathname: '/driver/add',
+    search: `?pID=${id}`,
+    // state: { detail: 'some_value' }
+});
+}
 
   return (
     <React.Fragment>
@@ -188,6 +197,146 @@ const PartnerDetails = () => {
                 </Row>
               </CardBody>
             </Card>
+
+
+
+            <Row>
+              <Col xl={6}>
+
+                <div className="table-rep-plugin">
+                  <div
+                    className="table-responsive mb-0"
+                    data-pattern="priority-columns"
+                  >
+                    <Card>
+                      <CardBody>
+                        <CardTitle className="d-flex justify-content-between"> 
+                        
+                        <h4>Driver List</h4>
+                        <div>
+                          <button
+                            onClick={addNewDriver}
+                            className="btn btn-success"
+                          >
+                            Add New
+                          </button>
+                        </div>
+                        
+                        </CardTitle>
+                        
+                        <Table
+                          id="tech-companies-1"
+                          className="table table-striped table-bordered table-hover text-center"
+                        >
+                          <Thead>
+                            <Tr>
+                              <Th>Serial No</Th>
+                              <Th>Color Name</Th>
+                              <Th>Color Code</Th>
+                              <Th>Action</Th>
+                            </Tr>
+                          </Thead>
+                          {/* <Tbody>
+                            {colors.map((color, index) => {
+                              return (
+                                <Tr
+                                  key={index}
+                                  className="align-middle"
+                                  style={{
+                                    fontSize: "15px",
+                                    fontWeight: "500"
+                                  }}
+                                >
+                                  <Th>
+                                    {index + 1}
+                                  </Th>
+                                  <Td>
+                                    {color.name}
+                                  </Td>
+                                  <Td style={{ color: `${color.colorCode}` }}>
+                                    {color.colorCode}
+                                  </Td>
+                                  <Td>
+                                    <button
+                                      className="btn btn-info "
+                                      onClick={() => handleEditColor(color.id)}
+                                    >
+                                      <i className="fa fa-edit" />
+                                    </button>
+                                  </Td>
+                                </Tr>
+                              );
+                            })}
+                          </Tbody> */}
+                        </Table>
+                      </CardBody>
+                    </Card>
+                  </div>
+                </div>
+              </Col>
+              <Col xl={6}>
+                <div className="table-rep-plugin">
+                  <div
+                    className="table-responsive mb-0"
+                    data-pattern="priority-columns"
+                  >
+                    <Card>
+                      <CardBody>
+                        <CardTitle className="h4"> Car List</CardTitle>
+
+                        <Table
+                          id="tech-companies-1"
+                          className="table table-striped table-bordered table-hover text-center"
+                        >
+                          <Thead>
+                            <Tr>
+                              <Th>Serial No</Th>
+                              <Th>Color Name</Th>
+                              <Th>Color Code</Th>
+                              <Th>Action</Th>
+                            </Tr>
+                          </Thead>
+                          {/* <Tbody>
+                            {colors.map((color, index) => {
+                              return (
+                                <Tr
+                                  key={index}
+                                  className="align-middle"
+                                  style={{
+                                    fontSize: "15px",
+                                    fontWeight: "500"
+                                  }}
+                                >
+                                  <Th>
+                                    {index + 1}
+                                  </Th>
+                                  <Td>
+                                    {color.name}
+                                  </Td>
+                                  <Td style={{ color: `${color.colorCode}` }}>
+                                    {color.colorCode}
+                                  </Td>
+                                  <Td>
+                                    <button
+                                      className="btn btn-info "
+                                      onClick={() => handleEditColor(color.id)}
+                                    >
+                                      <i className="fa fa-edit" />
+                                    </button>
+                                  </Td>
+                                </Tr>
+                              );
+                            })}
+                          </Tbody> */}
+                        </Table>
+                      </CardBody>
+                    </Card>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+
+
 
           </Container>
         </div>

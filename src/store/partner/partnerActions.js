@@ -80,7 +80,7 @@ export const getPartners = (refresh = false,page = 1) => async (
         params: {
           searchKey: searchKey,
           page: page,
-          pageSize: 5,
+          pageSize: 10,
           status: statusKey,
           createdBy: createdByKey
         }

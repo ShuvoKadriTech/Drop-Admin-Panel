@@ -191,7 +191,7 @@ const PartnersList = () => {
 
                 </Col>
               </Row>
-              <CardTitle className="h4"> Car List</CardTitle>
+              <CardTitle className="h4"> Partner List</CardTitle>
               <Table
                 id="tech-companies-1"
                 className="table table__wrapper table-striped table-bordered table-hover text-center"

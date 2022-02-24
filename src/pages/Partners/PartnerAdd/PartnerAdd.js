@@ -106,15 +106,7 @@ const PartnerAdd = () => {
 
   const handleImage = id => {
 
-    if (id == 1) {
-      setImageId(1);
-    }
-    if (id == 2) {
-      setImageId(2);
-    }
-    if (id == 3) {
-      setImageId(3);
-    }
+    setImageId(id)
     setmodal_fullscreen(true);
   };
 
