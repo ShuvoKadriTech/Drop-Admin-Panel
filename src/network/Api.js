@@ -67,4 +67,8 @@ export const ALL_PARTNER = ADMIN_ENDPOINT + "/partner";
 export const SINGLE_PARTNER = ADMIN_ENDPOINT + "/partner/";
 export const EDIT_PARTNER = ADMIN_ENDPOINT + "/partner/edit";
 
+// ADD DRIVER
+
+export const ADD_DRIVER = ADMIN_ENDPOINT + "/driver/add";
+
 // END ADMIN API

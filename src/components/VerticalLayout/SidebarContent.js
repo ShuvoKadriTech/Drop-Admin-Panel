@@ -237,7 +237,27 @@ const SidebarContent = props => {
                 </li>
               </ul>
             </li>
-
+            {/* DRIVER MENU */}
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="ti-user" />
+                <span>
+                  {props.t("Driver")}
+                </span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/driver/list">
+                    {props.t("List")}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/driver/add">
+                    {props.t("Add")}
+                  </Link>
+                </li>
+              </ul>
+            </li>
             {/* CAR TYPES */}
 
             <li>

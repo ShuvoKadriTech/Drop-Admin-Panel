@@ -7,26 +7,27 @@ import {
   Col,
   Container,
   Row,
-  Spinner,
-
-
+  Spinner
 } from "reactstrap";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
-import { getPartners, updateSearchKey, updateStatusKey, updateCreatedByKey } from "../../../store/partner/partnerActions";
+import {
+  getPartners,
+  updateSearchKey,
+  updateStatusKey,
+  updateCreatedByKey
+} from "../../../store/partner/partnerActions";
 import AppPagination from "../../../components/AppPagination";
-import styled from 'styled-components';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import styled from "styled-components";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
 
-
 const PartnersList = () => {
-
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -34,11 +35,19 @@ const PartnersList = () => {
   const [isZoom, setIsZoom] = useState(false);
   const [partnerImage, setPartnerImage] = useState(null);
 
-  const { loading, message, error, paging, hasNextPage, currentPage, hasPreviousPage, partners, searchKey, statusKey, createdByKey } = useSelector(
-    state => state.partnerReducer
-  );
-
-
+  const {
+    loading,
+    message,
+    error,
+    paging,
+    hasNextPage,
+    currentPage,
+    hasPreviousPage,
+    partners,
+    searchKey,
+    statusKey,
+    createdByKey
+  } = useSelector(state => state.partnerReducer);
 
   // useEffect(
   //   () => {
@@ -47,55 +56,54 @@ const PartnersList = () => {
   //   []
   // );
 
-
-  useEffect(() => {
-    if ((searchKey && statusKey && createdByKey) || (searchKey && statusKey) || (searchKey && createdByKey) || (statusKey && createdByKey) || searchKey || statusKey || createdByKey) {
-      callPartnerList(true);
-    } else {
-      if (open) {
+  useEffect(
+    () => {
+      if (
+        (searchKey && statusKey && createdByKey) ||
+        (searchKey && statusKey) ||
+        (searchKey && createdByKey) ||
+        (statusKey && createdByKey) ||
+        searchKey ||
+        statusKey ||
+        createdByKey
+      ) {
         callPartnerList(true);
       } else {
-        callPartnerList();
+        if (open) {
+          callPartnerList(true);
+        } else {
+          callPartnerList();
+        }
       }
-
-    }
-  }, [searchKey, statusKey, createdByKey]);
-
-
+    },
+    [searchKey, statusKey, createdByKey]
+  );
 
   const callPartnerList = (refresh = false) => {
     // console.log(searchKey);
     dispatch(getPartners(refresh));
   };
 
-  const searchKeyListener = (value) => {
+  const searchKeyListener = value => {
+    setOpen(true);
+    dispatch(updateSearchKey(value));
+  };
 
-    setOpen(true)
-    dispatch(updateSearchKey(value))
-
-  }
-
-
-
-  // DEBOUNCE SEARCH 
+  // DEBOUNCE SEARCH
 
   const debounce = (func, delay) => {
     // console.log("yes");
     let timer;
-    return (() => {
-
+    return () => {
       if (timer) {
         clearTimeout(timer);
       }
 
       timer = setTimeout(() => {
         func();
-      }, delay)
-    })
-  }
-
-
-
+      }, delay);
+    };
+  };
 
   return (
     <React.Fragment>
@@ -113,12 +121,12 @@ const PartnersList = () => {
 
           {isZoom
             ? <Lightbox
-              mainSrc={partnerImage}
-              enableZoom={true}
-              onCloseRequest={() => {
-                setIsZoom(!isZoom);
-              }}
-            />
+                mainSrc={partnerImage}
+                enableZoom={true}
+                onCloseRequest={() => {
+                  setIsZoom(!isZoom);
+                }}
+              />
             : null}
 
           <Card>
@@ -127,51 +135,58 @@ const PartnersList = () => {
                 <Col md={3}>
                   <div>
                     <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                      <InputLabel id="demo-simple-select-label">
+                        Status
+                      </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={statusKey}
                         label="Status"
-                        onChange={event => dispatch(updateStatusKey(event.target.value))}
+                        onChange={event =>
+                          dispatch(updateStatusKey(event.target.value))}
                       >
-                        <MenuItem value={"all"} active>All</MenuItem>
+                        <MenuItem value={"all"} active>
+                          All
+                        </MenuItem>
                         <MenuItem value={"pending"}>Pending</MenuItem>
                         <MenuItem value={"block"}>Block</MenuItem>
-                        <MenuItem value={"permanent-block"}>Permanent Block</MenuItem>
+                        <MenuItem value={"permanent-block"}>
+                          Permanent Block
+                        </MenuItem>
                       </Select>
                     </FormControl>
                   </div>
                 </Col>
                 <Col md={6} className="d-flex align-items-center">
                   <SearchWrapper>
-
-
                     <div className="search__wrapper">
-                      <i className='fa fa-search'></i>
+                      <i className="fa fa-search" />
                       <input
                         className="form-control"
                         type="search"
                         placeholder="Find Partner by name or email or phone "
                         id="search"
                         value={searchKey}
-                        onChange={event => searchKeyListener(event.target.value)}
+                        onChange={event =>
+                          searchKeyListener(event.target.value)}
                       />
                     </div>
-
-
                   </SearchWrapper>
                 </Col>
                 <Col md={3}>
                   <div>
                     <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">Created By</InputLabel>
+                      <InputLabel id="demo-simple-select-label">
+                        Created By
+                      </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={createdByKey}
                         label="CreatedBy"
-                        onChange={event => dispatch(updateCreatedByKey(event.target.value))}
+                        onChange={event =>
+                          dispatch(updateCreatedByKey(event.target.value))}
                       >
                         <MenuItem value={"admin"}>Admin</MenuItem>
                         <MenuItem value={"self"}>Self</MenuItem>
@@ -186,16 +201,12 @@ const PartnersList = () => {
           <Card>
             <CardBody>
               <Row className="mb-3">
-
-                <Col md={3} className="text-end">
-
-                </Col>
+                <Col md={3} className="text-end" />
               </Row>
               <CardTitle className="h4"> Partner List</CardTitle>
               <Table
                 id="tech-companies-1"
                 className="table table__wrapper table-striped table-bordered table-hover text-center"
-                
               >
                 <Thead>
                   <Tr>
@@ -206,7 +217,7 @@ const PartnersList = () => {
                     <Th>Action</Th>
                   </Tr>
                 </Thead>
-                <Tbody style={{position: 'relative'}}>
+                <Tbody style={{ position: "relative" }}>
                   {partners.map((partner, index) => {
                     return (
                       <Tr
@@ -222,37 +233,41 @@ const PartnersList = () => {
                             <img
                               onClick={() => {
                                 setIsZoom(true);
-                                setPartnerImage(partner.img)
+                                setPartnerImage(partner.img);
                               }}
                               className="img-fluid cursor-pointer"
                               alt=""
                               src={partner.img}
-                              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "contain"
+                              }}
                             />
-
                           </div>
-
                         </Th>
 
                         <Td>
                           {partner.name}
                         </Td>
-                        <Td >
+                        <Td>
                           {partner.email}
                         </Td>
-                        <Td >
+                        <Td>
                           {partner.phone}
                         </Td>
                         <Td>
                           <button
-                             className="btn btn-info me-3"
-                            onClick={() => history.push(`/partner/edit/${partner.id}`)}
+                            className="btn btn-info me-xl-3"
+                            onClick={() =>
+                              history.push(`/partner/edit/${partner.id}`)}
                           >
                             <i className="fa fa-edit" />
                           </button>
                           <button
                             className="btn btn-info "
-                          onClick={() =>  history.push(`/partner/${partner.id}`)}
+                            onClick={() =>
+                              history.push(`/partner/${partner.id}`)}
                           >
                             <i className="fa fa-eye" />
                           </button>
@@ -261,26 +276,24 @@ const PartnersList = () => {
                     );
                   })}
                 </Tbody>
-                {loading && 
+                {loading &&
                   <Spinner
-                  style={{position: "fixed", left: "50%", top: "50%"}}
-                  animation="border"
-                  variant="success"
-                  
-                />
-                 }
+                    style={{ position: "fixed", left: "50%", top: "50%" }}
+                    animation="border"
+                    variant="success"
+                  />}
               </Table>
             </CardBody>
           </Card>
           <Row>
-            <Col xl={12} >
+            <Col xl={12}>
               <div className="d-flex justify-content-center">
                 <AppPagination
                   paging={paging}
                   hasNextPage={hasNextPage}
                   hasPreviousPage={hasPreviousPage}
                   currentPage={currentPage}
-                  lisener={(page) => dispatch(getPartners(true, page))}
+                  lisener={page => dispatch(getPartners(true, page))}
                 />
               </div>
             </Col>
@@ -292,30 +305,23 @@ const PartnersList = () => {
 };
 
 const SearchWrapper = styled.div`
+  width: 100%;
+  border: 1px solid black;
+  border-radius: 6px;
 
-width: 100%;
-border: 1px solid black;
-border-radius: 6px;
-
-
-  .search__wrapper{
-
+  .search__wrapper {
     padding: 7px 10px;
     display: flex;
     align-items: center;
 
-    i{
+    i {
       font-size: 15px;
-      
     }
-    input{
+    input {
       border: none;
       color: black !important;
     }
   }
-
-  
-
-`
+`;
 
 export default PartnersList;

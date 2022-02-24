@@ -10,11 +10,13 @@ import {
   PaginationItem,
   PaginationLink,
   Label,
-  Dropdown, DropdownToggle, DropdownItem, DropdownMenu, Modal,
+  Dropdown,
+  DropdownToggle,
+  DropdownItem,
+  DropdownMenu,
+  Modal
 } from "reactstrap";
 import Select from "react-select";
-import { Link } from "react-router-dom";
-
 //Import Breadcrumb
 import BreadcrumbGallery from "../../components/Common/BreadcrumbGallery";
 
@@ -35,6 +37,7 @@ import {
   selectFolder
 } from "../../store/action/uploadImage.action";
 import FormUpload from "../Forms/FormUpload";
+import { Link, useHistory, useLocation } from "react-router-dom";
 
 const ImageSelectionDialog = ({ lisener }) => {
   const {
@@ -49,6 +52,8 @@ const ImageSelectionDialog = ({ lisener }) => {
     hasNextPage
   } = useSelector(state => state.galleryReducer);
   const dispatch = useDispatch();
+  const { search, pathname } = useLocation();
+  const history = useHistory();
 
   const { folderList, selectedFolder } = useSelector(
     state => state.uploadImage
@@ -82,11 +87,11 @@ const ImageSelectionDialog = ({ lisener }) => {
 
   useEffect(
     () => {
-      if(!modal_fullscreen){
+      if (!modal_fullscreen) {
         dispatch(getGalleryList({ folder: selectedFolder }));
       }
     },
-    [selectedFolder,modal_fullscreen]
+    [selectedFolder, modal_fullscreen]
   );
 
   useEffect(
@@ -95,6 +100,21 @@ const ImageSelectionDialog = ({ lisener }) => {
     },
     [totalImage]
   );
+
+  const selectImage = (gallery, key) => {
+    dispatch(selectImageGallery(gallery, key));
+  };
+
+  // useEffect(
+  //   () => {
+  //     if (partnerId) {
+  //       console.log(partnerId);
+  //       const params = new URLSearchParams({ pID: partnerId });
+  //       history.replace({ pathname: pathname, search: params.toString() });
+  //     }
+  //   },
+  //   [partnerId]
+  // );
 
   return (
     <React.Fragment>
@@ -126,7 +146,11 @@ const ImageSelectionDialog = ({ lisener }) => {
         <Container fluid>
           {/* Render Breadcrumbs */}
 
-          <BreadcrumbGallery maintitle="Gallery" breadcrumbItem="Gallery" setmodal_fullscreen={setmodal_fullscreen} />
+          <BreadcrumbGallery
+            maintitle="Gallery"
+            breadcrumbItem="Gallery"
+            setmodal_fullscreen={setmodal_fullscreen}
+          />
 
           <Col
             className="d-flex overflow-auto"
@@ -196,14 +220,10 @@ const ImageSelectionDialog = ({ lisener }) => {
                     {galleryList.map((gallery, key) => {
                       return (
                         <Col xl={3} md={6} key={key}>
-                          <Link
-                            to="#"
+                          <div
                             className="gallery-popup"
                             title="Open Imagination"
-                            onClick={() => {
-                              dispatch(selectImageGallery(gallery, key));
-                              // setpopovertop()
-                            }}
+                            onClick={() => selectImage(gallery, key)}
                           >
                             <div className="project-item">
                               <div className="overlay-container">
@@ -262,7 +282,7 @@ const ImageSelectionDialog = ({ lisener }) => {
                                 </div>
                               </div>
                             </div>
-                          </Link>
+                          </div>
                         </Col>
                       );
                     })}
@@ -319,48 +339,47 @@ const ImageSelectionDialog = ({ lisener }) => {
         </Container>
 
         <Modal
-        size="xl"
-        isOpen={modal_fullscreen}
-        toggle={() => {
-          setmodal_fullscreen(!modal_fullscreen);
-        }}
-        className="modal-fullscreen"
-      >
-        <div className="modal-header">
-          <h5 className="modal-title mt-0" id="exampleModalFullscreenLabel">
-            Select Image
-          </h5>
-          <button
-            onClick={() => {
-              setmodal_fullscreen(false);
-            }}
-            type="button"
-            className="close"
-            data-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div className="modal-body">
-          <FormUpload
-            lisener={() => setmodal_fullscreen(!modal_fullscreen)}
-          />
-        </div>
-        <div className="modal-footer">
-          <button
-            type="button"
-            onClick={() => {
-              setmodal_fullscreen(!modal_fullscreen);
-            }}
-            className="btn btn-secondary waves-effect"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
-        </div>
-      </Modal>
-
+          size="xl"
+          isOpen={modal_fullscreen}
+          toggle={() => {
+            setmodal_fullscreen(!modal_fullscreen);
+          }}
+          className="modal-fullscreen"
+        >
+          <div className="modal-header">
+            <h5 className="modal-title mt-0" id="exampleModalFullscreenLabel">
+              Select Image
+            </h5>
+            <button
+              onClick={() => {
+                setmodal_fullscreen(false);
+              }}
+              type="button"
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <FormUpload
+              lisener={() => setmodal_fullscreen(!modal_fullscreen)}
+            />
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              onClick={() => {
+                setmodal_fullscreen(!modal_fullscreen);
+              }}
+              className="btn btn-secondary waves-effect"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
       </div>
     </React.Fragment>
   );

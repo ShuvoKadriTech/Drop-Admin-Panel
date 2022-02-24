@@ -3,10 +3,11 @@ import { Button, Card, CardBody, Col, Container, Input, Modal, Row } from "react
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Flatpickr from "react-flatpickr";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
-
+import  Lightbox  from 'react-image-lightbox';
 
 import {
   Link,
+  useHistory,
   useLocation
 } from "react-router-dom";
 import styled from "styled-components";
@@ -15,22 +16,34 @@ import ImageSelectionDialog from "../../Utility/ImageSelectionDialog";
 import { removeAllSelectedGalleryImage } from "../../../store/action/galleryAction";
 import { useDispatch, useSelector } from "react-redux";
 import { Autocomplete, Box, TextField } from "@mui/material";
-import { getPartners } from "../../../store/partner/partnerActions";
+import { addPartner, getPartners, updateSearchKey } from "../../../store/partner/partnerActions";
 import requestApi from "../../../network/httpRequest";
 import { ALL_PARTNER } from "../../../network/Api";
+import { toast } from "react-toastify";
+import { addDriver } from "../../../store/Driver/driverAction";
 
 
 const DriverAdd = () => {
 
   const dispatch = useDispatch();
-  const { search } = useLocation();
+  const { search,pathname } = useLocation();
+  const history = useHistory();
+  
 
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
 
-  const [partners, setPartners] = useState([]);
-  const [searchKey, setSearchKey] = useState("");
+  const {
+    loading,
+  
+    partners,
+    searchKey
+ 
+  } = useSelector(state => state.partnerReducer);
+
+
+
 
   const [modal_fullscreen, setmodal_fullscreen] = useState(false);
   const [imageId, setImageId] = useState(null);
@@ -39,11 +52,12 @@ const DriverAdd = () => {
   const [nidBackImage, setNidBackImage] = useState("");
   const [licenseFrontImage, setLicenseFrontImage] = useState("");
   const [licenseBackImage, setLicenseBackImage] = useState("");
-  
-
-
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [openPartnerSearch, setOpenPartnerSearch] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedPartner, setSelectedPartner] = useState({});
+  const [isZoom, setIsZoom] = useState(false);
+ 
 
   const [driverInfo, setDriverInfo] = useState({
     name: "",
@@ -59,7 +73,10 @@ const DriverAdd = () => {
     const pID = searchParams.get('pID')
     // console.log("partner Id", pID)
     if (pID) {
-
+      const findPartner = partners.find(partner => partner.id == pID);
+      if(findPartner){
+        setSelectedPartner(findPartner)
+      }
     }
     else {
       setOpenPartnerSearch(true)
@@ -83,33 +100,97 @@ const DriverAdd = () => {
   }
 
 
-  const searchPartner = async () => {
-    console.log(searchKey);
-    const { data: { data, status, error } } = await requestApi().request(ALL_PARTNER, {
-      params: {
-        searchKey: searchKey,
-        page: 1,
-        pageSize: 50,
+
+  useEffect(
+    () => {
+      if (searchKey !== "" || searchKey !== null ) {
+        callPartnerList(true);
       }
-    });
-    const list = data.partners;
-    console.log("list",list);
-    setPartners(list)
-  }
+    },
+    [searchKey]
+  );
 
-  useEffect(() => {
 
-    if(searchKey !==""){
-      searchPartner();
-    }
+  const callPartnerList = (refresh = false) => {
+    // console.log(searchKey);
+    dispatch(getPartners(refresh));
+  };
 
-  },[searchKey])
+  const searchKeyListener = value => {
+    dispatch(updateSearchKey(value));
+  };
 
   const handleImage = id => {
-
+    const params = new URLSearchParams({"pID": selectedPartner.id });
+     history.replace({ pathname: pathname, search: params.toString() }); 
     setImageId(id)
     setmodal_fullscreen(true);
   };
+
+  // SELECT PARTNER 
+
+  const selectPartner = (id) =>{
+    // console.log("id", id)
+    setOpenPartnerSearch(false);
+  
+     const params = new URLSearchParams({"pID": id });
+     history.replace({ pathname: pathname, search: params.toString() });  
+
+  }
+
+  const handleSubmit = () =>{
+    if(driverInfo.name == "" || driverInfo.nid == "" || driverInfo.phone == "" || driverInfo.address == "" || driverInfo.licenseNumber== ""  || dateOfBirth == ""){
+      return toast.warn("Fill up All Required Field", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+
+    if ( driverInfo.phone.length !== 11) {
+      return toast.warn("Enter Driver Valid Phone number", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+
+    if (driverImage == "" || nidFrontImage == "" || nidBackImage == "" || licenseFrontImage == "" || licenseBackImage == "" ) {
+      return toast.warn("Please Select Driver Required  Images", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+
+    dispatch(addDriver({
+      ...driverInfo,
+      partnerId: selectedPartner.id,
+      img: driverImage,
+      dob:dateOfBirth,
+      nidFontPic: nidFrontImage,
+      nidBackPic: nidBackImage,
+      licenseFontPic: licenseFrontImage,
+      licenseBackPic: licenseBackImage,
+    }))
+
+    
+  }
 
   return (
     <React.Fragment>
@@ -125,23 +206,76 @@ const DriverAdd = () => {
 
             />
 
+{isZoom
+              ? <Lightbox
+                  mainSrc={selectedPartner.img}
+                  enableZoom={true}
+                  imageCaption={selectedPartner.name}
+                  onCloseRequest={() => {
+                    setIsZoom(!isZoom);
+                  }}
+                />
+              : null}
+
+            {/* Partner Details */}
+
+<Card>
+              <CardBody>
+                <Row>
+                  <Col
+                    md={6}
+                    sm={12}
+                    className="d-flex justify-content-center"
+                    style={{ borderRight: "1px solid lightgray" }}
+                  >
+                    <div style={{ width: "215px" }}>
+                      <img
+                        onClick={() => {
+                          setIsZoom(true);
+                        }}
+                        className="img-fluid cursor-pointer"
+                        alt="Partner"
+                        src={selectedPartner.img}
+                        width="100%"
+                      />
+                    </div>
+                  </Col>
+                  <Col
+                    md={6}
+                    sm={12}
+                    className="d-flex justify-content-between  align-items-center"
+                  >
+                    <div className="ps-4">
+                      <div>
+                        <h5>Partner Name:</h5>
+                        <Value>
+                          {selectedPartner.name}
+                        </Value>
+                      </div>
+                      <div>
+                        <h5>Phone:</h5>
+                        <Value>
+                          {selectedPartner.phone ? selectedPartner.phone : "N/A"}
+                        </Value>
+                      </div>
+                      <div>
+                        <h5>Gmail:</h5>
+                        <Value>
+                          {selectedPartner.email ? selectedPartner.email : "N/A"}
+                        </Value>
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              </CardBody>
+            </Card>
+
             <Card>
               <CardBody>
                 <Row className="pt-4">
                   <Col lg={6}>
                     <Row>
-                      <Col xl={6}>
-                        <Input
-
-                          id="partnerId"
-
-                          className="form-control"
-                          type="text"
-                          placeholder=""
-                          readOnly
-                        />
-                      </Col>
-                      <Col xl={6} className="my-4 my-xl-0">
+                      <Col xl={6} className="mt-4 my-xl-0">
                         <Input
 
                           value={driverInfo.name}
@@ -154,9 +288,21 @@ const DriverAdd = () => {
                           required
                         />
                       </Col>
+                      <Col xl={6} className="mt-4 my-xl-0">
+                        <Input
+                          // style={{ border: '1px solid red' }}
+                          value={driverInfo.email}
+                          onChange={handleChange('email')}
+                          id="email"
+                          className="form-control"
+                          type="email"
+                          placeholder="Enter  Email "
+
+                        />
+                      </Col>
                     </Row>
                     <Row className="my-xl-4">
-                      <Col xl={6}>
+                      <Col xl={6} className="mt-4 my-xl-0">
                         <Input
                           // style={{ border: '1px solid red' }}
                           value={driverInfo.nid}
@@ -168,7 +314,7 @@ const DriverAdd = () => {
 
                         />
                       </Col>
-                      <Col xl={6} className="my-4 my-xl-0">
+                      <Col xl={6} className="mt-4 my-xl-0">
                         <Input
                           // style={{ border: '1px solid red' }}
                           value={driverInfo.phone}
@@ -182,7 +328,7 @@ const DriverAdd = () => {
                       </Col>
                     </Row>
                     <Row>
-                      <Col xl={6}>
+                      <Col xl={6} className="mt-4 my-xl-0">
                         <div className="form-group mb-0">
                           <Flatpickr
                             className="form-control d-block"
@@ -198,10 +344,10 @@ const DriverAdd = () => {
                           />
                         </div>
                       </Col>
-                      <Col xl={6} className="my-4 my-xl-0">
+                      <Col xl={6} className="mt-4 mt-xl-0">
                         <Input
                           // style={{ border: '1px solid red' }}
-                          value={driverInfo.phone}
+                          value={driverInfo.licenseNumber}
                           onChange={handleChange('licenseNumber')}
                           id="licenseNumber"
                           className="form-control"
@@ -212,8 +358,8 @@ const DriverAdd = () => {
                       </Col>
                     </Row>
 
-                    <Row className="my-4">
-                      <Col xl={6} className="d-flex">
+                    <Row className="mt-4">
+                      <Col  className="d-flex">
                         <Input
                           // style={{ border: '1px solid red' }}
                           value={driverInfo.address}
@@ -225,21 +371,10 @@ const DriverAdd = () => {
                           required
                         />
                       </Col>
-                      <Col xl={6} className="my-4 my-xl-0">
-                        <Input
-                          // style={{ border: '1px solid red' }}
-                          value={driverInfo.email}
-                          onChange={handleChange('email')}
-                          id="email"
-                          className="form-control"
-                          type="email"
-                          placeholder="Enter  Email "
-
-                        />
-                      </Col>
+                      
                     </Row>
 
-                    <Row>
+                    <Row className="mt-4">
                       {/* License Front Image */}
                       <Col xl={6}>
                         <div className="d-flex justify-content-center flex-column">
@@ -261,7 +396,7 @@ const DriverAdd = () => {
                                       <button
                                         className="btn btn-danger "
                                       // onClick={() => handleDelete(item.id)}
-                                      // onClick={() => setPartnerImage("")}
+                                      onClick={() => setLicenseFrontImage("")}
                                       ><i className="fa fa-trash" /></button>
 
                                     </div>
@@ -311,7 +446,7 @@ const DriverAdd = () => {
                                         <button
                                           className="btn btn-danger "
                                         // onClick={() => handleDelete(item.id)}
-                                        // onClick={() => setPartnerImage("")}
+                                        onClick={() => setLicenseBackImage("")}
                                         ><i className="fa fa-trash" /></button>
 
                                       </div>
@@ -364,7 +499,7 @@ const DriverAdd = () => {
                                     <button
                                       className="btn btn-danger "
                                     // onClick={() => handleDelete(item.id)}
-                                    // onClick={() => setPartnerImage("")}
+                                    onClick={() => setDriverImage("")}
                                     ><i className="fa fa-trash" /></button>
 
                                   </div>
@@ -414,7 +549,7 @@ const DriverAdd = () => {
                                     <button
                                       className="btn btn-danger "
                                     // onClick={() => handleDelete(item.id)}
-                                    // onClick={() => setNidFrontImage("")}
+                                    onClick={() => setNidFrontImage("")}
                                     ><i className="fa fa-trash" /></button>
 
                                   </div>
@@ -465,7 +600,7 @@ const DriverAdd = () => {
                                   <button
                                     className="btn btn-danger "
                                   // onClick={() => handleDelete(item.id)}
-                                  // onClick={() => setNidBackImage("")}
+                                  onClick={() => setNidBackImage("")}
                                   ><i className="fa fa-trash" /></button>
 
                                 </div>
@@ -497,7 +632,7 @@ const DriverAdd = () => {
                 </Row>
                 <div className='d-flex justify-content-center'>
                   <Button
-                    // onClick={handleSubmit} 
+                    onClick={handleSubmit} 
                     className='mt-5' color="primary" style={{ width: "250px" }}>
 
                     {/* {loading ?
@@ -563,6 +698,7 @@ const DriverAdd = () => {
                   dispatch(removeAllSelectedGalleryImage());
                   setmodal_fullscreen(!modal_fullscreen);
                 }}
+                partnerId={selectedPartner.id}
               />
             </div>
             <div className="modal-footer">
@@ -600,15 +736,31 @@ const DriverAdd = () => {
                   <input
                     className="form-control"
                     type="search"
-                    placeholder="Find Partner by name or email or phone "
+                    placeholder="Find Driver by Name or phone "
                     id="search"
+                    autocomplete="off"
                     value={searchKey}
-                    onChange={event => setSearchKey(event.target.value)}
+                    onChange={event =>
+                      searchKeyListener(event.target.value)}
                   />
                 </div>
-
-
               </SearchWrapper>
+              <PartnerListWrapper >
+                  {partners.map((partner,index) =>(
+                    <div key={index} >
+                    <div className=" partner__wrapper" onClick={()=>selectPartner(partner.id)}>
+                      <div className="img__wrapper" >
+                        <img src={partner.img} alt="Partner"  />
+                      </div>
+                      <div className="ms-3 d-flex content__wrapper">
+                        <span>{partner.name}</span>
+                        <span className="ms-1">{partner.phone}</span>
+                      </div>
+                      
+                    </div>
+                    </div>
+                  ))}
+                </PartnerListWrapper>
             </div>
             <div className="modal-footer">
               <button
@@ -696,6 +848,50 @@ const ImageView = styled.div`
       opacity: 1;
     }
   } 
+`;
+
+const PartnerListWrapper = styled.div`
+ 
+  padding: 20px;
+  
+  .partner__wrapper{
+    display: flex;
+    align-items: center;
+    padding: 10px 0px;
+    cursor: pointer;
+    height: 80px;
+    &:hover{
+        background-color: #f0f1f2;
+    }
+
+    .img__wrapper{
+      width: 65px;
+      height: 70px;
+
+      img{
+        width: 100%;
+        object-fit: contain;
+        height: 100%;
+      }
+    }
+
+    .content__wrapper{
+      display: flex;
+      flex-direction: column;
+      span{
+        font-size: 17px;
+        color: black;
+        font-weight: 400;
+      }
+    }
+  }
+`
+
+const Value = styled.h5`
+  color: #458110;
+  font-style: italic;
+  font-weight: bold;
+  /* padding-left: 5px; */
 `;
 
 
