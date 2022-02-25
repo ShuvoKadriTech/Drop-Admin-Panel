@@ -10,42 +10,49 @@ import {
   FormGroup,
   Input,
   Row,
-  Spinner,
-  Table
+  Spinner
 } from "reactstrap";
 import { Col } from "reactstrap";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { useSelector, useDispatch } from "react-redux";
 import Lightbox from "react-image-lightbox";
 import styled from "styled-components";
-import { Tbody, Th, Thead, Tr } from "react-super-responsive-table";
+import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import {
+  addCarBrand,
   getCarType,
+  getCarTypeDetails,
   getCarTypes
 } from "../../../store/Car/carTypes/carTypesAction";
 import requestApi from "../../../network/httpRequest";
-import { GET_SINGLE_CAR_TYPE } from "../../../network/Api";
+import { GET_CAR_TYPE_FULL_DETAILS } from "../../../network/Api";
+import { toast } from "react-toastify";
 
 const CarTypeDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { loading, carTypes } = useSelector(state => state.carTypesReducer);
+  const { loading, carType, message, error } = useSelector(
+    state => state.carTypesReducer
+  );
 
-  const [carType, setCarType] = useState({});
+  // const [carType, setCarType] = useState({});
   const [isZoom, setIsZoom] = useState(false);
+  const [brandName, setBrandName] = useState("");
+  const [brandId, setBrandId] = useState(null);
+  const [activeStatus, setActiveStatus] = useState(0);
+  const [isEdit, setIsEdit] = useState(false)
+
+  const options = [
+    { label: "Active", value: 1 },
+    { label: "Deactive", value: 2 }
+  ];
 
   useEffect(
     () => {
       if (id) {
-        const carType = carTypes.find(carType => carType.id == id);
-
-        if (carType) {
-          setCarType(carType);
-        } else {
-          callApi(id);
-        }
+        dispatch(getCarTypeDetails(id));
       }
     },
     [id]
@@ -53,18 +60,91 @@ const CarTypeDetails = () => {
 
   // CALL API FOR GET CAR TYPE
 
-  const callApi = async carTypeId => {
-    const {
-      data: { status, data }
-    } = await requestApi().request(GET_SINGLE_CAR_TYPE, {
-      params: { id: carTypeId }
-    });
-    if (status) {
-      setCarType(data.carType);
-    } else {
-      //   route.push('/car-types', { replace: true })
+  // const callApi = async carTypeId => {
+  //   const {
+  //     data: { status, data }
+  //   } = await requestApi().request(GET_CAR_TYPE_FULL_DETAILS, {
+  //     params: { id: carTypeId }
+  //   });
+  //   if (status) {
+  //     setCarType(data.carType);
+  //     // console.log("data", data.carType);
+  //     setBrands(data.carType.carBrands);
+  //   } else {
+  //     //   route.push('/car-types', { replace: true })
+  //   }
+  // };
+
+  // SUBMIT CAR BRAND
+
+  const submitCarBrand = () => {
+    if (brandName == "" || brandName == null) {
+      return toast.warn("Enter a Brand  Name ", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+
+    if(brandId){
+
+    }else{
+      dispatch(
+        addCarBrand({
+          name: brandName,
+          carTypeId: carType.id
+        })
+      );
     }
   };
+
+  useEffect(
+    () => {
+      if (message) {
+        setBrandName("");
+        toast.success(message, {
+          // position: "bottom-right",
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        });
+      }
+      if (error) {
+        toast.success(error, {
+          // position: "bottom-right",
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined
+        });
+      }
+    },
+    [message, error]
+  );
+
+  // EDIT BRNAD 
+
+ const handleEdit = (brandId) =>{
+  if(brandId){
+    setBrandId(brandId);
+    const {name} = carType.carBrands.find(brand => brand.id == brandId)
+    setBrandName(name);
+    setIsEdit(true)
+    window.scrollTo(0, 1);
+  }
+ }
 
   return (
     <React.Fragment>
@@ -165,25 +245,45 @@ const CarTypeDetails = () => {
                     <CardTitle className="h4">Add Brand</CardTitle>
 
                     <Row className="mb-3">
-                      <Col xl={12} sm={12} md={12}>
+                      <Col>
                         <Input
                           // style={{ border: '1px solid red' }}
-                          //   value={colorName}
-                          onChange={event => {
-                            // setColorName(event.target.value);
-                          }}
-                          id="color"
+                          value={brandName}
+                          onChange={event => setBrandName(event.target.value)}
+                          id="brand"
                           className="form-control"
                           type="text"
-                          placeholder="Enter a Color Name"
+                          placeholder="Enter a Brand Name"
                           required
                         />
                       </Col>
                     </Row>
 
+                    {brandId && isEdit && <Row className="mb-3">
+                      <Col>
+                      <select
+                            style={{
+                              width: "100%",
+                              border: "1px solid lightgray",
+                              padding: "8px 0px",
+                              borderRadius: "6px"
+                            }}
+                            value={activeStatus}
+                            onChange={event =>
+                              setActiveStatus(event.target.value)}
+                          >
+                            {options.map((option, index) =>
+                              <option value={option.value} key={index}>
+                                {option.label}
+                              </option>
+                            )}
+                          </select>
+                      </Col>
+                    </Row>}
+
                     <Row>
-                      <Button color="primary">
-                        {"Add"}
+                      <Button color="primary" onClick={submitCarBrand}>
+                        {brandId ? "Edit" : "Add"}
                       </Button>
                     </Row>
                   </CardBody>
@@ -191,64 +291,70 @@ const CarTypeDetails = () => {
               </Col>
 
               <Col xl={8}>
-                <div className="table-rep-plugin">
-                  <div
-                    className="table-responsive mb-0"
-                    data-pattern="priority-columns"
-                  >
-                    <Card>
-                      <CardBody>
-                        <CardTitle className="h4"> Brand List</CardTitle>
+                <Card>
+                  <CardBody>
+                    <CardTitle className="h4"> Brand List</CardTitle>
 
-                        <Table
-                          id="tech-companies-1"
-                          className="table table-striped table-bordered table-hover text-center"
-                        >
-                          <Thead>
-                            <Tr>
-                              <Th>Serial No</Th>
-                              <Th>Color Name</Th>
-                              <Th>Color Code</Th>
-                              <Th>Action</Th>
-                            </Tr>
-                          </Thead>
-                          <Tbody>
-                            {/* {colors.map((color, index) => {
-                              return (
-                                <Tr
-                                  key={index}
-                                  className="align-middle"
-                                  style={{
-                                    fontSize: "15px",
-                                    fontWeight: "500"
-                                  }}
+                    <Table
+                      id="tech-companies"
+                      className="table table__wrapper table-striped table-bordered table-hover text-center"
+                    >
+                      <Thead>
+                        <Tr>
+                          <Th>Serial No</Th>
+                          <Th>Name</Th>
+                          <Th>Created At</Th>
+                          <Th>Action</Th>
+                        </Tr>
+                      </Thead>
+                      <Tbody>
+                        {carType?.carBrands?.map((brand, index) => {
+                          return (
+                            <Tr
+                              key={index}
+                              className="align-middle"
+                              style={{
+                                fontSize: "15px",
+                                fontWeight: "500"
+                              }}
+                            >
+                              <Td>
+                                {index + 1}
+                              </Td>
+
+                              <Td>
+                                {brand.name}
+                              </Td>
+                              <Td>
+                                {brand.createdAt}
+                              </Td>
+                              <Td>
+                                <button className="btn btn-sm btn-info"
+
+                                  onClick={()=>handleEdit(brand.id)}
+                                
                                 >
-                                  <Th>
-                                    {index + 1}
-                                  </Th>
-                                  <Td>
-                                    {color.name}
-                                  </Td>
-                                  <Td style={{ color: `${color.colorCode}` }}>
-                                    {color.colorCode}
-                                  </Td>
-                                  <Td>
-                                    <button
-                                      className="btn btn-info "
-                                      onClick={() => handleEditColor(color.id)}
-                                    >
-                                      <i className="fa fa-edit" />
-                                    </button>
-                                  </Td>
-                                </Tr>
-                              );
-                            })} */}
-                          </Tbody>
-                        </Table>
-                      </CardBody>
-                    </Card>
-                  </div>
-                </div>
+                                  <i className="fa fa-edit" />
+                                </button>
+
+                              </Td>
+                            </Tr>
+                          );
+                        })}
+                      </Tbody>
+                      {loading &&
+                        <Spinner
+                          style={{
+                            position: "fixed",
+                            left: "50%",
+                            top: "50%"
+                          }}
+                          animation="border"
+                          variant="success"
+                        />}
+                    </Table>
+                  </CardBody>
+                </Card>
               </Col>
             </Row>
           </Container>

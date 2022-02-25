@@ -13,21 +13,23 @@ import {
   ADD_CAR_TYPE_REQUEST_FAIL,
   CLEAR_SUCCESS_MESSAGE,
   GET_UPDATE_CAR_DATA,
-  GET_CAR_TYPE_REQUEST_SEND,
-  GET_CAR_TYPE_REQUEST_SUCCESS,
-  GET_CAR_TYPE_REQUEST_FAIL
+  GET_SINGLE_CAR_TYPE_REQUEST_SEND,
+  GET_SINGLE_CAR_TYPE_REQUEST_SUCCESS,
+  GET_SINGLE_CAR_TYPE_REQUEST_FAIL
 } from "../../actionType";
 import requestApi from "../../../network/httpRequest";
-import carTypesReducer from "./carTypesReducer";
+import * as actionType from "../../actionType";
 
 import {
   EDIT_CAR_TYPE,
   GET_CAR_TYPES,
   ADD_CAR_TYPE,
   GET_CAR_TYPE,
-  GET_SINGLE_CAR_TYPE
+  GET_SINGLE_CAR_TYPE,
+  ADD_CAR_BRAND
 } from "../../../network/Api";
 import { toast } from "react-toastify";
+import { GET_CAR_TYPE_FULL_DETAILS } from "./../../../network/Api";
 
 // ADD CAR TYPES
 
@@ -60,8 +62,6 @@ export const addCarType = carData => async (dispatch, getState) => {
         payload: { data, message }
       });
 
-      
-
       dispatch({
         type: CLEAR_SUCCESS_MESSAGE
       });
@@ -77,7 +77,6 @@ export const addCarType = carData => async (dispatch, getState) => {
         progress: undefined
       });
       dispatch({
-        
         type: ADD_CAR_TYPE_REQUEST_FAIL,
         payload: error
       });
@@ -125,29 +124,6 @@ export const getCarTypes = (refresh = false) => async (dispatch, getState) => {
   }
 };
 
-// DELETE CAR TYPES BY ID
-
-// export const deleteCarTypeRequestSend = id => {
-//   return {
-//     type: DELETE_CAR_TYPE_REQUEST_SEND,
-//     payload: id
-//   };
-// };
-
-// export const deleteCarTypeRequestSuccess = (id, message) => {
-//   return {
-//     type: DELETE_CAR_TYPE_REQUEST_SUCCESS,
-//     payload: { id, message }
-//   };
-// };
-
-// export const deleteCarTypeRequestError = error => {
-//   return {
-//     type: DELETE_CAR_TYPE_REQUEST_FAIL,
-//     payload: error
-//   };
-// };
-
 // EDIT CAR TYPE
 
 export const editCarType = carData => async dispatch => {
@@ -192,39 +168,66 @@ export const editCarType = carData => async dispatch => {
   }
 };
 
-// // GET SINGLE CAR TYPE
+export const getCarTypeDetails = carTypeId => async dispatch => {
+  try {
+    dispatch({
+      type: GET_SINGLE_CAR_TYPE_REQUEST_SEND
+    });
 
-// export const getCarType = typeId => async (dispatch, getState) => {
-//   try {
-//     const { carType } = getState().carTypesReducer;
+    const {
+      data: { status, data, error }
+    } = await requestApi().request(GET_CAR_TYPE_FULL_DETAILS, {
+      params: { id: carTypeId }
+    });
+    // console.log("car type", data);
+    if (status) {
+      dispatch({
+        type: GET_SINGLE_CAR_TYPE_REQUEST_SUCCESS,
+        payload: data.carType
+      });
+    } else {
+      dispatch({
+        type: GET_SINGLE_CAR_TYPE_REQUEST_FAIL,
+        payload: error
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: GET_SINGLE_CAR_TYPE_REQUEST_FAIL,
+      payload: error.message
+    });
+  }
+};
 
-//     if (carType == null || carType == {}) {
-//       dispatch({
-//         type: GET_CAR_TYPE_REQUEST_SEND
-//       });
+// ADD CAR TYPE BRAND
 
-//       const { data } = await requestApi().request(GET_SINGLE_CAR_TYPE, {
-//         params: typeId
-//       });
+export const addCarBrand = carBrand => async dispatch => {
+  // console.log("car brand", carBrand);
 
-//       console.log(data);
+  try {
+    dispatch({
+      type: actionType.ADD_BRAND_REQUEST_SEND
+    });
+    const { data } = await requestApi().request(ADD_CAR_BRAND, {
+      method: "POST",
+      data: carBrand
+    });
 
-//       if (data.status) {
-//         dispatch({
-//           type: GET_CAR_TYPE_REQUEST_SUCCESS,
-//           payload: data.data.carType
-//         });
-//       } else {
-//         dispatch({
-//           type: GET_CAR_TYPE_REQUEST_FAIL,
-//           payload: data.error
-//         });
-//       }
-//     }
-//   } catch (error) {
-//     dispatch({
-//       type: GET_CAR_TYPE_REQUEST_FAIL,
-//       payload: error.message
-//     });
-//   }
-// };
+    if (data.status) {
+      dispatch({
+        type: actionType.ADD_BRAND_REQUEST_SUCCESS,
+        payload: { message: data.message, carBrand: data.data.carBrand }
+      });
+    } else {
+      dispatch({
+        type: actionType.ADD_BRAND_REQUEST_FAIL,
+        payload: data.error
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.ADD_BRAND_REQUEST_FAIL,
+      payload: error.message
+    });
+  }
+};

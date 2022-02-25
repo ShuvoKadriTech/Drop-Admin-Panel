@@ -14,17 +14,18 @@ import {
   GET_SUCCESS_MESSAGE,
   CLEAR_SUCCESS_MESSAGE,
   GET_UPDATE_CAR_DATA,
-  GET_CAR_TYPE_REQUEST_SEND,
-  GET_CAR_TYPE_REQUEST_SUCCESS,
-  GET_CAR_TYPE_REQUEST_FAIL
+  GET_SINGLE_CAR_TYPE_REQUEST_SEND,
+  GET_SINGLE_CAR_TYPE_REQUEST_SUCCESS,
+  GET_SINGLE_CAR_TYPE_REQUEST_FAIL
 } from "../../actionType";
+import * as actionType from "../../actionType";
 
 const initialState = {
   loading: false,
   carTypes: [],
   error: null,
   message: null,
-  carType: null
+  carType: {}
 };
 
 const carTypesReducer = (state = initialState, action) => {
@@ -52,28 +53,6 @@ const carTypesReducer = (state = initialState, action) => {
         error: payload,
         message: null
       };
-
-    // DELETE CAR TYPE BY ID
-    // case DELETE_CAR_TYPE_REQUEST_SEND:
-    //   return {
-    //     ...state,
-    //     loading: true
-    //   };
-
-    // case DELETE_CAR_TYPE_REQUEST_SUCCESS:
-    //   // console.log(payload);
-    //   const { id, message } = payload;
-    //   const filtered = state.carTypes.filter(type => type.id !== id);
-    //   // console.log(filtered);
-    //   return {
-    //     ...state,
-    //     loading: false,
-    //     carTypes: filtered,
-    //     message: message
-    //   };
-
-    // case DELETE_CAR_TYPE_REQUEST_FAIL:
-    //   return { ...state, loading: false, error: payload };
 
     // EDIT CAR TYPE
 
@@ -146,28 +125,55 @@ const carTypesReducer = (state = initialState, action) => {
 
     // GET CAR TYPE
 
-    // case GET_CAR_TYPE_REQUEST_SEND:
-    //   return {
-    //     ...state,
-    //     loading: true
-    //   };
+    case GET_SINGLE_CAR_TYPE_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true
+      };
 
-    // case GET_CAR_TYPE_REQUEST_SUCCESS:
-    //   return {
-    //     ...state,
-    //     loading: false,
-    //     carType: payload,
-    //     error: null,
-    //     message: null
-    //   };
+    case GET_SINGLE_CAR_TYPE_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        carType: payload,
+        error: null,
+        message: null
+      };
 
-    // case GET_CAR_TYPE_REQUEST_FAIL:
-    //   return {
-    //     ...state,
-    //     loading: false,
-    //     error: payload,
-    //     message: null
-    //   };
+    case GET_SINGLE_CAR_TYPE_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+        message: null
+      };
+
+    // ADD CAR TYPE BRAND
+
+    case actionType.ADD_BRAND_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true
+      };
+    case actionType.ADD_BRAND_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        message: payload.message,
+        carType: {
+          ...state.carType,
+          carBrands: [...state.carType.carBrands, payload.carBrand]
+        },
+        error: null
+      };
+
+    case actionType.ADD_BRAND_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        message: null,
+        error: payload
+      };
 
     default:
       return state;

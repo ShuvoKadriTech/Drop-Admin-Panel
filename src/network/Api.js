@@ -39,6 +39,8 @@ export const DELETE_CAR_TYPE_PERMANENTLY =
 
 export const EDIT_CAR_TYPE = ADMIN_ENDPOINT + "/carType/editCarType";
 export const GET_SINGLE_CAR_TYPE = ADMIN_ENDPOINT + "/carType/details";
+export const GET_CAR_TYPE_FULL_DETAILS =
+  ADMIN_ENDPOINT + "/carType/full-details";
 
 // COLOR
 
@@ -70,5 +72,9 @@ export const EDIT_PARTNER = ADMIN_ENDPOINT + "/partner/edit";
 // ADD DRIVER
 
 export const ADD_DRIVER = ADMIN_ENDPOINT + "/driver/add";
+
+// CAR BRAND
+
+export const ADD_CAR_BRAND = ADMIN_ENDPOINT + "/car-brand/add-new";
 
 // END ADMIN API

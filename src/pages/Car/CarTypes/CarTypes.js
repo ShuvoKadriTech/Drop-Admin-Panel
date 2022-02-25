@@ -94,7 +94,7 @@ const CarTypes = () => {
                         </td>
                         <td className="btn__wrapper">
                           <button
-                            className="btn btn-lg btn-info  me-2"
+                            className="btn btn-info  me-2"
                             onClick={() =>
                               history.push(`/car-type/edit/${type.id}`)}
                           >
