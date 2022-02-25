@@ -22,7 +22,8 @@ import {
   addCarBrand,
   getCarType,
   getCarTypeDetails,
-  getCarTypes
+  getCarTypes,
+  editCarBrand
 } from "../../../store/Car/carTypes/carTypesAction";
 import requestApi from "../../../network/httpRequest";
 import { GET_CAR_TYPE_FULL_DETAILS } from "../../../network/Api";
@@ -42,7 +43,7 @@ const CarTypeDetails = () => {
   const [brandName, setBrandName] = useState("");
   const [brandId, setBrandId] = useState(null);
   const [activeStatus, setActiveStatus] = useState(0);
-  const [isEdit, setIsEdit] = useState(false)
+
 
   const options = [
     { label: "Active", value: 1 },
@@ -92,7 +93,12 @@ const CarTypeDetails = () => {
     }
 
     if(brandId){
+     dispatch(editCarBrand({
+    id:brandId,
+    name: brandName,
+    status: activeStatus
 
+     }))
     }else{
       dispatch(
         addCarBrand({
@@ -107,19 +113,12 @@ const CarTypeDetails = () => {
     () => {
       if (message) {
         setBrandName("");
-        toast.success(message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        });
+        setActiveStatus(false);
+        setBrandId(null)
+        
       }
       if (error) {
-        toast.success(error, {
+        toast.warn(error, {
           // position: "bottom-right",
           position: toast.POSITION.TOP_RIGHT,
           autoClose: 3000,
@@ -134,15 +133,14 @@ const CarTypeDetails = () => {
     [message, error]
   );
 
-  // EDIT BRNAD 
+  // EDIT BRAND 
 
  const handleEdit = (brandId) =>{
   if(brandId){
     setBrandId(brandId);
     const {name} = carType.carBrands.find(brand => brand.id == brandId)
     setBrandName(name);
-    setIsEdit(true)
-    window.scrollTo(0, 1);
+    window.scrollTo(1, 1);
   }
  }
 
@@ -259,7 +257,7 @@ const CarTypeDetails = () => {
                       </Col>
                     </Row>
 
-                    {brandId && isEdit && <Row className="mb-3">
+                    {brandId && <Row className="mb-3">
                       <Col>
                       <select
                             style={{

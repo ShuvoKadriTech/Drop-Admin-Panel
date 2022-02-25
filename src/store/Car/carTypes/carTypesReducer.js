@@ -175,6 +175,36 @@ const carTypesReducer = (state = initialState, action) => {
         error: payload
       };
 
+      // EDIT CAR BRAND 
+
+      case actionType.EDIT_BRAND_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true
+      };
+    case actionType.EDIT_BRAND_REQUEST_SUCCESS:
+      const newData = state.carType?.carBrands.map(
+        item => (item.id === payload.carBrand.id ? payload.carBrand : item)
+      );
+      return {
+        ...state,
+        loading: false,
+        message: payload.message,
+        carType: {
+          ...state.carType,
+          carBrands: newData
+        },
+        error: null
+      };
+
+    case actionType.EDIT_BRAND_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        message: null,
+        error: payload
+      };
+
     default:
       return state;
   }

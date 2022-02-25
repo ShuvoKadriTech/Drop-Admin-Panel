@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import { Button, Card, CardBody, Col, Container, Input, Modal, Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Container, Input, Modal, Row, Spinner } from "reactstrap";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Flatpickr from "react-flatpickr";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
@@ -8,7 +8,8 @@ import  Lightbox  from 'react-image-lightbox';
 import {
   Link,
   useHistory,
-  useLocation
+  useLocation,
+  useParams
 } from "react-router-dom";
 import styled from "styled-components";
 import { useState } from "react";
@@ -18,9 +19,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { addPartner, getPartners, updateSearchKey } from "../../../store/partner/partnerActions";
 import requestApi from "../../../network/httpRequest";
-import { ALL_PARTNER } from "../../../network/Api";
+import { ALL_PARTNER, GET_SINGLE_DRIVER } from "../../../network/Api";
 import { toast } from "react-toastify";
-import { addDriver } from "../../../store/Driver/driverAction";
+import { addDriver, editDriver } from "../../../store/Driver/driverAction";
 
 
 const DriverAdd = () => {
@@ -28,6 +29,7 @@ const DriverAdd = () => {
   const dispatch = useDispatch();
   const { search,pathname } = useLocation();
   const history = useHistory();
+  const {id } = useParams();
   
 
 
@@ -35,12 +37,12 @@ const DriverAdd = () => {
 
 
   const {
-    loading,
-  
-    partners,
+  partners,
     searchKey
  
   } = useSelector(state => state.partnerReducer);
+
+  const {loading, status, drivers} = useSelector(state => state.driverReducer)
 
 
 
@@ -68,7 +70,7 @@ const DriverAdd = () => {
     nid: "",
   });
 
-
+// PARTNER ID
   useEffect(() => {
     const pID = searchParams.get('pID')
     // console.log("partner Id", pID)
@@ -82,6 +84,58 @@ const DriverAdd = () => {
       setOpenPartnerSearch(true)
     }
   }, [searchParams])
+
+  // DRIVER ID BY EDIT 
+
+  useEffect(() => {
+    const pID = searchParams.get('pID')
+    // console.log("partner Id", pID)
+    if (id) {
+      const findDriver = drivers.find(driver => driver.id == id && driver.partnerId == pID);
+      if(findDriver){
+
+        const {name,email,phone,dob,img,address,licenseNumber,nid,nidFontPic,nidBackPic,licenseFontPic,licenseBackPic} = findDriver;
+ 
+      setDriverInfo({name,  email, phone,address,licenseNumber,nid});
+      setDateOfBirth(dob.toLocaleString());
+      setDriverImage(img);
+      setNidFrontImage(nidFontPic);
+      setNidBackImage(nidBackPic);
+      setLicenseFrontImage(licenseFontPic);
+      setLicenseBackImage(licenseBackPic);
+      
+        
+      }
+      else{
+        callApi(id)
+      }
+    }
+    else {
+      setOpenPartnerSearch(true)
+    }
+  }, [id])
+
+  // CALL API FOR DRIVER FOR EDIT 
+
+  const callApi = async(driverId) =>{
+    const { data } = await requestApi().request(GET_SINGLE_DRIVER + driverId)
+    if (data.status) {
+      // console.log(data)
+      const {name,email,phone,dob,img,address,licenseNumber,nid,nidFontPic,nidBackPic,licenseFontPic,licenseBackPic} = data.data.driver;
+      console.log("dob",dob)
+      setDriverInfo({name,  email, phone,address,licenseNumber,nid});
+      setDateOfBirth(dob.toLocaleString());
+      setDriverImage(img);
+      setNidFrontImage(nidFontPic);
+      setNidBackImage(nidBackPic);
+      setLicenseFrontImage(licenseFontPic);
+      setLicenseBackImage(licenseBackPic);
+      
+    }
+    else {
+      history.goBack();
+    }
+  }
 
   // GET ALL PARTNERS 
 
@@ -138,6 +192,14 @@ const DriverAdd = () => {
 
   }
 
+  // SUCCESS 
+
+  useEffect(()=>{
+    if(status){
+      history.goBack();
+    }
+  },[status])
+
   const handleSubmit = () =>{
     if(driverInfo.name == "" || driverInfo.nid == "" || driverInfo.phone == "" || driverInfo.address == "" || driverInfo.licenseNumber== ""  || dateOfBirth == ""){
       return toast.warn("Fill up All Required Field", {
@@ -178,16 +240,30 @@ const DriverAdd = () => {
       });
     }
 
-    dispatch(addDriver({
-      ...driverInfo,
-      partnerId: selectedPartner.id,
-      img: driverImage,
-      dob:dateOfBirth,
-      nidFontPic: nidFrontImage,
-      nidBackPic: nidBackImage,
-      licenseFontPic: licenseFrontImage,
-      licenseBackPic: licenseBackImage,
-    }))
+    if(id){
+      dispatch(editDriver({
+        id,
+        ...driverInfo,
+        partnerId: selectedPartner.id,
+        img: driverImage,
+        dob:dateOfBirth,
+        nidFontPic: nidFrontImage,
+        nidBackPic: nidBackImage,
+        licenseFontPic: licenseFrontImage,
+        licenseBackPic: licenseBackImage,
+      }))
+    }else{
+      dispatch(addDriver({
+        ...driverInfo,
+        partnerId: selectedPartner.id,
+        img: driverImage,
+        dob:dateOfBirth,
+        nidFontPic: nidFrontImage,
+        nidBackPic: nidBackImage,
+        licenseFontPic: licenseFrontImage,
+        licenseBackPic: licenseBackImage,
+      }))
+    }
 
     
   }
@@ -206,7 +282,7 @@ const DriverAdd = () => {
 
             />
 
-{isZoom
+              {isZoom
               ? <Lightbox
                   mainSrc={selectedPartner.img}
                   enableZoom={true}
@@ -219,7 +295,7 @@ const DriverAdd = () => {
 
             {/* Partner Details */}
 
-<Card>
+            <Card>
               <CardBody>
                 <Row>
                   <Col
@@ -228,7 +304,7 @@ const DriverAdd = () => {
                     className="d-flex justify-content-center"
                     style={{ borderRight: "1px solid lightgray" }}
                   >
-                    <div style={{ width: "215px" }}>
+                    {selectedPartner.img ? <div style={{ width: "215px" }}>
                       <img
                         onClick={() => {
                           setIsZoom(true);
@@ -238,7 +314,7 @@ const DriverAdd = () => {
                         src={selectedPartner.img}
                         width="100%"
                       />
-                    </div>
+                    </div>: <Spinner animation="border" variant="info" size='lg' />}
                   </Col>
                   <Col
                     md={6}
@@ -332,9 +408,9 @@ const DriverAdd = () => {
                         <div className="form-group mb-0">
                           <Flatpickr
                             className="form-control d-block"
-                            id='dob'
+                            id='dateOfBirth'
                             placeholder="Select Driver Date of Birth"
-                            // value={dateOfBirth}
+                            value={dateOfBirth}
                             onChange={(selectedDates, dateStr, instance) => setDateOfBirth(dateStr)}
                             options={{
                               altInput: true,
@@ -635,13 +711,13 @@ const DriverAdd = () => {
                     onClick={handleSubmit} 
                     className='mt-5' color="primary" style={{ width: "250px" }}>
 
-                    {/* {loading ?
+                    {loading ?
 
                       <Spinner animation="border" variant="info" size='sm' />
-                      : id ? "Edit" : "Add"
+                      :  id ? "Edit" : "Add"
 
-                    } */}
-                    Add
+                    }
+                    
                   </Button>
                 </div>
               </CardBody>

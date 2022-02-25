@@ -1,26 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardBody, CardTitle, Col, Container, Row, Table } from "reactstrap";
+import { Card, CardBody, CardTitle, Col, Container, Row,  } from "reactstrap";
 import styled from "styled-components";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import requestApi from "../../../network/httpRequest";
 import { GET_SINGLE_CAR_TYPE, SINGLE_PARTNER } from "../../../network/Api";
 import Lightbox from "react-image-lightbox";
-import { Tbody, Th, Thead, Tr } from "react-super-responsive-table";
+import { Tbody, Td, Th, Thead, Tr,Table } from "react-super-responsive-table";
+import { getAllDriversByPartner } from "../../../store/Driver/driverAction";
 
 
 const PartnerDetails = () => {
 
 
+  const dispatch = useDispatch()
   const { id } = useParams();
   const history = useHistory();
 
-  const { loading, message, error, partners, } = useSelector(
+  const {  message, error, partners, } = useSelector(
     state => state.partnerReducer
   );
 
+const {loading, drivers} = useSelector(state => state.driverReducer)
 
   const [partner, setPartner] = useState({});
   const [isZoom, setIsZoom] = useState(false);
@@ -37,6 +40,8 @@ const PartnerDetails = () => {
         else {
           callApi(id);
         }
+
+        dispatch(getAllDriversByPartner(id))
       }
 
       // callApi(id);
@@ -51,7 +56,7 @@ const PartnerDetails = () => {
     // console.log(data)
     if (data.status) {
       setPartner(data.data.partner)
-      console.log("data", partner)
+      // console.log("data", partner)
     }
     else {
       history.push('/partner/list', { replace: true })
@@ -67,6 +72,16 @@ const addNewDriver = () =>{
     // state: { detail: 'some_value' }
 });
 }
+
+// EDIT DRIVER 
+const editDriver = (driverId) =>{
+  history.push({
+    pathname: `/driver/edit/${driverId}`,
+    search: `?pID=${id}`,
+    // state: { detail: 'some_value' }
+});
+}
+
 
   return (
     <React.Fragment>
@@ -102,8 +117,8 @@ const addNewDriver = () =>{
                     className="d-flex justify-content-between flex-wrap "
                     style={{ borderRight: "1px solid lightgray" }}
                   >
-                    <ImageWrapper>
-                      <img
+                    {partner.img ?<ImageWrapper style={{width : partner.nidFontPic && partner.nidBackPic ? "150px" : "100%", height: "200px", padding: "10px 0px" }}>
+                       <img
                         onClick={() => {
                           setIsZoom(true);
                           setSelectedImg(partner.img)
@@ -112,10 +127,11 @@ const addNewDriver = () =>{
                         alt="Veltrix"
                         src={partner.img}
                         width="100%"
-                      />
+                      /> 
                       <small>Partner Image</small>
-                    </ImageWrapper>
-                    <ImageWrapper>
+                    </ImageWrapper>: null}
+                    {partner.nidFontPic ? <ImageWrapper style={{width : partner.img && partner.nidBackPic ? "150px" : "100%", height: "200px", padding: "10px 0px" }}>
+                     
                       <img
                         onClick={() => {
                           setIsZoom(true);
@@ -127,8 +143,11 @@ const addNewDriver = () =>{
                         width="100%"
                       />
                       <small>NID Front Image</small>
-                    </ImageWrapper>
-                    <ImageWrapper>
+                   
+                      
+                    </ImageWrapper>: null}
+                    {partner.nidBackPic ? <ImageWrapper style={{width : partner.nidFontPic && partner.img ? "150px" : "100%", height: "200px", padding: "10px 0px" }}>
+                  
                       <img
                         onClick={() => {
                           setIsZoom(true);
@@ -140,7 +159,9 @@ const addNewDriver = () =>{
                         width="100%"
                       />
                       <small>NID Back Image</small>
-                    </ImageWrapper>
+                     
+                      
+                    </ImageWrapper>: null}
                   </Col>
                   <Col
                     md={6}
@@ -231,13 +252,14 @@ const addNewDriver = () =>{
                           <Thead>
                             <Tr>
                               <Th>Serial No</Th>
-                              <Th>Color Name</Th>
-                              <Th>Color Code</Th>
+                              <Th>Image</Th>
+                              <Th>Name</Th>
+                              <Th>Phone</Th>
                               <Th>Action</Th>
                             </Tr>
                           </Thead>
-                          {/* <Tbody>
-                            {colors.map((color, index) => {
+                          <Tbody>
+                            {drivers.map((driver, index) => {
                               return (
                                 <Tr
                                   key={index}
@@ -251,23 +273,49 @@ const addNewDriver = () =>{
                                     {index + 1}
                                   </Th>
                                   <Td>
-                                    {color.name}
+                                  <div style={{ width: "50px", height: "50px" }}>
+                            <img
+                              onClick={() => {
+                                setIsZoom(true);
+                                setSelectedImg(partner.img);
+                              }}
+                              className="img-fluid cursor-pointer"
+                              alt=""
+                              src={partner.img}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "contain"
+                              }}
+                            />
+                          </div>
                                   </Td>
-                                  <Td style={{ color: `${color.colorCode}` }}>
-                                    {color.colorCode}
+                                  <Td>
+                                    {driver.name}
+                                  </Td>
+                                  <Td >
+                                    {driver.phone}
                                   </Td>
                                   <Td>
                                     <button
-                                      className="btn btn-info "
-                                      onClick={() => handleEditColor(color.id)}
+                                      className="btn btn-info btn-circle btn-sm me-0 me-lg-2"
+                                      onClick={()=>editDriver(driver.id)}
                                     >
                                       <i className="fa fa-edit" />
                                     </button>
+                                    <button
+                            className="btn btn-success btn-circle btn-sm"
+                            // onClick={() =>
+                            //   // history.push(`/partner/${partner.id}`)
+                            // }
+                          >
+                            <i className="fa fa-eye" />
+                          </button>
                                   </Td>
                                 </Tr>
                               );
                             })}
-                          </Tbody> */}
+                          </Tbody>
                         </Table>
                       </CardBody>
                     </Card>
@@ -362,11 +410,10 @@ const Value = styled.h5`
 
 const ImageWrapper = styled.div`
 
-width: 150px;
 text-align: center;
 
 img{
-  object-fit: cover;
+  object-fit: contain;
     width: 100%;
     height: 90%;
 }

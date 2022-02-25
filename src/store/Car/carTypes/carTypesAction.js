@@ -26,7 +26,8 @@ import {
   ADD_CAR_TYPE,
   GET_CAR_TYPE,
   GET_SINGLE_CAR_TYPE,
-  ADD_CAR_BRAND
+  ADD_CAR_BRAND,
+  EDIT_CAR_BRAND
 } from "../../../network/Api";
 import { toast } from "react-toastify";
 import { GET_CAR_TYPE_FULL_DETAILS } from "./../../../network/Api";
@@ -214,6 +215,16 @@ export const addCarBrand = carBrand => async dispatch => {
     });
 
     if (data.status) {
+      toast.success(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
       dispatch({
         type: actionType.ADD_BRAND_REQUEST_SUCCESS,
         payload: { message: data.message, carBrand: data.data.carBrand }
@@ -227,6 +238,50 @@ export const addCarBrand = carBrand => async dispatch => {
   } catch (error) {
     dispatch({
       type: actionType.ADD_BRAND_REQUEST_FAIL,
+      payload: error.message
+    });
+  }
+};
+
+// EDIT CAR BRAND
+
+export const editCarBrand = carBrand => async dispatch => {
+  try {
+    dispatch({
+      type: actionType.EDIT_BRAND_REQUEST_SEND
+    });
+
+    const { data } = await requestApi().request(EDIT_CAR_BRAND, {
+      method: "POST",
+      data: carBrand
+    });
+
+    // console.log("edit car brand", data);
+
+    if (data.status) {
+      toast.success(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+      dispatch({
+        type: actionType.EDIT_BRAND_REQUEST_SUCCESS,
+        payload: { carBrand: data.data.carBrand, message: data.message }
+      });
+    } else {
+      dispatch({
+        type: actionType.EDIT_BRAND_REQUEST_FAIL,
+        payload: data.error
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.EDIT_BRAND_REQUEST_FAIL,
       payload: error.message
     });
   }

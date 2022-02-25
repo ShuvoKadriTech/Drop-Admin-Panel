@@ -163,7 +163,8 @@ const userRoutes = [
 
   // DRIVER
 
-  {path: "/driver/add", component: DriverAdd },
+  { path: "/driver/add", component: DriverAdd },
+  { path: "/driver/edit/:id", component: DriverAdd },
 
   // CAR
 

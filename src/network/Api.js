@@ -69,12 +69,16 @@ export const ALL_PARTNER = ADMIN_ENDPOINT + "/partner";
 export const SINGLE_PARTNER = ADMIN_ENDPOINT + "/partner/";
 export const EDIT_PARTNER = ADMIN_ENDPOINT + "/partner/edit";
 
-// ADD DRIVER
+//  DRIVER
 
 export const ADD_DRIVER = ADMIN_ENDPOINT + "/driver/add";
+export const GET_ALL_DRIVERS_BY_PARTNER = ADMIN_ENDPOINT + "/driver/partner/";
+export const GET_SINGLE_DRIVER = ADMIN_ENDPOINT + "/driver/";
+export const EDIT_DRIVER = ADMIN_ENDPOINT + "/driver/edit";
 
 // CAR BRAND
 
 export const ADD_CAR_BRAND = ADMIN_ENDPOINT + "/car-brand/add-new";
+export const EDIT_CAR_BRAND = ADMIN_ENDPOINT + "/car-brand/edit";
 
 // END ADMIN API

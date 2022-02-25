@@ -12,7 +12,8 @@ const initialState = {
   hasPreviousPage: false,
   searchKey: "",
   statusKey: "all",
-  createdByKey: ""
+  createdByKey: "",
+  status: false
 };
 
 const partnerReducer = (state = initialState, action) => {
@@ -65,7 +66,7 @@ const partnerReducer = (state = initialState, action) => {
         paging: payload.paginate.metadata.paging,
         hasNextPage: payload.paginate.metadata.hasNextPage,
         currentPage: payload.paginate.metadata.page.currentPage,
-        hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+        hasPreviousPage: payload.paginate.metadata.hasPreviousPage
       };
 
     case actionType.GET_ALL_PARTNER_REQUEST_FAIL:
@@ -75,15 +76,13 @@ const partnerReducer = (state = initialState, action) => {
         message: null
       };
 
-
-      // EDIT PARTNER
+    // EDIT PARTNER
 
     case actionType.EDIT_PARTNER_REQUEST_SEND:
       return {
         ...state,
         loading: true
       };
-
 
     case actionType.EDIT_PARTNER_REQUEST_SUCCESS:
       const updateData = state.partners.map(
@@ -105,28 +104,23 @@ const partnerReducer = (state = initialState, action) => {
         message: null
       };
 
-
     case actionType.UPDATE_SEARCH_KEY:
-
       return {
         ...state,
         searchKey: payload
-      }
+      };
 
-      case actionType.UPDATE_STATUS_KEY:
-
+    case actionType.UPDATE_STATUS_KEY:
       return {
         ...state,
         statusKey: payload
-      }
+      };
 
-      case actionType.UPDATE_CREATED_BY_KEY:
-
+    case actionType.UPDATE_CREATED_BY_KEY:
       return {
         ...state,
         createdByKey: payload
-      }
-
+      };
 
     default:
       return state;
