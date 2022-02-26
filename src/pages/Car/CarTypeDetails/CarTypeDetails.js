@@ -34,7 +34,7 @@ const CarTypeDetails = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { loading, carTypes, message, error } = useSelector(
+  const { loading, carTypes, message, singleCarType, error } = useSelector(
     state => state.carTypesReducer
   );
 

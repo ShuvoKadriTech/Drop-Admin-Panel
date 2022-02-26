@@ -25,8 +25,7 @@ const initialState = {
   carTypes: [],
   error: null,
   message: null,
-  carType: {},
-  status: false
+  singleCarType: null
 };
 
 const carTypesReducer = (state = initialState, action) => {
@@ -159,19 +158,16 @@ const carTypesReducer = (state = initialState, action) => {
         error: null
       };
     case actionType.ADD_BRAND_REQUEST_SUCCESS:
-      // let findCarType = state.carTypes.find(
-      //   type => type.id === payload.carBrand.carTypeId
-      // );
-      // findCarType = findCarType.carBrands.push(payload.carBrand);
+      let findCarType = state.carTypes.find(
+        type => type.id === payload.carBrand.carTypeId
+      );
+      findCarType.carBrands.push(payload.carBrand);
 
       return {
         ...state,
         loading: false,
         message: payload.message,
-        carType: {
-          ...state.carType,
-          carBrands: [...state?.carType?.carBrands, payload.carBrand]
-        },
+        singleCarType: findCarType,
         error: null
       };
 
@@ -188,18 +184,31 @@ const carTypesReducer = (state = initialState, action) => {
     case actionType.EDIT_BRAND_REQUEST_SEND:
       return {
         ...state,
-        loading: true
+        loading: true,
+        message: null,
+        error: null
       };
     case actionType.EDIT_BRAND_REQUEST_SUCCESS:
-      const newData = state.carTypes.map(
-        item => (item.id === payload.data.id ? payload.data : item)
+      // const newData = state.carTypes.map(
+      //   item => (item.id === payload.data.id ? payload.data : item)
+      // );
+
+      let find = state.carTypes.find(type => type.id ===  payload.carBrand.carTypeId)
+
+      const newData = find?.carBrands.map(
+        item => (item.id === payload.carBrand.id ? payload.carBrand : item)
       );
+
+      find = {...find, carBrands: newData}
+
+    // console.log("find",find)
+    // console.log("newData",newData)
 
       return {
         ...state,
         loading: false,
         message: payload.message,
-        carTypes: newData,
+        singleCarType: find,
         error: null
       };
 

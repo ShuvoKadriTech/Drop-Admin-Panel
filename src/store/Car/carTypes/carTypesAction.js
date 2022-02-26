@@ -244,34 +244,34 @@ export const addCarBrand = carBrand => async dispatch => {
 
 // EDIT CAR BRAND
 
-export const editCarBrand = carBrand => async (dispatch,getState) => {
+export const editCarBrand = carBrand => async (dispatch, getState) => {
   try {
-
     const { carTypes } = getState().carTypesReducer;
     dispatch({
       type: actionType.EDIT_BRAND_REQUEST_SEND
     });
 
-    const { data: {status,data, message, error} } = await requestApi().request(EDIT_CAR_BRAND, {
+    const {
+      data: { status, data, message, error }
+    } = await requestApi().request(EDIT_CAR_BRAND, {
       method: "POST",
       data: carBrand
     });
 
     // console.log("edit car brand", data);
     // const { status, message, data} = data
-    
 
     if (status) {
-      let findCarType = carTypes.find(type => type.id ===  data.carBrand.carTypeId)
+      // let findCarType = carTypes.find(type => type.id ===  data.carBrand.carTypeId)
 
-      const newData = findCarType?.carBrands.map(
-        item => (item.id === data.carBrand.id ? data.carBrand : item)
-      );
+      // const newData = findCarType?.carBrands.map(
+      //   item => (item.id === data.carBrand.id ? data.carBrand : item)
+      // );
 
-      const updateCarTypeWithBrand = {...findCarType, carBrands: newData}
+      // const updateCarTypeWithBrand = {...findCarType, carBrands: newData}
       // console.log("update",updateCarTypeWithBrand)
 
-      toast.success(data.message, {
+      toast.success(message, {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
@@ -284,9 +284,19 @@ export const editCarBrand = carBrand => async (dispatch,getState) => {
 
       dispatch({
         type: actionType.EDIT_BRAND_REQUEST_SUCCESS,
-        payload: { data: updateCarTypeWithBrand, message }
+        payload: { carBrand: data.carBrand, message }
       });
     } else {
+      toast.warn(error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
       dispatch({
         type: actionType.EDIT_BRAND_REQUEST_FAIL,
         payload: error
