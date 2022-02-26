@@ -211,7 +211,7 @@ export const addCarBrand = carBrand => async dispatch => {
       method: "POST",
       data: carBrand
     });
-    console.log("car brand", data);
+    // console.log("car brand", data);
     if (data.status) {
       toast.success(data.message, {
         // position: "bottom-right",
@@ -229,6 +229,16 @@ export const addCarBrand = carBrand => async dispatch => {
         payload: { message: data.message, carBrand: data.data.carBrand }
       });
     } else {
+      toast.warn(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
       dispatch({
         type: actionType.ADD_BRAND_REQUEST_FAIL,
         payload: data.error

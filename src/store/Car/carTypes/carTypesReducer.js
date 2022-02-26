@@ -199,7 +199,11 @@ const carTypesReducer = (state = initialState, action) => {
         item => (item.id === payload.carBrand.id ? payload.carBrand : item)
       );
 
-      find = {...find, carBrands: newData}
+      const data = {...find, carBrands: newData}
+
+      const update = state?.carTypes.map(
+        item => (item.id === data.id ? data : item)
+      );
 
     // console.log("find",find)
     // console.log("newData",newData)
@@ -208,7 +212,8 @@ const carTypesReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         message: payload.message,
-        singleCarType: find,
+        carTypes: update,
+        singleCarType: data,
         error: null
       };
 

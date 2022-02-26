@@ -44,7 +44,7 @@ const CarTypeDetails = () => {
   const [brandId, setBrandId] = useState(null);
   const [activeStatus, setActiveStatus] = useState(0);
   const [carType, setCarType] = useState({});
-  const [brands, setBrands] = useState([]);
+  
 
   const options = [
     { label: "Active", value: 1 },
@@ -66,6 +66,8 @@ const CarTypeDetails = () => {
     },
     [id]
   );
+
+
 
   // CALL API FOR GET CAR TYPE
 
@@ -123,6 +125,7 @@ const CarTypeDetails = () => {
         setBrandName("");
         setActiveStatus(false);
         setBrandId(null);
+        // setCarType(carType)
       }
       if (error) {
         toast.warn(error, {
