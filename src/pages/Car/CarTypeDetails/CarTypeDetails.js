@@ -34,7 +34,7 @@ const CarTypeDetails = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { loading, carType, message, error } = useSelector(
+  const { loading, carTypes, message, error } = useSelector(
     state => state.carTypesReducer
   );
 
@@ -43,7 +43,8 @@ const CarTypeDetails = () => {
   const [brandName, setBrandName] = useState("");
   const [brandId, setBrandId] = useState(null);
   const [activeStatus, setActiveStatus] = useState(0);
-
+  const [carType, setCarType] = useState({});
+  const [brands, setBrands] = useState([]);
 
   const options = [
     { label: "Active", value: 1 },
@@ -53,7 +54,14 @@ const CarTypeDetails = () => {
   useEffect(
     () => {
       if (id) {
-        dispatch(getCarTypeDetails(id));
+        const findCarType = carTypes.find(type => type.id == id);
+        if (findCarType) {
+          // console.log("car type", findCarType)
+          setCarType(findCarType);
+         
+        } else {
+          callApi(id);
+        }
       }
     },
     [id]
@@ -61,20 +69,19 @@ const CarTypeDetails = () => {
 
   // CALL API FOR GET CAR TYPE
 
-  // const callApi = async carTypeId => {
-  //   const {
-  //     data: { status, data }
-  //   } = await requestApi().request(GET_CAR_TYPE_FULL_DETAILS, {
-  //     params: { id: carTypeId }
-  //   });
-  //   if (status) {
-  //     setCarType(data.carType);
-  //     // console.log("data", data.carType);
-  //     setBrands(data.carType.carBrands);
-  //   } else {
-  //     //   route.push('/car-types', { replace: true })
-  //   }
-  // };
+  const callApi = async carTypeId => {
+    const {
+      data
+    } = await requestApi().request(GET_CAR_TYPE_FULL_DETAILS, {params: { id: carTypeId }})
+
+    if (data.status) {
+      // console.log(data)
+      setCarType(data.data.carType);
+      
+    } else {
+      history.push("/car-types", { replace: true });
+    }
+  };
 
   // SUBMIT CAR BRAND
 
@@ -92,14 +99,15 @@ const CarTypeDetails = () => {
       });
     }
 
-    if(brandId){
-     dispatch(editCarBrand({
-    id:brandId,
-    name: brandName,
-    status: activeStatus
-
-     }))
-    }else{
+    if (brandId) {
+      dispatch(
+        editCarBrand({
+          id: brandId,
+          name: brandName,
+          status: activeStatus
+        })
+      );
+    } else {
       dispatch(
         addCarBrand({
           name: brandName,
@@ -114,8 +122,7 @@ const CarTypeDetails = () => {
       if (message) {
         setBrandName("");
         setActiveStatus(false);
-        setBrandId(null)
-        
+        setBrandId(null);
       }
       if (error) {
         toast.warn(error, {
@@ -133,16 +140,16 @@ const CarTypeDetails = () => {
     [message, error]
   );
 
-  // EDIT BRAND 
+  // EDIT BRAND
 
- const handleEdit = (brandId) =>{
-  if(brandId){
-    setBrandId(brandId);
-    const {name} = carType.carBrands.find(brand => brand.id == brandId)
-    setBrandName(name);
-    window.scrollTo(1, 1);
-  }
- }
+  const handleEdit = brandId => {
+    if (brandId) {
+      setBrandId(brandId);
+      const { name } = carType.carBrands.find(brand => brand.id == brandId);
+      setBrandName(name);
+      window.scrollTo(1, 1);
+    }
+  };
 
   return (
     <React.Fragment>
@@ -191,7 +198,7 @@ const CarTypeDetails = () => {
                         }}
                         className="img-fluid cursor-pointer"
                         alt="Veltrix"
-                        src={carType.image}
+                        src={carType?.image}
                         width="100%"
                       />
                     </div>
@@ -205,19 +212,19 @@ const CarTypeDetails = () => {
                       <Details>
                         <h5>Car Name:</h5>
                         <Value>
-                          {carType.name}
+                          {carType?.name}
                         </Value>
                       </Details>
                       <Details>
                         <h5>Min Seat:</h5>
                         <Value>
-                          {carType.minSeat}
+                          {carType?.minSeat}
                         </Value>
                       </Details>
                       <Details>
                         <h5>Max Seat:</h5>
                         <Value>
-                          {carType.maxSeat}
+                          {carType?.maxSeat}
                         </Value>
                       </Details>
                     </div>
@@ -257,9 +264,10 @@ const CarTypeDetails = () => {
                       </Col>
                     </Row>
 
-                    {brandId && <Row className="mb-3">
-                      <Col>
-                      <select
+                    {brandId &&
+                      <Row className="mb-3">
+                        <Col>
+                          <select
                             style={{
                               width: "100%",
                               border: "1px solid lightgray",
@@ -276,8 +284,8 @@ const CarTypeDetails = () => {
                               </option>
                             )}
                           </select>
-                      </Col>
-                    </Row>}
+                        </Col>
+                      </Row>}
 
                     <Row>
                       <Button color="primary" onClick={submitCarBrand}>
@@ -327,14 +335,12 @@ const CarTypeDetails = () => {
                                 {brand.createdAt}
                               </Td>
                               <Td>
-                                <button className="btn btn-sm btn-info"
-
-                                  onClick={()=>handleEdit(brand.id)}
-                                
+                                <button
+                                  className="btn btn-sm btn-info"
+                                  onClick={() => handleEdit(brand.id)}
                                 >
                                   <i className="fa fa-edit" />
                                 </button>
-
                               </Td>
                             </Tr>
                           );

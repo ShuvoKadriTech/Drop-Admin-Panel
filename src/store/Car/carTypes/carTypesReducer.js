@@ -25,7 +25,8 @@ const initialState = {
   carTypes: [],
   error: null,
   message: null,
-  carType: {}
+  carType: {},
+  status: false
 };
 
 const carTypesReducer = (state = initialState, action) => {
@@ -125,44 +126,51 @@ const carTypesReducer = (state = initialState, action) => {
 
     // GET CAR TYPE
 
-    case GET_SINGLE_CAR_TYPE_REQUEST_SEND:
-      return {
-        ...state,
-        loading: true
-      };
+    // case GET_SINGLE_CAR_TYPE_REQUEST_SEND:
+    //   return {
+    //     ...state,
+    //     loading: true
+    //   };
 
-    case GET_SINGLE_CAR_TYPE_REQUEST_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        carType: payload,
-        error: null,
-        message: null
-      };
+    // case GET_SINGLE_CAR_TYPE_REQUEST_SUCCESS:
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //     carType: payload,
+    //     error: null,
+    //     message: null
+    //   };
 
-    case GET_SINGLE_CAR_TYPE_REQUEST_FAIL:
-      return {
-        ...state,
-        loading: false,
-        error: payload,
-        message: null
-      };
+    // case GET_SINGLE_CAR_TYPE_REQUEST_FAIL:
+    // return {
+    //   ...state,
+    //   loading: false,
+    //   error: payload,
+    //   message: null
+    // };
 
     // ADD CAR TYPE BRAND
 
     case actionType.ADD_BRAND_REQUEST_SEND:
       return {
         ...state,
-        loading: true
+        loading: true,
+        message: null,
+        error: null
       };
     case actionType.ADD_BRAND_REQUEST_SUCCESS:
+      // let findCarType = state.carTypes.find(
+      //   type => type.id === payload.carBrand.carTypeId
+      // );
+      // findCarType = findCarType.carBrands.push(payload.carBrand);
+
       return {
         ...state,
         loading: false,
         message: payload.message,
         carType: {
           ...state.carType,
-          carBrands: [...state.carType.carBrands, payload.carBrand]
+          carBrands: [...state?.carType?.carBrands, payload.carBrand]
         },
         error: null
       };
@@ -175,25 +183,23 @@ const carTypesReducer = (state = initialState, action) => {
         error: payload
       };
 
-      // EDIT CAR BRAND 
+    // EDIT CAR BRAND
 
-      case actionType.EDIT_BRAND_REQUEST_SEND:
+    case actionType.EDIT_BRAND_REQUEST_SEND:
       return {
         ...state,
         loading: true
       };
     case actionType.EDIT_BRAND_REQUEST_SUCCESS:
-      const newData = state.carType?.carBrands.map(
-        item => (item.id === payload.carBrand.id ? payload.carBrand : item)
+      const newData = state.carTypes.map(
+        item => (item.id === payload.data.id ? payload.data : item)
       );
+
       return {
         ...state,
         loading: false,
         message: payload.message,
-        carType: {
-          ...state.carType,
-          carBrands: newData
-        },
+        carTypes: newData,
         error: null
       };
 

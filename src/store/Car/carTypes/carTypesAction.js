@@ -104,7 +104,7 @@ export const getCarTypes = (refresh = false) => async (dispatch, getState) => {
       const { data: { data, status, error } } = await requestApi().request(
         GET_CAR_TYPES
       );
-
+      console.log("carTypes", data);
       if (status) {
         dispatch({
           type: GET_CAR_TYPES_REQUEST_SUCCESS,
@@ -169,36 +169,34 @@ export const editCarType = carData => async dispatch => {
   }
 };
 
-export const getCarTypeDetails = carTypeId => async dispatch => {
-  try {
-    dispatch({
-      type: GET_SINGLE_CAR_TYPE_REQUEST_SEND
-    });
+// export const getCarTypeDetails = carTypeId => async dispatch => {
+//   try {
+//     dispatch({
+//       type: GET_SINGLE_CAR_TYPE_REQUEST_SEND
+//     });
 
-    const {
-      data: { status, data, error }
-    } = await requestApi().request(GET_CAR_TYPE_FULL_DETAILS, {
-      params: { id: carTypeId }
-    });
-    // console.log("car type", data);
-    if (status) {
-      dispatch({
-        type: GET_SINGLE_CAR_TYPE_REQUEST_SUCCESS,
-        payload: data.carType
-      });
-    } else {
-      dispatch({
-        type: GET_SINGLE_CAR_TYPE_REQUEST_FAIL,
-        payload: error
-      });
-    }
-  } catch (error) {
-    dispatch({
-      type: GET_SINGLE_CAR_TYPE_REQUEST_FAIL,
-      payload: error.message
-    });
-  }
-};
+//     const { data } = await requestApi().request(GET_CAR_TYPE_FULL_DETAILS, {
+//       params: { id: carTypeId }
+//     });
+//     // console.log("car type", data);
+//     if (data.status) {
+//       dispatch({
+//         type: GET_SINGLE_CAR_TYPE_REQUEST_SUCCESS,
+//         payload: data.data.carType
+//       });
+//     } else {
+//       dispatch({
+//         type: GET_SINGLE_CAR_TYPE_REQUEST_FAIL,
+//         payload: error
+//       });
+//     }
+//   } catch (error) {
+//     dispatch({
+//       type: GET_SINGLE_CAR_TYPE_REQUEST_FAIL,
+//       payload: error.message
+//     });
+//   }
+// };
 
 // ADD CAR TYPE BRAND
 
@@ -213,7 +211,7 @@ export const addCarBrand = carBrand => async dispatch => {
       method: "POST",
       data: carBrand
     });
-
+    console.log("car brand", data);
     if (data.status) {
       toast.success(data.message, {
         // position: "bottom-right",
@@ -225,6 +223,7 @@ export const addCarBrand = carBrand => async dispatch => {
         draggable: true,
         progress: undefined
       });
+
       dispatch({
         type: actionType.ADD_BRAND_REQUEST_SUCCESS,
         payload: { message: data.message, carBrand: data.data.carBrand }
@@ -245,20 +244,33 @@ export const addCarBrand = carBrand => async dispatch => {
 
 // EDIT CAR BRAND
 
-export const editCarBrand = carBrand => async dispatch => {
+export const editCarBrand = carBrand => async (dispatch,getState) => {
   try {
+
+    const { carTypes } = getState().carTypesReducer;
     dispatch({
       type: actionType.EDIT_BRAND_REQUEST_SEND
     });
 
-    const { data } = await requestApi().request(EDIT_CAR_BRAND, {
+    const { data: {status,data, message, error} } = await requestApi().request(EDIT_CAR_BRAND, {
       method: "POST",
       data: carBrand
     });
 
     // console.log("edit car brand", data);
+    // const { status, message, data} = data
+    
 
-    if (data.status) {
+    if (status) {
+      let findCarType = carTypes.find(type => type.id ===  data.carBrand.carTypeId)
+
+      const newData = findCarType?.carBrands.map(
+        item => (item.id === data.carBrand.id ? data.carBrand : item)
+      );
+
+      const updateCarTypeWithBrand = {...findCarType, carBrands: newData}
+      // console.log("update",updateCarTypeWithBrand)
+
       toast.success(data.message, {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -269,14 +281,15 @@ export const editCarBrand = carBrand => async dispatch => {
         draggable: true,
         progress: undefined
       });
+
       dispatch({
         type: actionType.EDIT_BRAND_REQUEST_SUCCESS,
-        payload: { carBrand: data.data.carBrand, message: data.message }
+        payload: { data: updateCarTypeWithBrand, message }
       });
     } else {
       dispatch({
         type: actionType.EDIT_BRAND_REQUEST_FAIL,
-        payload: data.error
+        payload: error
       });
     }
   } catch (error) {

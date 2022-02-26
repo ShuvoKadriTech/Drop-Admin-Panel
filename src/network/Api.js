@@ -33,7 +33,7 @@ export const EDIT_BANNER = ADMIN_ENDPOINT + "/banner/edit";
 // CAR TYPE
 
 export const ADD_CAR_TYPE = ADMIN_ENDPOINT + "/carType/addNew";
-export const GET_CAR_TYPES = ADMIN_ENDPOINT + "/carType/getCarTypes";
+export const GET_CAR_TYPES = ADMIN_ENDPOINT + "/carType";
 export const DELETE_CAR_TYPE_PERMANENTLY =
   ADMIN_ENDPOINT + "/carType/deleteCarTypepParmanently";
 
