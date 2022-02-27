@@ -28,7 +28,8 @@ import {
   GET_SINGLE_CAR_TYPE,
   ADD_CAR_BRAND,
   EDIT_CAR_BRAND,
-  ADD_MODEL
+  ADD_MODEL,
+  EDIT_MODEL
 } from "../../../network/Api";
 import { toast } from "react-toastify";
 import { GET_CAR_TYPE_FULL_DETAILS } from "./../../../network/Api";
@@ -256,8 +257,8 @@ export const addCarBrand = carBrand => async dispatch => {
 // EDIT CAR BRAND
 
 export const editCarBrand = carBrand => async (dispatch, getState) => {
+  // console.log("carTypeId", carBrand);
   try {
-    
     dispatch({
       type: actionType.EDIT_BRAND_REQUEST_SEND
     });
@@ -295,7 +296,7 @@ export const editCarBrand = carBrand => async (dispatch, getState) => {
 
       dispatch({
         type: actionType.EDIT_BRAND_REQUEST_SUCCESS,
-        payload: { carBrand: data.carBrand}
+        payload: { carBrand: data.carBrand }
       });
     } else {
       toast.warn(error, {
@@ -321,20 +322,14 @@ export const editCarBrand = carBrand => async (dispatch, getState) => {
   }
 };
 
-
-
-
-// ADD BRAND MODEL 
+// ADD BRAND MODEL
 
 export const addBrandModel = (modelData, carTypeId) => async dispatch => {
-  console.log("carTypeId",carTypeId)
   try {
-
     dispatch({
       type: actionType.ADD_MODEL_REQUEST_SEND
     });
 
-    
     const { data } = await requestApi().request(ADD_MODEL, {
       method: "POST",
       data: modelData
@@ -373,14 +368,69 @@ export const addBrandModel = (modelData, carTypeId) => async dispatch => {
         payload: data.error
       });
     }
-    
   } catch (error) {
     dispatch({
-        type: actionType.ADD_MODEL_REQUEST_FAIL,
-        payload: error.message
-      });
+      type: actionType.ADD_MODEL_REQUEST_FAIL,
+      payload: error.message
+    });
   }
+};
 
+// EDIT MODEL
 
+export const editBrandModel = (model, typeId) => async (dispatch, getState) => {
+  console.log("model", model);
+  try {
+    dispatch({
+      type: actionType.EDIT_MODEL_REQUEST_SEND
+    });
 
-} 
+    const {
+      data: { status, data, message, error }
+    } = await requestApi().request(EDIT_MODEL, {
+      method: "POST",
+      data: model
+    });
+
+    // console.log("edit car model", data);
+    // const { status, message, data} = data
+
+    if (status) {
+      toast.success(message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+
+      dispatch({
+        type: actionType.EDIT_MODEL_REQUEST_SUCCESS,
+        payload: { carModel: data.carModel, typeId }
+      });
+    } else {
+      toast.warn(error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+      dispatch({
+        type: actionType.EDIT_MODEL_REQUEST_FAIL,
+        payload: error
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.EDIT_MODEL_REQUEST_FAIL,
+      payload: error.message
+    });
+  }
+};

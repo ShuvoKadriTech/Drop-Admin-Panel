@@ -134,8 +134,9 @@ const CarTypeDetails = () => {
   const handleEdit = brandId => {
     if (brandId) {
       setBrandId(brandId);
-      const { name } = carType.carBrands.find(brand => brand.id == brandId);
+      const { name,status } = carType.carBrands.find(brand => brand.id == brandId);
       setBrandName(name);
+      setActiveStatus(status)
       window.scrollTo(1, 1);
     }
   };

@@ -27,7 +27,8 @@ const initialState = {
   message: null,
   singleCarType: null, 
   status: false,
-  singleBrand: {}
+  singleBrand: {},
+ 
 };
 
 const carTypesReducer = (state = initialState, action) => {
@@ -257,6 +258,7 @@ const carTypesReducer = (state = initialState, action) => {
       const getCarType = state.carTypes.find(type => type.id == payload.carTypeId)
 
       let getBrand = getCarType.carBrands.find(b => b.id == payload.carModel.carBrandId)
+      console.log("brand",getBrand)
 
       getBrand.carModels.push(payload.carModel)
 
@@ -276,6 +278,50 @@ const carTypesReducer = (state = initialState, action) => {
         status: false,
         error: payload
       };
+
+      // EDIT MODEL 
+
+      case actionType.EDIT_MODEL_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        message: null,
+        error: null, 
+        status: false
+      };
+    case actionType.EDIT_MODEL_REQUEST_SUCCESS:
+
+      let singleCarType = state.carTypes.find(type => type.id == payload.typeId)
+
+      let singleBrand = singleCarType.carBrands.find(b => b.id == payload.carModel.carBrandId)
+
+      const updateModel = singleBrand.carModels.map(model => model.id == payload.carModel.id ? payload.carModel : model)
+
+      let updatedBrand = {...singleBrand, carModels: updateModel}
+
+      const updatedBrands = singleCarType.carBrands.map(item => item.id == updatedBrand.id ? updatedBrand : item)
+
+      const updatedSingleCarType = {...singleCarType, carBrands: updatedBrands}
+
+      const finalData = state.carTypes.map(type => type.id == updatedSingleCarType.id ?updatedSingleCarType : type  )
+
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        carTypes: finalData,
+        singleBrand: updatedBrand,
+        error: null
+      };
+
+    case actionType.EDIT_MODEL_REQUEST_FAIL:
+
+        return{
+          ...state,
+          loading: false,
+          status: false,
+          error: payload
+        }
 
     default:
       return state;

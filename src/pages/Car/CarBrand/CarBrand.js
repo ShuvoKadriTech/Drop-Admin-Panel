@@ -20,7 +20,7 @@ import {
   } from "reactstrap";
   import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { toast } from "react-toastify";
-import { addBrandModel } from "../../../store/Car/carTypes/carTypesAction";
+import { addBrandModel,editBrandModel } from "../../../store/Car/carTypes/carTypesAction";
 
 const CarBrand = () => {
 
@@ -37,9 +37,13 @@ const CarBrand = () => {
     const [brand, setBrand] = useState({});
     const [modelName, setModelName] = useState("");
     const [activeStatus, setActiveStatus] = useState(0);
+    const [modelId, setModelId] = useState("")
 
 
-
+    const options = [
+      { label: "Active", value: 1 },
+      { label: "Deactive", value: 2 }
+    ];
 
     // GET CAR TYPE
 
@@ -48,40 +52,58 @@ const CarBrand = () => {
         // console.log("partner Id", pID)
         if(id){
             const carTypeId = searchParams.get('carTypeID')
-            // console.log("carTypeId",carTypeId);
+            console.log("carTypeId",carTypeId);
             if (carTypeId) {
                 const findCarType = carTypes.find(type => type.id == carTypeId);
-                // console.log("findCarType",findCarType)
+                console.log("findCarType",findCarType)
                 if(findCarType){
                    
                     const findBrand = findCarType?.carBrands.find(brand => brand.id == id);
                     console.log("findBrand",findBrand);
                     setBrand(findBrand)
                 }else{
-                    callApiForCarBrand(id)
+                  callApi(id, carTypeId)
                 }
             }
         }
         
       
-      }, [id,searchParams])
+      }, [id, searchParams,carTypes])
+
+
+      const callApi = async (brandId,carTypeId) => {
+        const {
+          data
+        } = await requestApi().request(GET_CAR_TYPE_FULL_DETAILS + carTypeId)
+    
+        if (data.status) {
+          console.log("car type for model",data)
+          
+          // const findBrand = data.carType?.carBrands?.find(brand => brand.id == brandId);
+          // console.log("brand api", findBrand)
+          // setBrand(findBrand);
+    
+        } else {
+          // history.push("/car-types", { replace: true });
+        }
+      };
 
 
     //   CALL API FOR CAR BRAND
 
-    const callApiForCarBrand = async(typeId) =>{
-        const {
-            data
-          } = await requestApi().request(SINGLE_CAR_BRAND + typeId)
+    // const callApiForCarBrand = async(typeId) =>{
+    //     const {
+    //         data
+    //       } = await requestApi().request(SINGLE_CAR_BRAND + typeId)
       
-          if (data.status) {
-            console.log(data)
-            setBrand(data.data.carBrands);
+    //       if (data.status) {
+    //         // console.log(data)
+    //         setBrand(data.data.carBrands);
       
-          } else {
-            history.goBack();
-          }
-    }
+    //       } else {
+    //         history.goBack();
+    //       }
+    // }
 
 
     // SUBMIT MODEL DATA 
@@ -103,19 +125,49 @@ const CarBrand = () => {
 
           const carTypeId = searchParams.get('carTypeID')
 
-          dispatch(addBrandModel({
+          if(modelId){
+            dispatch(editBrandModel(
+              {id: modelId, name: modelName,
+                 status: activeStatus },carTypeId))
+          }else{
+            dispatch(addBrandModel({
               name: modelName,
               carBrandId: id,
           },carTypeId))
+          }
 
     }
 
+    // SUCCESS
+
     useEffect(()=>{
       if(status){
-        setModelName("")
+        setModelName("");
+        setModelId("");
+        setActiveStatus(false);
       }
     },[status])
 
+    // EDIT MODEL 
+
+  const handleEdit = (modelId) =>{
+      setModelId(modelId)
+       const {name, status} = brand.carModels.find(model => model.id == modelId);
+       setModelName(name);
+       setActiveStatus(status);
+       window.scroll(1,1);
+  }
+
+  // MODEL DETAILS 
+
+  const modelDetails = (mId) => {
+    const carTypeId = searchParams.get('carTypeID')
+    history.push({
+      pathname: `model/${mId}`,
+      state: {carTypeId: carTypeId, brandId: brand.id}
+    })
+
+  }
 
 
   return (
@@ -143,7 +195,7 @@ const CarBrand = () => {
               <Col xl={4}>
                 <Card>
                   <CardBody>
-                    <CardTitle className="h4">Add Model</CardTitle>
+                    <CardTitle className="h4">{modelId ?"Edit" : "Add"} Model</CardTitle>
 
                     <Row className="mb-3">
                       <Col>
@@ -161,7 +213,7 @@ const CarBrand = () => {
                       </Col>
                     </Row>
 
-                    {/* {brandId &&
+                    {modelId &&
                       <Row className="mb-3">
                         <Col>
                           <select
@@ -182,20 +234,22 @@ const CarBrand = () => {
                             )}
                           </select>
                         </Col>
-                      </Row>} */}
+                      </Row>}
 
                     <Row>
+                   
                       <Button color="primary" onClick={handleSubmit}>
                         {loading ?
                           <Spinner
                             size="sm"
                             animation="border"
                             variant="success"
-                          /> : "Add"}
+                          /> :modelId ? "Edit" : "Add"}
 
                       
 
                       </Button>
+                     
                     </Row>
                   </CardBody>
                 </Card>
@@ -219,7 +273,7 @@ const CarBrand = () => {
                         </Tr>
                       </Thead>
                       <Tbody>
-                        {/* {carType?.carBrands?.map((brand, index) => {
+                        {brand?.carModels?.map((model, index) => {
                           return (
                             <Tr
                               key={index}
@@ -234,22 +288,22 @@ const CarBrand = () => {
                               </Td>
 
                               <Td>
-                                {brand.name}
+                                {model.name}
                               </Td>
                               <Td>
-                                {brand.createdAt}
+                                {model.createdAt}
                               </Td>
                               <Td>
                                 <ButtonWrapper>
                                   <button
                                     className="btn btn-info me-xl-3"
-                                    // onClick={() => handleEdit(brand.id)}
+                                    onClick={() => handleEdit(model.id)}
                                   >
                                     <i className="fa fa-edit" />
                                   </button>
                                   <button
                                     className="btn btn-success "
-                                    // onClick={() => brandDetails(brand.id)}
+                                    onClick={() => modelDetails(model.id)}
                                   >
                                     <i className="fa fa-eye" />
                                   </button>
@@ -257,7 +311,7 @@ const CarBrand = () => {
                               </Td>
                             </Tr>
                           );
-                        })} */}
+                        })}
                       </Tbody>
 
                     </Table>

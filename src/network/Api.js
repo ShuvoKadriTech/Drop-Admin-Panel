@@ -39,10 +39,9 @@ export const DELETE_CAR_TYPE_PERMANENTLY =
 
 export const EDIT_CAR_TYPE = ADMIN_ENDPOINT + "/carType/editCarType";
 export const GET_SINGLE_CAR_TYPE = ADMIN_ENDPOINT + "/carType/";
-export const GET_CAR_TYPE_FULL_DETAILS =
-  ADMIN_ENDPOINT + "/carType/";
+export const GET_CAR_TYPE_FULL_DETAILS = ADMIN_ENDPOINT + "/carType/";
 
-export const SINGLE_CAR_BRAND = ADMIN_ENDPOINT + "/car-brand/"
+export const SINGLE_CAR_BRAND = ADMIN_ENDPOINT + "/car-brand/";
 
 // COLOR
 
@@ -83,9 +82,9 @@ export const EDIT_DRIVER = ADMIN_ENDPOINT + "/driver/edit";
 export const ADD_CAR_BRAND = ADMIN_ENDPOINT + "/car-brand/add-new";
 export const EDIT_CAR_BRAND = ADMIN_ENDPOINT + "/car-brand/edit";
 
+// CAR BRAND MODEL
 
-// CAR BRAND MODEL 
-
-export const ADD_MODEL = ADMIN_ENDPOINT + "/car-model/add-new"
+export const ADD_MODEL = ADMIN_ENDPOINT + "/car-model/add-new";
+export const EDIT_MODEL = ADMIN_ENDPOINT + "/car-model/edit";
 
 // END ADMIN API
