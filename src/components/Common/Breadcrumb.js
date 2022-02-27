@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from "react-router-dom"
 import { Row, Col, BreadcrumbItem, Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "reactstrap"
 import { Spinner, Button, Tooltip } from "reactstrap";
-
+import { useHistory } from "react-router-dom";
 
 const Breadcrumb = ({ breadcrumbItem, maintitle, title, hideSettingBtn, loading, callList, titleRoute, isRefresh = true, isAddNew = false,addNewRoute = '' }) => {
   const [setting_Menu, setsetting_Menu] = useState(false)
@@ -20,6 +20,8 @@ toggle={function noRefCheck(){}}
 
 </Tooltip>
    */}
+
+   const history = useHistory();
 
   return (
     <Row className="align-items-center">
@@ -38,7 +40,7 @@ toggle={function noRefCheck(){}}
 
             {
               title && <BreadcrumbItem>
-                <Link to={`/${titleRoute}`}>{title}</Link>
+                <span className="cursor-pointer" onClick={()=>history.goBack()}>{title}</span>
               </BreadcrumbItem>
             }
 

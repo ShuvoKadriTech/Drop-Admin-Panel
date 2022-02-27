@@ -27,6 +27,7 @@ const initialState = {
   message: null,
   singleCarType: null, 
   status: false,
+  singleBrand: {}
 };
 
 const carTypesReducer = (state = initialState, action) => {
@@ -52,7 +53,8 @@ const carTypesReducer = (state = initialState, action) => {
       return {
         ...state,
         error: payload,
-        message: null
+        message: null,
+        loading: false
       };
 
     // EDIT CAR TYPE
@@ -229,6 +231,44 @@ const carTypesReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_BRAND_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        message: null,
+        status: false,
+        error: payload
+      };
+
+
+
+      // ADD MODEL 
+
+      case actionType.ADD_MODEL_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        message: null,
+        status: false,
+        error: null
+      };
+
+      case actionType.ADD_MODEL_REQUEST_SUCCESS:
+
+      const getCarType = state.carTypes.find(type => type.id == payload.carTypeId)
+
+      let getBrand = getCarType.carBrands.find(b => b.id == payload.carModel.carBrandId)
+
+      getBrand.carModels.push(payload.carModel)
+
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        singleBrand: getBrand,
+        error: null
+      };
+
+      case actionType.ADD_MODEL_REQUEST_FAIL:
       return {
         ...state,
         loading: false,

@@ -140,6 +140,16 @@ const CarTypeDetails = () => {
     }
   };
 
+  // BRAND DETAILS 
+
+  const brandDetails = (brandId) => {
+    history.push({
+      pathname: `brand/${brandId}`,
+      search: `?carTypeID=${carType.id}`,
+    })
+
+  }
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -150,9 +160,9 @@ const CarTypeDetails = () => {
               title="Car Types"
               breadcrumbItem="Details"
               titleRoute="car-types"
-              hideSettingBtn={true}
-            //   loading={loading}
-            //   callList={callCarList}
+              // loading={loading}
+              // callList={callCarList}
+              isRefresh={false}
             />
 
             {loading &&
@@ -339,7 +349,7 @@ const CarTypeDetails = () => {
                                   </button>
                                   <button
                                     className="btn btn-success "
-
+                                    onClick={() => brandDetails(brand.id)}
                                   >
                                     <i className="fa fa-eye" />
                                   </button>
