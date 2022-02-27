@@ -12,6 +12,20 @@ export default function requestApi() {
       socketPath: null,
       
    })
-
+   request.interceptors.response.use(
+      (response) => response,
+      (error) => {
+         console.log("error ==>", error);
+         if (error.response) {
+            console.log("error ==>",error.response.data);
+            if (error.response.status == 401 || error.response.status == 403) {
+               localStorage.removeItem("accessToken");
+               localStorage.removeItem("admin");
+               window.location.replace('/login');
+            }
+            // console.log(error.response.headers);
+         }
+      }
+   );
    return request;
 }

@@ -52,7 +52,7 @@ const AddCarType = () => {
   useEffect(
     () => {
       if (id) {
-        const findCarType = carTypes.find(type => type?.id === id);
+        const findCarType = carTypes.find(type => type?.id == id);
         if (findCarType) {
           const { image, name, minSeat, maxSeat } = findCarType;
           setName(name);
@@ -73,9 +73,9 @@ const AddCarType = () => {
   // CALL API FOR GET CAR TYPE
 
   const callApi = async (carTypeId) => {
-    const { data: { status, data } } = await requestApi().request(GET_SINGLE_CAR_TYPE, { params: { id: carTypeId } })
+    const { data: { status, data } } = await requestApi().request(GET_SINGLE_CAR_TYPE + carTypeId)
     if (status) {
-      // console.log(data)
+      console.log("car CarTypeDetails",data)
       const { image, name, minSeat, maxSeat } = data.carType;
       setName(name);
       setMinSeat(minSeat);
@@ -103,9 +103,9 @@ const AddCarType = () => {
       id: id,
       data: {
         name: name,
-      minSeat: minSeat,
-      maxSeat: maxSeat,
-      image: image
+        minSeat: minSeat,
+        maxSeat: maxSeat,
+        image: image
       }
     }));
 
@@ -423,7 +423,8 @@ const AddCarType = () => {
 
 const ImageView = styled.div`
   /* width: 100% !important;
-  max-width: 300px; */
+  max-width: 300pximport CarTypeDetails from './../CarTypeDetails/CarTypeDetails';
+; */
   position: relative;
   
 

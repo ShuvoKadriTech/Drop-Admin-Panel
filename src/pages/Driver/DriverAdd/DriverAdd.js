@@ -157,7 +157,7 @@ const DriverAdd = () => {
 
   useEffect(
     () => {
-      if (searchKey !== "" || searchKey !== null ) {
+      if (searchKey) {
         callPartnerList(true);
       }
     },
@@ -814,7 +814,7 @@ const DriverAdd = () => {
                     type="search"
                     placeholder="Find Driver by Name or phone "
                     id="search"
-                    autocomplete="off"
+                    autoComplete="off"
                     value={searchKey}
                     onChange={event =>
                       searchKeyListener(event.target.value)}

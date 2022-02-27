@@ -34,9 +34,7 @@ const CarTypeDetails = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { loading, carTypes, message, singleCarType, error } = useSelector(
-    state => state.carTypesReducer
-  );
+  const { loading, carTypes, status, singleCarType, error } = useSelector(state => state.carTypesReducer);
 
   // const [carType, setCarType] = useState({});
   const [isZoom, setIsZoom] = useState(false);
@@ -44,7 +42,7 @@ const CarTypeDetails = () => {
   const [brandId, setBrandId] = useState(null);
   const [activeStatus, setActiveStatus] = useState(0);
   const [carType, setCarType] = useState({});
-  
+
 
   const options = [
     { label: "Active", value: 1 },
@@ -58,13 +56,13 @@ const CarTypeDetails = () => {
         if (findCarType) {
           // console.log("car type", findCarType)
           setCarType(findCarType);
-         
+
         } else {
           callApi(id);
         }
       }
     },
-    [id]
+    [id, carTypes]
   );
 
 
@@ -74,12 +72,12 @@ const CarTypeDetails = () => {
   const callApi = async carTypeId => {
     const {
       data
-    } = await requestApi().request(GET_CAR_TYPE_FULL_DETAILS, {params: { id: carTypeId }})
+    } = await requestApi().request(GET_CAR_TYPE_FULL_DETAILS + carTypeId)
 
     if (data.status) {
       // console.log(data)
       setCarType(data.data.carType);
-      
+
     } else {
       history.push("/car-types", { replace: true });
     }
@@ -121,26 +119,14 @@ const CarTypeDetails = () => {
 
   useEffect(
     () => {
-      if (message) {
+      if (status) {
         setBrandName("");
         setActiveStatus(false);
         setBrandId(null);
         // setCarType(carType)
       }
-      if (error) {
-        toast.warn(error, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        });
-      }
     },
-    [message, error]
+    [status]
   );
 
   // EDIT BRAND
@@ -165,8 +151,8 @@ const CarTypeDetails = () => {
               breadcrumbItem="Details"
               titleRoute="car-types"
               hideSettingBtn={true}
-              //   loading={loading}
-              //   callList={callCarList}
+            //   loading={loading}
+            //   callList={callCarList}
             />
 
             {loading &&
@@ -176,13 +162,13 @@ const CarTypeDetails = () => {
 
             {isZoom
               ? <Lightbox
-                  mainSrc={carType.image}
-                  enableZoom={true}
-                  imageCaption={carType.name}
-                  onCloseRequest={() => {
-                    setIsZoom(!isZoom);
-                  }}
-                />
+                mainSrc={carType.image}
+                enableZoom={true}
+                imageCaption={carType.name}
+                onCloseRequest={() => {
+                  setIsZoom(!isZoom);
+                }}
+              />
               : null}
 
             <Card>
@@ -292,7 +278,13 @@ const CarTypeDetails = () => {
 
                     <Row>
                       <Button color="primary" onClick={submitCarBrand}>
-                        {brandId ? "Edit" : "Add"}
+                        {loading ?
+                          <Spinner
+                            size="sm"
+                            animation="border"
+                            variant="success"
+                          /> : brandId ? "Update" : "Add"}
+
                       </Button>
                     </Row>
                   </CardBody>
@@ -338,27 +330,26 @@ const CarTypeDetails = () => {
                                 {brand.createdAt}
                               </Td>
                               <Td>
-                                <button
-                                  className="btn btn-sm btn-info"
-                                  onClick={() => handleEdit(brand.id)}
-                                >
-                                  <i className="fa fa-edit" />
-                                </button>
+                                <ButtonWrapper>
+                                  <button
+                                    className="btn btn-info me-xl-3"
+                                    onClick={() => handleEdit(brand.id)}
+                                  >
+                                    <i className="fa fa-edit" />
+                                  </button>
+                                  <button
+                                    className="btn btn-success "
+
+                                  >
+                                    <i className="fa fa-eye" />
+                                  </button>
+                                </ButtonWrapper>
                               </Td>
                             </Tr>
                           );
                         })}
                       </Tbody>
-                      {loading &&
-                        <Spinner
-                          style={{
-                            position: "fixed",
-                            left: "50%",
-                            top: "50%"
-                          }}
-                          animation="border"
-                          variant="success"
-                        />}
+
                     </Table>
                   </CardBody>
                 </Card>
@@ -379,5 +370,17 @@ const Value = styled.h5`
   font-weight: bold;
   /* padding-left: 5px; */
 `;
+
+const ButtonWrapper = styled.div`
+  .btn {
+              width: 30px;
+              height: 30px;
+              padding: 6px 0px;
+              border-radius: 15px;
+              text-align: center;
+              font-size: 12px;
+              line-height: 1.42857;
+            }
+`
 
 export default CarTypeDetails;

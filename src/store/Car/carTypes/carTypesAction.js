@@ -226,7 +226,7 @@ export const addCarBrand = carBrand => async dispatch => {
 
       dispatch({
         type: actionType.ADD_BRAND_REQUEST_SUCCESS,
-        payload: { message: data.message, carBrand: data.data.carBrand }
+        payload: { carBrand: data.data.carBrand }
       });
     } else {
       toast.warn(data.error, {
@@ -256,7 +256,7 @@ export const addCarBrand = carBrand => async dispatch => {
 
 export const editCarBrand = carBrand => async (dispatch, getState) => {
   try {
-    const { carTypes } = getState().carTypesReducer;
+    
     dispatch({
       type: actionType.EDIT_BRAND_REQUEST_SEND
     });
@@ -294,7 +294,7 @@ export const editCarBrand = carBrand => async (dispatch, getState) => {
 
       dispatch({
         type: actionType.EDIT_BRAND_REQUEST_SUCCESS,
-        payload: { carBrand: data.carBrand, message }
+        payload: { carBrand: data.carBrand}
       });
     } else {
       toast.warn(error, {

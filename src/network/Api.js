@@ -38,9 +38,9 @@ export const DELETE_CAR_TYPE_PERMANENTLY =
   ADMIN_ENDPOINT + "/carType/deleteCarTypepParmanently";
 
 export const EDIT_CAR_TYPE = ADMIN_ENDPOINT + "/carType/editCarType";
-export const GET_SINGLE_CAR_TYPE = ADMIN_ENDPOINT + "/carType/details";
+export const GET_SINGLE_CAR_TYPE = ADMIN_ENDPOINT + "/carType/";
 export const GET_CAR_TYPE_FULL_DETAILS =
-  ADMIN_ENDPOINT + "/carType/full-details";
+  ADMIN_ENDPOINT + "/carType/";
 
 // COLOR
 

@@ -25,7 +25,8 @@ const initialState = {
   carTypes: [],
   error: null,
   message: null,
-  singleCarType: null
+  singleCarType: null, 
+  status: false,
 };
 
 const carTypesReducer = (state = initialState, action) => {
@@ -71,8 +72,15 @@ const carTypesReducer = (state = initialState, action) => {
       };
 
     case GET_UPDATE_CAR_DATA:
+
+      const oldData = state.carTypes.find(i=>i.id===payload.id)
+
+      const newCarData = {
+        ...oldData,
+        payload
+      }
       const updateData = state.carTypes.map(
-        item => (item.id === payload.id ? payload : item)
+        item => (item.id === payload.id ? newCarData : item)
       );
       return {
         ...state,
@@ -155,7 +163,8 @@ const carTypesReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         message: null,
-        error: null
+        error: null,
+        status: false
       };
     case actionType.ADD_BRAND_REQUEST_SUCCESS:
       let findCarType = state.carTypes.find(
@@ -166,7 +175,7 @@ const carTypesReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        message: payload.message,
+        status: true,
         singleCarType: findCarType,
         error: null
       };
@@ -176,6 +185,7 @@ const carTypesReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         message: null,
+        status: false,
         error: payload
       };
 
@@ -186,7 +196,8 @@ const carTypesReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         message: null,
-        error: null
+        error: null, 
+        status: false
       };
     case actionType.EDIT_BRAND_REQUEST_SUCCESS:
       // const newData = state.carTypes.map(
@@ -211,7 +222,7 @@ const carTypesReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        message: payload.message,
+        status: true,
         carTypes: update,
         singleCarType: data,
         error: null
@@ -222,6 +233,7 @@ const carTypesReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         message: null,
+        status: false,
         error: payload
       };
 

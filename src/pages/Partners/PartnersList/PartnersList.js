@@ -121,12 +121,12 @@ const PartnersList = () => {
 
           {isZoom
             ? <Lightbox
-                mainSrc={partnerImage}
-                enableZoom={true}
-                onCloseRequest={() => {
-                  setIsZoom(!isZoom);
-                }}
-              />
+              mainSrc={partnerImage}
+              enableZoom={true}
+              onCloseRequest={() => {
+                setIsZoom(!isZoom);
+              }}
+            />
             : null}
 
           <Card>
@@ -257,20 +257,22 @@ const PartnersList = () => {
                           {partner.phone}
                         </Td>
                         <Td>
-                          <button
-                            className="btn btn-info me-xl-3"
-                            onClick={() =>
-                              history.push(`/partner/edit/${partner.id}`)}
-                          >
-                            <i className="fa fa-edit" />
-                          </button>
-                          <button
-                            className="btn btn-info "
-                            onClick={() =>
-                              history.push(`/partner/${partner.id}`)}
-                          >
-                            <i className="fa fa-eye" />
-                          </button>
+                          <ButtonWrapper>
+                            <button
+                              className="btn btn-info me-xl-3"
+                              onClick={() =>
+                                history.push(`/partner/edit/${partner.id}`)}
+                            >
+                              <i className="fa fa-edit" />
+                            </button>
+                            <button
+                              className="btn btn-success "
+                              onClick={() =>
+                                history.push(`/partner/${partner.id}`)}
+                            >
+                              <i className="fa fa-eye" />
+                            </button>
+                          </ButtonWrapper>
                         </Td>
                       </Tr>
                     );
@@ -323,5 +325,17 @@ const SearchWrapper = styled.div`
     }
   }
 `;
+
+const ButtonWrapper = styled.div`
+  .btn {
+              width: 30px;
+              height: 30px;
+              padding: 6px 0px;
+              border-radius: 15px;
+              text-align: center;
+              font-size: 12px;
+              line-height: 1.42857;
+            }
+`
 
 export default PartnersList;
