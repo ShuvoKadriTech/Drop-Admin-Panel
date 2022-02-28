@@ -29,7 +29,9 @@ import {
   ADD_CAR_BRAND,
   EDIT_CAR_BRAND,
   ADD_MODEL,
-  EDIT_MODEL
+  EDIT_MODEL,
+  COLORS_YEARS,
+  ADD_MODEL_COLOR
 } from "../../../network/Api";
 import { toast } from "react-toastify";
 import { GET_CAR_TYPE_FULL_DETAILS } from "./../../../network/Api";
@@ -434,3 +436,88 @@ export const editBrandModel = (model, typeId) => async (dispatch, getState) => {
     });
   }
 };
+
+// GET ALL COLORS AND YEARS
+export const getColorsYears = () => async dispatch => {
+
+  try {
+    dispatch({
+      type: actionType.GET_COLORS_YEARS_REQUEST_SEND
+    })
+    const {data} = await requestApi().request(COLORS_YEARS)
+    console.log("color and years", data)
+    if(data.status){
+      dispatch({
+        type:actionType.GET_COLORS_YEARS_REQUEST_SUCCESS,
+        payload: {colors: data.data.colors, years: data.data.years}
+      })
+    }
+    else{
+      dispatch({
+        type: actionType.GET_COLORS_YEARS_REQUEST_FAIL,
+        payload: data.error
+      })
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.GET_COLORS_YEARS_REQUEST_FAIL,
+      payload: error.message
+    })
+  }
+
+}
+
+
+// ADD COLOR FOR MODEL 
+
+export const addModelColor = (modelColor, brandId, carTypeId) => async dispatch =>{
+  // console.log("modelColor, brandId, carTypeId",modelColor, brandId, carTypeId)
+  try {
+    dispatch({
+      type: actionType.ADD_MODEL_COLOR_REQUEST_SEND
+    })
+
+    const {data} = await requestApi().request(ADD_MODEL_COLOR,{
+      method: 'POST',
+      data: modelColor
+    })
+    
+
+    if(data.status){
+      toast.success(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+
+      dispatch({
+        type: actionType.ADD_MODEL_COLOR_REQUEST_SUCCESS,
+        payload: {modelColor: data.data.modelColor, brandId: brandId, carTypeId: carTypeId}
+      })
+
+    }else{
+      toast.warn(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+      dispatch({
+        type: actionType.ADD_MODEL_COLOR_REQUEST_FAIL,
+        payload: data.error
+      })
+    }
+
+  } catch (error) {
+    
+  }
+}

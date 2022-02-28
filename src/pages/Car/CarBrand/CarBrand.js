@@ -52,14 +52,14 @@ const CarBrand = () => {
         // console.log("partner Id", pID)
         if(id){
             const carTypeId = searchParams.get('carTypeID')
-            console.log("carTypeId",carTypeId);
+            // console.log("carTypeId",carTypeId);
             if (carTypeId) {
                 const findCarType = carTypes.find(type => type.id == carTypeId);
-                console.log("findCarType",findCarType)
+                // console.log("findCarType",findCarType)
                 if(findCarType){
                    
                     const findBrand = findCarType?.carBrands.find(brand => brand.id == id);
-                    console.log("findBrand",findBrand);
+                    // console.log("findBrand",findBrand);
                     setBrand(findBrand)
                 }else{
                   callApi(id, carTypeId)
@@ -77,14 +77,14 @@ const CarBrand = () => {
         } = await requestApi().request(GET_CAR_TYPE_FULL_DETAILS + carTypeId)
     
         if (data.status) {
-          console.log("car type for model",data)
+          // console.log("car type for model",data)
           
-          // const findBrand = data.carType?.carBrands?.find(brand => brand.id == brandId);
+          const findBrand = data.carType?.carBrands?.find(brand => brand.id == brandId);
           // console.log("brand api", findBrand)
-          // setBrand(findBrand);
+          setBrand(findBrand);
     
         } else {
-          // history.push("/car-types", { replace: true });
+          history.push("/car-types", { replace: true });
         }
       };
 

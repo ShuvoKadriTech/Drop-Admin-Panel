@@ -28,13 +28,16 @@ const initialState = {
   singleCarType: null, 
   status: false,
   singleBrand: {},
- 
+  colors: [],
+  years: [],
+  singleModel: {}
 };
 
 const carTypesReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
   switch (type) {
+
     case GET_CAR_TYPES_REQUEST_SEND:
       return {
         ...state,
@@ -134,31 +137,6 @@ const carTypesReducer = (state = initialState, action) => {
         message: null
       };
 
-    // GET CAR TYPE
-
-    // case GET_SINGLE_CAR_TYPE_REQUEST_SEND:
-    //   return {
-    //     ...state,
-    //     loading: true
-    //   };
-
-    // case GET_SINGLE_CAR_TYPE_REQUEST_SUCCESS:
-    //   return {
-    //     ...state,
-    //     loading: false,
-    //     carType: payload,
-    //     error: null,
-    //     message: null
-    //   };
-
-    // case GET_SINGLE_CAR_TYPE_REQUEST_FAIL:
-    // return {
-    //   ...state,
-    //   loading: false,
-    //   error: payload,
-    //   message: null
-    // };
-
     // ADD CAR TYPE BRAND
 
     case actionType.ADD_BRAND_REQUEST_SEND:
@@ -169,6 +147,7 @@ const carTypesReducer = (state = initialState, action) => {
         error: null,
         status: false
       };
+
     case actionType.ADD_BRAND_REQUEST_SUCCESS:
       let findCarType = state.carTypes.find(
         type => type.id === payload.carBrand.carTypeId
@@ -321,7 +300,72 @@ const carTypesReducer = (state = initialState, action) => {
           loading: false,
           status: false,
           error: payload
+        };
+
+        // GET COLORS AND YEAR 
+
+        case actionType.GET_COLORS_YEARS_REQUEST_SEND:
+
+        return{
+          ...state,
+          loading: true,
         }
+      
+        case actionType.GET_COLORS_YEARS_REQUEST_SUCCESS:
+        console.log("payload", payload)
+        return{
+          ...state,
+          loading: false,
+          colors: payload.colors,
+          years: payload.years,
+          error: null
+        }
+
+        case actionType.GET_COLORS_YEARS_REQUEST_FAIL:
+
+          return{
+            ...state,
+            loading: false,
+            error: payload
+          }
+      
+      // ADD MODEL COLOR
+
+      case actionType.ADD_MODEL_COLOR_REQUEST_SEND:
+        return {
+          ...state,
+          loading: true,
+          message: null,
+          status: false,
+          error: null
+        };
+  
+        case actionType.ADD_MODEL_COLOR_REQUEST_SUCCESS:
+  
+        const  type = state.carTypes.find(type => type.id == payload.carTypeId);
+        console.log("type", type)
+  
+        const brand = type.carBrands.find(b => b.id == payload.brandId);
+        console.log("brand", brand)
+        const model = brand.carModels.find(m => m.id == payload.modelColor.carModelId);
+        console.log("before add model", model)
+        model.colors.push(payload.modelColor)
+        console.log("after add model", model)
+        return {
+          ...state,
+          loading: false,
+          status: true,
+          singleModel: model,
+          error: null
+        };
+  
+        case actionType.ADD_MODEL_COLOR_REQUEST_FAIL:
+          return{
+            ...state,
+            loading: false,
+            status: false,
+            error: payload
+          }
 
     default:
       return state;
