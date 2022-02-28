@@ -86,8 +86,13 @@ export const EDIT_CAR_BRAND = ADMIN_ENDPOINT + "/car-brand/edit";
 
 export const ADD_MODEL = ADMIN_ENDPOINT + "/car-model/add-new";
 export const EDIT_MODEL = ADMIN_ENDPOINT + "/car-model/edit";
-export const COLORS_YEARS = ADMIN_ENDPOINT + "/car-model/get-year-and-color"
+export const COLORS_YEARS = ADMIN_ENDPOINT + "/car-model/get-year-and-color";
 
-export const ADD_MODEL_COLOR = ADMIN_ENDPOINT + "/car-color/add-new"
+// MODEL COLOR
+export const ADD_MODEL_COLOR = ADMIN_ENDPOINT + "/car-color/add-new";
+
+// MODEL YEAR
+
+export const ADD_MODEL_YEAR = ADMIN_ENDPOINT + "/car-year/add-new";
 
 // END ADMIN API

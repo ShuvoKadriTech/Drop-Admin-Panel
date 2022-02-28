@@ -22,7 +22,7 @@ import { GET_CAR_TYPE_FULL_DETAILS } from './../../../network/Api';
 import requestApi from './../../../network/httpRequest';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { addModelColor, getColorsYears } from "../../../store/Car/carTypes/carTypesAction";
+import { addModelColor, addModelYear, getCarTypes, getColorsYears } from "../../../store/Car/carTypes/carTypesAction";
 import { toast } from "react-toastify";
 
 
@@ -40,8 +40,19 @@ const CarModel = () => {
   );
 
   const [model, setModel] = useState({})
-  const [colorValue, setColorValue] = useState({});
+  const [colorValue, setColorValue] = useState(null);
   const [colorInputValue, setColorInputValue] = useState('');
+
+  const [yearValue, setYearValue]= useState(null);
+  const [yearInputValue, setYearInputValue] = useState(0)
+
+
+  useEffect(()=>{
+      if(carTypes.length <=0){
+        dispatch(getCarTypes())
+      }
+  },[carTypes])
+
 
   useEffect(
     () => {
@@ -54,24 +65,27 @@ const CarModel = () => {
           if (findCarType) {
 
             const findBrand = findCarType?.carBrands.find(brand => brand.id == brandId);
-            // console.log("findBrand",findBrand);
+            console.log("findBrand",findBrand);
 
             if (findBrand) {
               const findModel = findBrand.carModels.find(model => model.id == id)
-              console.log("Model", findModel)
+              // console.log("Model", findModel)
               setModel(findModel)
             }
             // setBrand(findBrand)
-          } else {
+          } 
+          else {
             callApi(carTypeId, brandId)
           }
+        }else {
+          history.push("/car-types", { replace: true });
         }
 
         dispatch(getColorsYears())
 
       }
     },
-    [id]
+    [id, carTypes]
   );
 
   // CALL API 
@@ -84,8 +98,8 @@ const CarModel = () => {
     if (data.status) {
       // console.log("car type for model",data)
 
-      const findBrand = data.carType?.carBrands?.find(brand => brand.id == brandId);
-
+      const findBrand = data.data.carType?.carBrands?.find(brand => brand.id == brandId);
+      console.log("find brand ", findBrand);
       if (findBrand) {
         const findModel = findBrand.carModels.find(model => model.id == id)
         setModel(findModel)
@@ -95,9 +109,7 @@ const CarModel = () => {
       // setBrand(findBrand);
 
     }
-    else {
-      history.push("/car-types", { replace: true });
-    }
+    
   };
 
   // SUBMIT COLOR 
@@ -120,6 +132,33 @@ const CarModel = () => {
 
     dispatch(addModelColor({
       colorId: colorValue.id,
+      carModelId: id
+    },brandId,carTypeId))
+  }
+
+  // SUBMIT YEAR
+
+  const submitYear = () =>{
+
+    
+
+    if(Object.keys(yearValue).length === 0 && yearValue.constructor === Object){
+      return toast.warn("Enter a Model Year ", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+
+    const { carTypeId, brandId } = state;
+
+    dispatch(addModelYear({
+      yearId: yearValue.id,
       carModelId: id
     },brandId,carTypeId))
   }
@@ -168,28 +207,7 @@ const CarModel = () => {
                       renderInput={(params) => <TextField {...params} label="Select a Color" />}
                     />
 
-                    {/* {modelId &&
-                      <Row className="mb-3">
-                        <Col>
-                          <select
-                            style={{
-                              width: "100%",
-                              border: "1px solid lightgray",
-                              padding: "8px 0px",
-                              borderRadius: "6px"
-                            }}
-                            value={activeStatus}
-                            onChange={event =>
-                              setActiveStatus(event.target.value)}
-                          >
-                            {options.map((option, index) =>
-                              <option value={option.value} key={index}>
-                                {option.label}
-                              </option>
-                            )}
-                          </select>
-                        </Col>
-                      </Row>} */}
+
 
                     <div className="pt-3">
                       <Button color="primary" className="w-100" onClick={handleColorSubmit}>
@@ -218,13 +236,13 @@ const CarModel = () => {
                       <Thead>
                         <Tr>
                           <Th>Serial No</Th>
-                          <Th>Name</Th>
+                          <Th>Color</Th>
                           <Th>Created At</Th>
-                          <Th>Action</Th>
+
                         </Tr>
                       </Thead>
                       <Tbody>
-                        {/* {brand?.carModels?.map((model, index) => {
+                        {model?.colors?.map((color, index) => {
                           return (
                             <Tr
                               key={index}
@@ -239,30 +257,15 @@ const CarModel = () => {
                               </Td>
 
                               <Td>
-                                {model.name}
+                                {color.name}
                               </Td>
                               <Td>
-                                {model.createdAt}
+                                {color.createdAt}
                               </Td>
-                              <Td>
-                                <ButtonWrapper>
-                                  <button
-                                    className="btn btn-info me-xl-3"
-                                    // onClick={() => handleEdit(model.id)}
-                                  >
-                                    <i className="fa fa-edit" />
-                                  </button>
-                                  <button
-                                    className="btn btn-success "
-                                    // onClick={() => modelDetails(model.id)}
-                                  >
-                                    <i className="fa fa-eye" />
-                                  </button>
-                                </ButtonWrapper>
-                              </Td>
+
                             </Tr>
                           );
-                        })} */}
+                        })}
                       </Tbody>
                     </Table>
                   </CardBody>
@@ -275,43 +278,28 @@ const CarModel = () => {
                   <CardBody>
                     <CardTitle>Year</CardTitle>
 
-                    <Input
-                      // style={{ border: '1px solid red' }}
-                      //   value={modelName}
-                      //   onChange={event => setModelName(event.target.value)}
-                      id="brand"
-                      className="form-control"
-                      type="text"
-                      placeholder="Enter a Model Name"
-                      autoComplete="off"
-                      required
+                    <Autocomplete
+                      value={yearValue}
+                      onChange={(event, value) => {
+                        setYearValue(value);
+                        console.log("new",value)
+                      }}
+                      getOptionLabel={(option) => option.year ? (option.year).toString() : ""}
+                      inputValue={yearInputValue.toString()}
+                      onInputChange={(event, inputValue) => {
+                        setYearInputValue(inputValue);
+                        console.log("input value",inputValue)
+                      }}
+                      id="controllable-states-demo"
+                      options={years}
+                      sx={{ width: "100%" }}
+                      renderInput={(params) => <TextField {...params} label="Select a Year" />}
                     />
 
-                    {/* {modelId &&
-                      <Row className="mb-3">
-                        <Col>
-                          <select
-                            style={{
-                              width: "100%",
-                              border: "1px solid lightgray",
-                              padding: "8px 0px",
-                              borderRadius: "6px"
-                            }}
-                            value={activeStatus}
-                            onChange={event =>
-                              setActiveStatus(event.target.value)}
-                          >
-                            {options.map((option, index) =>
-                              <option value={option.value} key={index}>
-                                {option.label}
-                              </option>
-                            )}
-                          </select>
-                        </Col>
-                      </Row>} */}
+
 
                     <div className="pt-3">
-                      <Button color="primary" className="w-100">
+                      <Button color="primary" className="w-100" onClick={submitYear}>
                         {loading
                           ? <Spinner
                             size="sm"
@@ -328,7 +316,7 @@ const CarModel = () => {
 
                 <Card>
                   <CardBody>
-                    <CardTitle className="h4"> Color List</CardTitle>
+                    <CardTitle className="h4"> Year List</CardTitle>
 
                     <Table
                       id="tech-companies"
@@ -337,13 +325,12 @@ const CarModel = () => {
                       <Thead>
                         <Tr>
                           <Th>Serial No</Th>
-                          <Th>Name</Th>
+                          <Th>Year</Th>
                           <Th>Created At</Th>
-                          <Th>Action</Th>
                         </Tr>
                       </Thead>
                       <Tbody>
-                        {/* {brand?.carModels?.map((model, index) => {
+                        {model?.years?.map((item, index) => {
                           return (
                             <Tr
                               key={index}
@@ -358,30 +345,15 @@ const CarModel = () => {
                               </Td>
 
                               <Td>
-                                {model.name}
+                                {item.year}
                               </Td>
                               <Td>
-                                {model.createdAt}
+                                {item.createdAt}
                               </Td>
-                              <Td>
-                                <ButtonWrapper>
-                                  <button
-                                    className="btn btn-info me-xl-3"
-                                    // onClick={() => handleEdit(model.id)}
-                                  >
-                                    <i className="fa fa-edit" />
-                                  </button>
-                                  <button
-                                    className="btn btn-success "
-                                    // onClick={() => modelDetails(model.id)}
-                                  >
-                                    <i className="fa fa-eye" />
-                                  </button>
-                                </ButtonWrapper>
-                              </Td>
+
                             </Tr>
                           );
-                        })} */}
+                        })}
                       </Tbody>
                     </Table>
                   </CardBody>

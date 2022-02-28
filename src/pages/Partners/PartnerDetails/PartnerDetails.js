@@ -277,11 +277,11 @@ const editDriver = (driverId) =>{
                             <img
                               onClick={() => {
                                 setIsZoom(true);
-                                setSelectedImg(partner.img);
+                                setSelectedImg(driver.img);
                               }}
                               className="img-fluid cursor-pointer"
                               alt=""
-                              src={partner.img}
+                              src={driver.img}
                               style={{
                                 width: "100%",
                                 height: "100%",

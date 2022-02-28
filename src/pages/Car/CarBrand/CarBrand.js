@@ -20,7 +20,7 @@ import {
   } from "reactstrap";
   import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import { toast } from "react-toastify";
-import { addBrandModel,editBrandModel } from "../../../store/Car/carTypes/carTypesAction";
+import { addBrandModel,editBrandModel, getCarTypes } from "../../../store/Car/carTypes/carTypesAction";
 
 const CarBrand = () => {
 
@@ -45,6 +45,12 @@ const CarBrand = () => {
       { label: "Deactive", value: 2 }
     ];
 
+    useEffect(()=>{
+      if(carTypes.length <=0){
+        dispatch(getCarTypes())
+      }
+  },[carTypes])
+
     // GET CAR TYPE
 
     useEffect(() => {
@@ -64,6 +70,8 @@ const CarBrand = () => {
                 }else{
                   callApi(id, carTypeId)
                 }
+            }else {
+              history.push("/car-types", { replace: true });
             }
         }
         
@@ -79,13 +87,11 @@ const CarBrand = () => {
         if (data.status) {
           // console.log("car type for model",data)
           
-          const findBrand = data.carType?.carBrands?.find(brand => brand.id == brandId);
+          const findBrand = data.data.carType?.carBrands?.find(brand => brand.id == brandId);
           // console.log("brand api", findBrand)
           setBrand(findBrand);
     
-        } else {
-          history.push("/car-types", { replace: true });
-        }
+        } 
       };
 
 

@@ -90,10 +90,9 @@ export const driverReducer = (state = initialState, action) => {
     case actionType.EDIT_DRIVER_REQUEST_FAIL:
       return {
         ...state,
-        status: false
+        status: false,
+        error: payload
       };
-
-    case actionType.ADD_DRIVER_REQUEST_FAIL:
 
     default:
       return state;
