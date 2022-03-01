@@ -60,6 +60,8 @@ const CarTypeDetails = () => {
         } else {
           callApi(id);
         }
+      }else {
+        history.push("/car-types", { replace: true });
       }
     },
     [id, carTypes]
@@ -78,9 +80,7 @@ const CarTypeDetails = () => {
       // console.log(data)
       setCarType(data.data.carType);
 
-    } else {
-      history.push("/car-types", { replace: true });
-    }
+    } 
   };
 
   // SUBMIT CAR BRAND

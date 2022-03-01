@@ -79,6 +79,7 @@ export const driverReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_DRIVER_REQUEST_SUCCESS:
+      
       return {
         ...state,
         loading: false,

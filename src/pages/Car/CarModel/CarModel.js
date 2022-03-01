@@ -74,9 +74,9 @@ const CarModel = () => {
             }
             // setBrand(findBrand)
           } 
-          else {
-            callApi(carTypeId, brandId)
-          }
+          // else {
+          //   callApi(carTypeId, brandId)
+          // }
         }else {
           history.push("/car-types", { replace: true });
         }
@@ -90,33 +90,33 @@ const CarModel = () => {
 
   // CALL API 
 
-  const callApi = async (carTypeId, brandId) => {
-    const {
-      data
-    } = await requestApi().request(GET_CAR_TYPE_FULL_DETAILS + carTypeId)
+  // const callApi = async (carTypeId, brandId) => {
+  //   const {
+  //     data
+  //   } = await requestApi().request(GET_CAR_TYPE_FULL_DETAILS + carTypeId)
 
-    if (data.status) {
-      // console.log("car type for model",data)
+  //   if (data.status) {
+  //     console.log("car type for model",data)
 
-      const findBrand = data.data.carType?.carBrands?.find(brand => brand.id == brandId);
-      console.log("find brand ", findBrand);
-      if (findBrand) {
-        const findModel = findBrand.carModels.find(model => model.id == id)
-        setModel(findModel)
-      }
+  //     const findBrand = data.data.carType?.carBrands?.find(brand => brand.id == brandId);
+  //     console.log("find brand ", findBrand);
+  //     if (findBrand) {
+  //       const findModel = findBrand.carModels.find(model => model.id == id)
+  //       setModel(findModel)
+  //     }
       
-      // console.log("brand api", findBrand)
-      // setBrand(findBrand);
+  //     // console.log("brand api", findBrand)
+  //     // setBrand(findBrand);
 
-    }
+  //   }
     
-  };
+  // };
 
   // SUBMIT COLOR 
 
   const handleColorSubmit = () =>{
     // console.log(colorValue)
-    if(Object.keys(colorValue).length === 0 && colorValue.constructor === Object){
+    if(colorValue == null || colorValue == undefined){
       return toast.warn("Enter a Model Color ", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -142,7 +142,7 @@ const CarModel = () => {
 
     
 
-    if(Object.keys(yearValue).length === 0 && yearValue.constructor === Object){
+    if(yearValue == null || yearValue == undefined){
       return toast.warn("Enter a Model Year ", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -193,13 +193,13 @@ const CarModel = () => {
                       value={colorValue}
                       onChange={(event, newValue) => {
                         setColorValue(newValue);
-                        console.log("new",newValue)
+                        // console.log("new",newValue)
                       }}
                       getOptionLabel={(option) => option.name ? option.name : ""}
                       inputValue={colorInputValue}
                       onInputChange={(event, newInputValue) => {
                         setColorInputValue(newInputValue);
-                        console.log("input value",newInputValue)
+                        // console.log("input value",newInputValue)
                       }}
                       id="controllable-states-demo"
                       options={colors}
@@ -211,12 +211,12 @@ const CarModel = () => {
 
                     <div className="pt-3">
                       <Button color="primary" className="w-100" onClick={handleColorSubmit}>
-                        {loading
+                        {loading && colorValue !==null
                           ? <Spinner
                             size="sm"
                             animation="border"
                             variant="success"
-                          />
+                          /> 
                           : "Add"}
                       </Button>
                     </div>
@@ -242,7 +242,7 @@ const CarModel = () => {
                         </Tr>
                       </Thead>
                       <Tbody>
-                        {model?.colors?.map((color, index) => {
+                        {model?.colors?.map((item, index) => {
                           return (
                             <Tr
                               key={index}
@@ -257,10 +257,10 @@ const CarModel = () => {
                               </Td>
 
                               <Td>
-                                {color.name}
+                                {item.name}
                               </Td>
                               <Td>
-                                {color.createdAt}
+                                {item.createdAt}
                               </Td>
 
                             </Tr>
@@ -282,13 +282,13 @@ const CarModel = () => {
                       value={yearValue}
                       onChange={(event, value) => {
                         setYearValue(value);
-                        console.log("new",value)
+                        // console.log("new",value)
                       }}
                       getOptionLabel={(option) => option.year ? (option.year).toString() : ""}
                       inputValue={yearInputValue.toString()}
                       onInputChange={(event, inputValue) => {
                         setYearInputValue(inputValue);
-                        console.log("input value",inputValue)
+                        // console.log("input value",inputValue)
                       }}
                       id="controllable-states-demo"
                       options={years}
@@ -300,8 +300,7 @@ const CarModel = () => {
 
                     <div className="pt-3">
                       <Button color="primary" className="w-100" onClick={submitYear}>
-                        {loading
-                          ? <Spinner
+                        {loading && yearValue !== null ? <Spinner
                             size="sm"
                             animation="border"
                             variant="success"
@@ -333,7 +332,7 @@ const CarModel = () => {
                         {model?.years?.map((item, index) => {
                           return (
                             <Tr
-                              key={index}
+                              key={item.id}
                               className="align-middle"
                               style={{
                                 fontSize: "15px",

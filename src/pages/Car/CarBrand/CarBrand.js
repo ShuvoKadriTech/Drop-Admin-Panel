@@ -65,11 +65,12 @@ const CarBrand = () => {
                 if(findCarType){
                    
                     const findBrand = findCarType?.carBrands.find(brand => brand.id == id);
-                    // console.log("findBrand",findBrand);
+                    console.log("findBrand",findBrand);
                     setBrand(findBrand)
-                }else{
-                  callApi(id, carTypeId)
                 }
+                // else{
+                //   callApi(id, carTypeId)
+                // }
             }else {
               history.push("/car-types", { replace: true });
             }
@@ -79,20 +80,20 @@ const CarBrand = () => {
       }, [id, searchParams,carTypes])
 
 
-      const callApi = async (brandId,carTypeId) => {
-        const {
-          data
-        } = await requestApi().request(GET_CAR_TYPE_FULL_DETAILS + carTypeId)
+      // const callApi = async (brandId,carTypeId) => {
+      //   const {
+      //     data
+      //   } = await requestApi().request(GET_CAR_TYPE_FULL_DETAILS + carTypeId)
     
-        if (data.status) {
-          // console.log("car type for model",data)
+      //   if (data.status) {
+      //     console.log("car type for brand",data)
           
-          const findBrand = data.data.carType?.carBrands?.find(brand => brand.id == brandId);
-          // console.log("brand api", findBrand)
-          setBrand(findBrand);
+      //     const findBrand = data.data.carType?.carBrands?.find(brand => brand.id == brandId);
+      //     // console.log("brand api", findBrand)
+      //     setBrand(findBrand);
     
-        } 
-      };
+      //   } 
+      // };
 
 
     //   CALL API FOR CAR BRAND

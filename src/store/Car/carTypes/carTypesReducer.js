@@ -262,7 +262,7 @@ const carTypesReducer = (state = initialState, action) => {
       case actionType.ADD_MODEL_REQUEST_SUCCESS:
 
       const getCarType = state.carTypes.find(type => type.id == payload.carTypeId)
-      console.log("brand",getCarType)
+      console.log("car type",getCarType)
       let getBrand = getCarType.carBrands.find(b => b.id == payload.carModel.carBrandId)
       console.log("brand",getBrand)
 
@@ -339,7 +339,7 @@ const carTypesReducer = (state = initialState, action) => {
         }
       
         case actionType.GET_COLORS_YEARS_REQUEST_SUCCESS:
-        console.log("payload", payload)
+        // console.log("payload", payload)
         return{
           ...state,
           loading: false,
@@ -374,7 +374,7 @@ const carTypesReducer = (state = initialState, action) => {
   
         const brand = type.carBrands.find(b => b.id == payload.brandId);
         console.log("brand", brand)
-        let model = brand.carModels.find(m => m.id == payload.modelColor.carModelId);
+        let model = brand.carModels.find(m => m.id == payload.modelColor.car_colors.carModelId);
         console.log("before add model", model)
         model.colors.push(payload.modelColor)
         console.log("after add model", model)
@@ -413,8 +413,8 @@ const carTypesReducer = (state = initialState, action) => {
   
         const item = singleType.carBrands.find(b => b.id == payload.bId);
         console.log("brand", item)
-        let getModel = item.carModels.find(m => m.id == payload.modelYear.carModelId);
-        // console.log("before add model", model)
+        let getModel = item.carModels.find(m => m.id == payload.modelYear.car_years.carModelId);
+        console.log("before add model", getModel)
         getModel.years.push(payload.modelYear)
         console.log("after add model", getModel)
         return {

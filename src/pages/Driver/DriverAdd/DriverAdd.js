@@ -3,7 +3,7 @@ import { Button, Card, CardBody, Col, Container, Input, Modal, Row, Spinner } fr
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Flatpickr from "react-flatpickr";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
-import  Lightbox  from 'react-image-lightbox';
+import Lightbox from 'react-image-lightbox';
 
 import {
   Link,
@@ -17,32 +17,33 @@ import ImageSelectionDialog from "../../Utility/ImageSelectionDialog";
 import { removeAllSelectedGalleryImage } from "../../../store/action/galleryAction";
 import { useDispatch, useSelector } from "react-redux";
 import { Autocomplete, Box, TextField } from "@mui/material";
-import { addPartner, getPartners, updateSearchKey } from "../../../store/partner/partnerActions";
+import { addDriver, addPartner, getPartners, updateSearchKey } from "../../../store/partner/partnerActions";
 import requestApi from "../../../network/httpRequest";
-import { ALL_PARTNER, GET_SINGLE_DRIVER } from "../../../network/Api";
+import { ALL_PARTNER, GET_SINGLE_DRIVER, SINGLE_PARTNER } from "../../../network/Api";
 import { toast } from "react-toastify";
-import { addDriver, editDriver } from "../../../store/Driver/driverAction";
+// import { addDriver, editDriver } from "../../../store/Driver/driverAction";
 
 
 const DriverAdd = () => {
 
   const dispatch = useDispatch();
-  const { search,pathname } = useLocation();
+  const { search, pathname } = useLocation();
   const history = useHistory();
-  const {id } = useParams();
-  
+  const { id } = useParams();
+
 
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
 
   const {
-  partners,
-    searchKey
- 
+    partners,
+    searchKey,
+    status,
+    loading
   } = useSelector(state => state.partnerReducer);
 
-  const {loading, status, drivers} = useSelector(state => state.driverReducer)
+  // const {loading, status, drivers} = useSelector(state => state.driverReducer)
 
 
 
@@ -57,9 +58,9 @@ const DriverAdd = () => {
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [openPartnerSearch, setOpenPartnerSearch] = useState(false);
   const [open, setOpen] = useState(false);
-  const [selectedPartner, setSelectedPartner] = useState({});
+  const [selectedPartner, setSelectedPartner] = useState();
   const [isZoom, setIsZoom] = useState(false);
- 
+
 
   const [driverInfo, setDriverInfo] = useState({
     name: "",
@@ -70,78 +71,102 @@ const DriverAdd = () => {
     nid: "",
   });
 
-// PARTNER ID
+  // useEffect(()=>{
+  //   if(partners.length <=0){
+  //     dispatch(getPartners(true))
+  //   }
+  // },[partners])
+
+  // PARTNER ID
   useEffect(() => {
     const pID = searchParams.get('pID')
-    // console.log("partner Id", pID)
+    console.log("partner Id ===-", pID)
     if (pID) {
       const findPartner = partners.find(partner => partner.id == pID);
-      if(findPartner){
-        setSelectedPartner(findPartner)
+      if (findPartner) {
+        console.log("find partner", findPartner)
+        setPartner(findPartner)
+
+      } else {
+        console.log("call partner for api")
+        callPartner(pID)
       }
-    }
-    else {
+    }else {
       setOpenPartnerSearch(true)
     }
-  }, [searchParams])
+  }, [])
+
+
+
+
+  const setPartner = (partner) => {
+    setSelectedPartner(partner)
+
+    console.log("selected partner", partner)
+
+    if (id) {
+      console.log("selected partner-----", partner)
+      if (partner) {
+        const findDriver = partner.drivers.find(driver => driver.id == id);
+        if (findDriver) {
+          const { name, email, phone, dob, img, address, licenseNumber, nid, nidFontPic, nidBackPic, licenseFontPic, licenseBackPic } = findDriver;
+
+          setDriverInfo({ name, email, phone, address, licenseNumber, nid });
+          setDateOfBirth(dob.toLocaleString());
+          setDriverImage(img);
+          setNidFrontImage(nidFontPic);
+          setNidBackImage(nidBackPic);
+          setLicenseFrontImage(licenseFontPic);
+          setLicenseBackImage(licenseBackPic);
+        }
+      }
+    }
+  }
+
+
+  
+
+
+  //  CALL PARTNER 
+
+  const callPartner = async (partnerId) => {
+    const { data } = await requestApi().request(SINGLE_PARTNER + partnerId)
+    if (data.status) {
+      // console.log("find partner by api--", data.data.partner)
+      // setSelectedPartner(data.data.partner)
+      setPartner(data.data.partner)
+    }
+    // else {--
+    //   history.goBack();
+    // }
+  }
+
 
   // DRIVER ID BY EDIT 
-
-  useEffect(() => {
-    const pID = searchParams.get('pID')
-    // console.log("partner Id", pID)
-    if (id) {
-      const findDriver = drivers.find(driver => driver.id == id && driver.partnerId == pID);
-      if(findDriver){
-
-        const {name,email,phone,dob,img,address,licenseNumber,nid,nidFontPic,nidBackPic,licenseFontPic,licenseBackPic} = findDriver;
- 
-      setDriverInfo({name,  email, phone,address,licenseNumber,nid});
-      setDateOfBirth(dob.toLocaleString());
-      setDriverImage(img);
-      setNidFrontImage(nidFontPic);
-      setNidBackImage(nidBackPic);
-      setLicenseFrontImage(licenseFontPic);
-      setLicenseBackImage(licenseBackPic);
-      
-        
-      }
-      else{
-        callApi(id)
-      }
-    }
-    else {
-      setOpenPartnerSearch(true)
-    }
-  }, [id])
-
   // CALL API FOR DRIVER FOR EDIT 
 
-  const callApi = async(driverId) =>{
+  const callApi = async (driverId) => {
     const { data } = await requestApi().request(GET_SINGLE_DRIVER + driverId)
     if (data.status) {
       // console.log(data)
-      const {name,email,phone,dob,img,address,licenseNumber,nid,nidFontPic,nidBackPic,licenseFontPic,licenseBackPic} = data.data.driver;
-      console.log("dob",dob)
-      setDriverInfo({name,  email, phone,address,licenseNumber,nid});
+      const { name, email, phone, dob, img, address, licenseNumber, nid, nidFontPic, nidBackPic, licenseFontPic, licenseBackPic } = data.data.driver;
+      // console.log("dob",dob)
+      setDriverInfo({ name, email, phone, address, licenseNumber, nid });
       setDateOfBirth(dob.toLocaleString());
       setDriverImage(img);
       setNidFrontImage(nidFontPic);
       setNidBackImage(nidBackPic);
       setLicenseFrontImage(licenseFontPic);
       setLicenseBackImage(licenseBackPic);
-      
+
     }
     else {
       history.goBack();
     }
   }
 
-  // GET ALL PARTNERS 
 
-  useEffect(() => {
 
-  }, [])
 
   // INPUT FORM EVENT HANDLE 
 
@@ -160,6 +185,7 @@ const DriverAdd = () => {
       if (searchKey) {
         callPartnerList(true);
       }
+
     },
     [searchKey]
   );
@@ -175,33 +201,34 @@ const DriverAdd = () => {
   };
 
   const handleImage = id => {
-    const params = new URLSearchParams({"pID": selectedPartner.id });
-     history.replace({ pathname: pathname, search: params.toString() }); 
+    const params = new URLSearchParams({ "pID": selectedPartner.id });
+    history.replace({ pathname: pathname, search: params.toString() });
     setImageId(id)
     setmodal_fullscreen(true);
   };
 
   // SELECT PARTNER 
 
-  const selectPartner = (id) =>{
+  const selectPartner = (partner) => {
     // console.log("id", id)
     setOpenPartnerSearch(false);
-  
-     const params = new URLSearchParams({"pID": id });
-     history.replace({ pathname: pathname, search: params.toString() });  
+    setPartner(partner)
+    const params = new URLSearchParams({ "pID": partner.id });
+    history.replace({ pathname: pathname, search: params.toString() });
 
   }
 
   // SUCCESS 
 
-  useEffect(()=>{
-    if(status){
-      history.goBack();
+  useEffect(() => {
+    if (status) {
+      const pID = searchParams.get('pID')
+      history.push(`/partner/${pID}`);
     }
-  },[status])
+  }, [status])
 
-  const handleSubmit = () =>{
-    if(driverInfo.name == "" || driverInfo.nid == "" || driverInfo.phone == "" || driverInfo.address == "" || driverInfo.licenseNumber== ""  || dateOfBirth == ""){
+  const handleSubmit = () => {
+    if (driverInfo.name == "" || driverInfo.nid == "" || driverInfo.phone == "" || driverInfo.address == "" || driverInfo.licenseNumber == "" || dateOfBirth == "") {
       return toast.warn("Fill up All Required Field", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -214,7 +241,7 @@ const DriverAdd = () => {
       });
     }
 
-    if ( driverInfo.phone.length !== 11) {
+    if (driverInfo.phone.length !== 11) {
       return toast.warn("Enter Driver Valid Phone number", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -227,7 +254,7 @@ const DriverAdd = () => {
       });
     }
 
-    if (driverImage == "" || nidFrontImage == "" || nidBackImage == "" || licenseFrontImage == "" || licenseBackImage == "" ) {
+    if (driverImage == "" || nidFrontImage == "" || nidBackImage == "" || licenseFrontImage == "" || licenseBackImage == "") {
       return toast.warn("Please Select Driver Required  Images", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -240,24 +267,24 @@ const DriverAdd = () => {
       });
     }
 
-    if(id){
-      dispatch(editDriver({
-        id,
-        ...driverInfo,
-        partnerId: selectedPartner.id,
-        img: driverImage,
-        dob:dateOfBirth,
-        nidFontPic: nidFrontImage,
-        nidBackPic: nidBackImage,
-        licenseFontPic: licenseFrontImage,
-        licenseBackPic: licenseBackImage,
-      }))
-    }else{
+    if (id) {
+      // dispatch(editDriver({
+      //   id,
+      //   ...driverInfo,
+      //   partnerId: selectedPartner.id,
+      //   img: driverImage,
+      //   dob:dateOfBirth,
+      //   nidFontPic: nidFrontImage,
+      //   nidBackPic: nidBackImage,
+      //   licenseFontPic: licenseFrontImage,
+      //   licenseBackPic: licenseBackImage,
+      // }))
+    } else {
       dispatch(addDriver({
         ...driverInfo,
         partnerId: selectedPartner.id,
         img: driverImage,
-        dob:dateOfBirth,
+        dob: dateOfBirth,
         nidFontPic: nidFrontImage,
         nidBackPic: nidBackImage,
         licenseFontPic: licenseFrontImage,
@@ -265,7 +292,7 @@ const DriverAdd = () => {
       }))
     }
 
-    
+
   }
 
   return (
@@ -282,69 +309,74 @@ const DriverAdd = () => {
 
             />
 
-              {isZoom
+            {isZoom
               ? <Lightbox
-                  mainSrc={selectedPartner.img}
-                  enableZoom={true}
-                  imageCaption={selectedPartner.name}
-                  onCloseRequest={() => {
-                    setIsZoom(!isZoom);
-                  }}
-                />
+                mainSrc={selectedPartner.img}
+                enableZoom={true}
+                imageCaption={selectedPartner.name}
+                onCloseRequest={() => {
+                  setIsZoom(!isZoom);
+                }}
+              />
               : null}
 
             {/* Partner Details */}
 
-            <Card>
-              <CardBody>
-                <Row>
-                  <Col
-                    md={6}
-                    sm={12}
-                    className="d-flex justify-content-center"
-                    style={{ borderRight: "1px solid lightgray" }}
-                  >
-                    {selectedPartner.img ? <div style={{ width: "215px" }}>
-                      <img
-                        onClick={() => {
-                          setIsZoom(true);
-                        }}
-                        className="img-fluid cursor-pointer"
-                        alt="Partner"
-                        src={selectedPartner.img}
-                        width="100%"
-                      />
-                    </div>: <Spinner animation="border" variant="info" size='lg' />}
-                  </Col>
-                  <Col
-                    md={6}
-                    sm={12}
-                    className="d-flex justify-content-between  align-items-center"
-                  >
-                    <div className="ps-4">
-                      <div>
-                        <h5>Partner Name:</h5>
-                        <Value>
-                          {selectedPartner.name}
-                        </Value>
+
+            {
+              selectedPartner && <Card>
+                <CardBody>
+                  <Row>
+                    <Col
+                      md={6}
+                      sm={12}
+                      className="d-flex justify-content-center"
+                      style={{ borderRight: "1px solid lightgray" }}
+                    >
+                      {selectedPartner.img ? <div style={{ width: "215px" }}>
+                        <img
+                          onClick={() => {
+                            setIsZoom(true);
+                          }}
+                          className="img-fluid cursor-pointer"
+                          alt="Partner"
+                          src={selectedPartner.img}
+                          width="100%"
+                        />
+                      </div> : "N/A"}
+                    </Col>
+                    <Col
+                      md={6}
+                      sm={12}
+                      className="d-flex justify-content-between  align-items-center"
+                    >
+                      <div className="ps-4">
+                        <div>
+                          <h5>Partner Name:</h5>
+                          <Value>
+                            {selectedPartner.name}
+                          </Value>
+                        </div>
+                        <div>
+                          <h5>Phone:</h5>
+                          <Value>
+                            {selectedPartner.phone ? selectedPartner.phone : "N/A"}
+                          </Value>
+                        </div>
+                        <div>
+                          <h5>Gmail:</h5>
+                          <Value>
+                            {selectedPartner.email ? selectedPartner.email : "N/A"}
+                          </Value>
+                        </div>
                       </div>
-                      <div>
-                        <h5>Phone:</h5>
-                        <Value>
-                          {selectedPartner.phone ? selectedPartner.phone : "N/A"}
-                        </Value>
-                      </div>
-                      <div>
-                        <h5>Gmail:</h5>
-                        <Value>
-                          {selectedPartner.email ? selectedPartner.email : "N/A"}
-                        </Value>
-                      </div>
-                    </div>
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card>
+                    </Col>
+                  </Row>
+                </CardBody>
+              </Card>
+            }
+
+
 
             <Card>
               <CardBody>
@@ -435,7 +467,7 @@ const DriverAdd = () => {
                     </Row>
 
                     <Row className="mt-4">
-                      <Col  className="d-flex">
+                      <Col className="d-flex">
                         <Input
                           // style={{ border: '1px solid red' }}
                           value={driverInfo.address}
@@ -447,7 +479,7 @@ const DriverAdd = () => {
                           required
                         />
                       </Col>
-                      
+
                     </Row>
 
                     <Row className="mt-4">
@@ -471,8 +503,8 @@ const DriverAdd = () => {
                                     <div className="button__wrapper">
                                       <button
                                         className="btn btn-danger "
-                                      // onClick={() => handleDelete(item.id)}
-                                      onClick={() => setLicenseFrontImage("")}
+                                        // onClick={() => handleDelete(item.id)}
+                                        onClick={() => setLicenseFrontImage("")}
                                       ><i className="fa fa-trash" /></button>
 
                                     </div>
@@ -521,8 +553,8 @@ const DriverAdd = () => {
                                       <div className="button__wrapper">
                                         <button
                                           className="btn btn-danger "
-                                        // onClick={() => handleDelete(item.id)}
-                                        onClick={() => setLicenseBackImage("")}
+                                          // onClick={() => handleDelete(item.id)}
+                                          onClick={() => setLicenseBackImage("")}
                                         ><i className="fa fa-trash" /></button>
 
                                       </div>
@@ -574,8 +606,8 @@ const DriverAdd = () => {
                                   <div className="button__wrapper">
                                     <button
                                       className="btn btn-danger "
-                                    // onClick={() => handleDelete(item.id)}
-                                    onClick={() => setDriverImage("")}
+                                      // onClick={() => handleDelete(item.id)}
+                                      onClick={() => setDriverImage("")}
                                     ><i className="fa fa-trash" /></button>
 
                                   </div>
@@ -624,8 +656,8 @@ const DriverAdd = () => {
                                   <div className="button__wrapper">
                                     <button
                                       className="btn btn-danger "
-                                    // onClick={() => handleDelete(item.id)}
-                                    onClick={() => setNidFrontImage("")}
+                                      // onClick={() => handleDelete(item.id)}
+                                      onClick={() => setNidFrontImage("")}
                                     ><i className="fa fa-trash" /></button>
 
                                   </div>
@@ -675,8 +707,8 @@ const DriverAdd = () => {
                                 <div className="button__wrapper">
                                   <button
                                     className="btn btn-danger "
-                                  // onClick={() => handleDelete(item.id)}
-                                  onClick={() => setNidBackImage("")}
+                                    // onClick={() => handleDelete(item.id)}
+                                    onClick={() => setNidBackImage("")}
                                   ><i className="fa fa-trash" /></button>
 
                                 </div>
@@ -708,16 +740,16 @@ const DriverAdd = () => {
                 </Row>
                 <div className='d-flex justify-content-center'>
                   <Button
-                    onClick={handleSubmit} 
+                    onClick={handleSubmit}
                     className='mt-5' color="primary" style={{ width: "250px" }}>
 
                     {loading ?
 
                       <Spinner animation="border" variant="info" size='sm' />
-                      :  id ? "Edit" : "Add"
+                      : id ? "Edit" : "Add"
 
                     }
-                    
+
                   </Button>
                 </div>
               </CardBody>
@@ -725,71 +757,8 @@ const DriverAdd = () => {
           </Container>
           {/* IMAGE MODAL */}
 
-          <Modal
-            size="xl"
-            isOpen={modal_fullscreen}
-            toggle={() => {
-              setmodal_fullscreen(!modal_fullscreen);
-            }}
-            className="modal-fullscreen"
-          >
-            <div className="modal-header">
-              <h5 className="modal-title mt-0" id="exampleModalFullscreenLabel">
-                Select Image
-              </h5>
-              <button
-                onClick={() => {
-                  setmodal_fullscreen(false);
-                }}
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <ImageSelectionDialog
-                lisener={list => {
-                  const image = list[0].path;
-                  // console.log(list[0].path);
 
-                  if (imageId == 1) {
-                    setDriverImage(image);
-                  }
-                  if (imageId == 2) {
-                    setNidFrontImage(image);
-                  }
-                  if (imageId == 3) {
-                    setNidBackImage(image);
-                  }
-                  if (imageId == 4) {
-                    setLicenseFrontImage(image);
-                  }
-                  if (imageId == 5) {
-                    setLicenseBackImage(image);
-                  }
 
-                  dispatch(removeAllSelectedGalleryImage());
-                  setmodal_fullscreen(!modal_fullscreen);
-                }}
-                partnerId={selectedPartner.id}
-              />
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                onClick={() => {
-                  setmodal_fullscreen(!modal_fullscreen);
-                }}
-                className="btn btn-secondary waves-effect"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
-            </div>
-          </Modal>
 
           <Modal
             isOpen={openPartnerSearch}
@@ -822,31 +791,103 @@ const DriverAdd = () => {
                 </div>
               </SearchWrapper>
               <PartnerListWrapper >
-                  {partners.map((partner,index) =>(
-                    <div key={index} >
-                    <div className=" partner__wrapper" onClick={()=>selectPartner(partner.id)}>
+                {partners.map((partner, index) => (
+                  <div key={index} >
+                    <div className=" partner__wrapper" onClick={() => selectPartner(partner)}>
                       <div className="img__wrapper" >
-                        <img src={partner.img} alt="Partner"  />
+                        <img src={partner.img} alt="Partner" />
                       </div>
                       <div className="ms-3 d-flex content__wrapper">
                         <span>{partner.name}</span>
                         <span className="ms-1">{partner.phone}</span>
                       </div>
-                      
+
                     </div>
-                    </div>
-                  ))}
-                </PartnerListWrapper>
+                  </div>
+                ))}
+              </PartnerListWrapper>
             </div>
             <div className="modal-footer">
-              <button
+              {/* <button
                 type="button"
                 className="btn btn-primary waves-effect waves-light"
               >
                 Save changes
-              </button>
+              </button> */}
             </div>
           </Modal>
+          
+
+
+
+  <Modal
+  size="xl"
+  isOpen={modal_fullscreen}
+  toggle={() => {
+    setmodal_fullscreen(!modal_fullscreen);
+  }}
+  className="modal-fullscreen"
+>
+  <div className="modal-header">
+    <h5 className="modal-title mt-0" id="exampleModalFullscreenLabel">
+      Select Image
+    </h5>
+    <button
+      onClick={() => {
+        setmodal_fullscreen(false);
+      }}
+      type="button"
+      className="close"
+      data-dismiss="modal"
+      aria-label="Close"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div className="modal-body">
+    <ImageSelectionDialog
+      lisener={list => {
+        const image = list[0].path;
+        // console.log(list[0].path);
+
+        if (imageId == 1) {
+          setDriverImage(image);
+        }
+        if (imageId == 2) {
+          setNidFrontImage(image);
+        }
+        if (imageId == 3) {
+          setNidBackImage(image);
+        }
+        if (imageId == 4) {
+          setLicenseFrontImage(image);
+        }
+        if (imageId == 5) {
+          setLicenseBackImage(image);
+        }
+
+        dispatch(removeAllSelectedGalleryImage());
+        setmodal_fullscreen(!modal_fullscreen);
+      }}
+      partnerId={selectedPartner?.id}
+    />
+  </div>
+  <div className="modal-footer">
+    <button
+      type="button"
+      onClick={() => {
+        setmodal_fullscreen(!modal_fullscreen);
+      }}
+      className="btn btn-secondary waves-effect"
+      data-dismiss="modal"
+    >
+      Close
+    </button>
+  </div>
+</Modal>
+
+
+
 
         </div>
 

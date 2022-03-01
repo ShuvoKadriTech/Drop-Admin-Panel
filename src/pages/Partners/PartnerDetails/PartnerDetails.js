@@ -42,6 +42,8 @@ const {loading, drivers} = useSelector(state => state.driverReducer)
         }
 
         dispatch(getAllDriversByPartner(id))
+      }else {
+        history.push('/partner/list', { replace: true })
       }
 
       // callApi(id);
@@ -52,15 +54,14 @@ const {loading, drivers} = useSelector(state => state.driverReducer)
   // CALL API FOR GET CAR TYPE
 
   const callApi = async (partnerId) => {
+    // console.log("partner Id", partnerId)
     const { data } = await requestApi().request(SINGLE_PARTNER + partnerId)
-    // console.log(data)
+    // console.log("partner",data)
     if (data.status) {
       setPartner(data.data.partner)
       // console.log("data", partner)
     }
-    else {
-      history.push('/partner/list', { replace: true })
-    }
+    
   };
 
 // ADD NEW DRIVER 

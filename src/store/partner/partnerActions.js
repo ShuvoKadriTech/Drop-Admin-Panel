@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { ADD_PARTNER, ALL_PARTNER, EDIT_PARTNER } from "../../network/Api";
+import { ADD_DRIVER, ADD_PARTNER, ALL_PARTNER, EDIT_PARTNER } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
 import partnerReducer from "./partnerReducers";
@@ -163,6 +163,67 @@ export const editPartner = partnerData => async dispatch => {
         payload: error.message
       })
     );
+  }
+};
+
+
+// ADD DRIVER BY PARTNER 
+
+export const addDriver = driver => async dispatch => {
+  // console.log("driver info", driver);
+  // console.log("before add",partner);
+  try {
+    dispatch({
+      type: actionType.ADD_DRIVER_REQUEST_SEND
+    });
+
+    const { data } = await requestApi().request(ADD_DRIVER, {
+      method: "POST",
+      data: driver
+    });
+    console.log("|===================",data)
+    // console.log("response", data);
+    if (data.status) {
+      toast.success(data.statusText, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+
+      dispatch({
+        type: actionType.ADD_DRIVER_REQUEST_SUCCESS,
+        payload: data.data.driver
+      });
+      // dispatch({
+      //   type: actionType.SET_STATUS_FALSE
+      // });
+    } else {
+      toast.warn(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+      dispatch({
+        type: actionType.ADD_DRIVER_REQUEST_FAIL,
+        payload: data.error
+      });
+      
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.ADD_DRIVER_REQUEST_FAIL,
+      payload: error.message
+    });
   }
 };
 

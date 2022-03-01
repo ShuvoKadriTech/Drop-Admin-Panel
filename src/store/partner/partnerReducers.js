@@ -13,7 +13,8 @@ const initialState = {
   searchKey: "",
   statusKey: "all",
   createdByKey: "",
-  status: false
+  status: false,
+
 };
 
 const partnerReducer = (state = initialState, action) => {
@@ -66,14 +67,16 @@ const partnerReducer = (state = initialState, action) => {
         paging: payload.paginate.metadata.paging,
         hasNextPage: payload.paginate.metadata.hasNextPage,
         currentPage: payload.paginate.metadata.page.currentPage,
-        hasPreviousPage: payload.paginate.metadata.hasPreviousPage
+        hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+        status: false
       };
 
     case actionType.GET_ALL_PARTNER_REQUEST_FAIL:
       return {
         ...state,
         error: payload,
-        message: null
+        message: null,
+        status: false
       };
 
     // EDIT PARTNER
@@ -102,6 +105,38 @@ const partnerReducer = (state = initialState, action) => {
         loading: false,
         error: payload,
         message: null
+      };
+
+      // ADD DRIVER BY PARTNER
+
+      case actionType.ADD_DRIVER_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        success: false
+      };
+
+    case actionType.ADD_DRIVER_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        error: null
+      };
+
+    // case actionType.SET_STATUS_FALSE:
+    //   return {
+    //     ...state,
+    //     status: false
+    //   };
+
+    case actionType.ADD_DRIVER_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+        status: false
       };
 
     case actionType.UPDATE_SEARCH_KEY:
