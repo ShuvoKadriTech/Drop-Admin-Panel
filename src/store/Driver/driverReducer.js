@@ -3,9 +3,18 @@ import * as actionType from "../actionType";
 
 const initialState = {
   loading: false,
+  drivers: [],
+  message: null,
   error: null,
-  status: false,
-  drivers: []
+  paginate: null,
+  paging: [],
+  hasNextPage: true,
+  currentPage: 1,
+  hasPreviousPage: false,
+  searchKey: "",
+  statusKey: "all",
+  createdByKey: "",
+  status: false
 };
 
 export const driverReducer = (state = initialState, action) => {
@@ -79,7 +88,6 @@ export const driverReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_DRIVER_REQUEST_SUCCESS:
-      
       return {
         ...state,
         loading: false,
@@ -93,6 +101,52 @@ export const driverReducer = (state = initialState, action) => {
         ...state,
         status: false,
         error: payload
+      };
+
+    // ALL DRIVERS
+
+    case actionType.GET_ALL_DRIVERS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true
+      };
+
+    case actionType.GET_ALL_DRIVERS_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        drivers: payload.partners,
+        error: null,
+        message: null,
+        paginate: payload.paginate,
+        paging: payload.paginate.metadata.paging,
+        hasNextPage: payload.paginate.metadata.hasNextPage,
+        currentPage: payload.paginate.metadata.page.currentPage,
+        hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
+        status: false
+      };
+
+    case actionType.GET_ALL_DRIVERS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+        message: null
+      };
+
+    // EDIT STATUS KEY UPDATE
+
+    case actionType.UPDATE_STATUS_KEY:
+      return {
+        ...state,
+        statusKey: payload
+      };
+
+    // UPDATE SEARCH KEY
+    case actionType.UPDATE_SEARCH_KEY:
+      return {
+        ...state,
+        searchKey: payload
       };
 
     default:

@@ -95,9 +95,7 @@ const PartnersList = () => {
     // console.log("yes");
     let timer;
     return () => {
-      if (timer) {
-        clearTimeout(timer);
-      }
+      clearTimeout(timer);
 
       timer = setTimeout(() => {
         func();
@@ -121,12 +119,12 @@ const PartnersList = () => {
 
           {isZoom
             ? <Lightbox
-              mainSrc={partnerImage}
-              enableZoom={true}
-              onCloseRequest={() => {
-                setIsZoom(!isZoom);
-              }}
-            />
+                mainSrc={partnerImage}
+                enableZoom={true}
+                onCloseRequest={() => {
+                  setIsZoom(!isZoom);
+                }}
+              />
             : null}
 
           <Card>
@@ -168,8 +166,7 @@ const PartnersList = () => {
                         placeholder="Find Partner by name or email or phone "
                         id="search"
                         value={searchKey}
-                        onChange={event =>
-                          searchKeyListener(event.target.value)}
+                        onKeyUp={event => searchKeyListener(event.target.value)}
                       />
                     </div>
                   </SearchWrapper>
@@ -328,14 +325,14 @@ const SearchWrapper = styled.div`
 
 const ButtonWrapper = styled.div`
   .btn {
-              width: 30px;
-              height: 30px;
-              padding: 6px 0px;
-              border-radius: 15px;
-              text-align: center;
-              font-size: 12px;
-              line-height: 1.42857;
-            }
-`
+    width: 30px;
+    height: 30px;
+    padding: 6px 0px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.42857;
+  }
+`;
 
 export default PartnersList;

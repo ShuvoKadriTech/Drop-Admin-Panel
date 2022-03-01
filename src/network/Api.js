@@ -76,6 +76,7 @@ export const ADD_DRIVER = ADMIN_ENDPOINT + "/driver/add";
 export const GET_ALL_DRIVERS_BY_PARTNER = ADMIN_ENDPOINT + "/driver/partner/";
 export const GET_SINGLE_DRIVER = ADMIN_ENDPOINT + "/driver/";
 export const EDIT_DRIVER = ADMIN_ENDPOINT + "/driver/edit";
+export const ALL_DRIVERS = ADMIN_ENDPOINT + "/driver";
 
 // CAR BRAND
 

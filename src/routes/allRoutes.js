@@ -138,6 +138,7 @@ import PartnerDetails from "../pages/Partners/PartnerDetails/PartnerDetails";
 import DriverAdd from "../pages/Driver/DriverAdd/DriverAdd";
 import CarBrand from "../pages/Car/CarBrand/CarBrand";
 import CarModel from "../pages/Car/CarModel/CarModel";
+import DriversList from "./../pages/Driver/DriversList/DriversList";
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
 
@@ -167,6 +168,8 @@ const userRoutes = [
 
   { path: "/driver/add", component: DriverAdd },
   { path: "/driver/edit/:id", component: DriverAdd },
+
+  { path: "/drivers", component: DriversList },
 
   // CAR
 
