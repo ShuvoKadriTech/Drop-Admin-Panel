@@ -112,13 +112,23 @@ const editDriver = (driverId) =>{
             <Card>
               <CardBody>
                 <Row>
+                <div className="d-flex justify-content-end w-100">
+                      <button
+                        onClick={() => history.push(`/partner/edit/${id}`)}
+                        className="btn btn-success"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  </Row>
+                <Row>
                   <Col
                     md={6}
                     sm={12}
                     className="d-flex justify-content-between flex-wrap "
-                    style={{ borderRight: "1px solid lightgray" }}
+                    // style={{  borderRight: width > 1200 ?  "1px solid lightgray" : "none"}}
                   >
-                    {partner.img ?<ImageWrapper style={{width : partner.nidFontPic && partner.nidBackPic ? "150px" : "100%", height: "200px", padding: "10px 0px" }}>
+                    {partner.img ?<ImageWrapper style={{width :  "100%", height: "200px", padding: "10px 0px" }}>
                        <img
                         onClick={() => {
                           setIsZoom(true);
@@ -131,38 +141,7 @@ const editDriver = (driverId) =>{
                       /> 
                       <small>Partner Image</small>
                     </ImageWrapper>: null}
-                    {partner.nidFontPic ? <ImageWrapper style={{width : partner.img && partner.nidBackPic ? "150px" : "100%", height: "200px", padding: "10px 0px" }}>
-                     
-                      <img
-                        onClick={() => {
-                          setIsZoom(true);
-                          setSelectedImg(partner.nidFontPic)
-                        }}
-                        className="img-fluid cursor-pointer"
-                        alt="Veltrix"
-                        src={partner.nidFontPic}
-                        width="100%"
-                      />
-                      <small>NID Front Image</small>
-                   
-                      
-                    </ImageWrapper>: null}
-                    {partner.nidBackPic ? <ImageWrapper style={{width : partner.nidFontPic && partner.img ? "150px" : "100%", height: "200px", padding: "10px 0px" }}>
-                  
-                      <img
-                        onClick={() => {
-                          setIsZoom(true);
-                          setSelectedImg(partner.nidBackPic)
-                        }}
-                        className="img-fluid cursor-pointer"
-                        alt="Veltrix"
-                        src={partner.nidBackPic}
-                        width="100%"
-                      />
-                      <small>NID Back Image</small>
-                     
-                      
-                    </ImageWrapper>: null}
+                    
                   </Col>
                   <Col
                     md={6}
@@ -207,20 +186,58 @@ const editDriver = (driverId) =>{
                         </Value>
                       </Details>
                     </div>
-                    <div className="d-flex align-items-start h-100">
-                      <button
-                        onClick={() => history.push(`/partner/edit/${id}`)}
-                        className="btn btn-success"
-                      >
-                        Edit
-                      </button>
-                    </div>
+                    
                   </Col>
                 </Row>
               </CardBody>
             </Card>
 
-
+              
+              <Card>
+                <CardBody>
+                  <Row>
+                    <Col md={6}>
+                    
+                    {partner.nidFontPic ? <ImageWrapper style={{width  : "100%", height: "200px", padding: "10px 0px" }}>
+                     
+                     <img
+                       onClick={() => {
+                         setIsZoom(true);
+                         setSelectedImg(partner.nidFontPic)
+                       }}
+                       className="img-fluid cursor-pointer"
+                       alt="Veltrix"
+                       src={partner.nidFontPic}
+                       width="100%"
+                     />
+                     <small>NID Front Image</small>
+                  
+                     
+                   </ImageWrapper>: null}
+                   
+                    
+                    </Col>
+                    <Col md={6}>
+                    {partner.nidBackPic ? <ImageWrapper style={{width : "100%", height: "200px", padding: "10px 0px" }}>
+                 
+                 <img
+                   onClick={() => {
+                     setIsZoom(true);
+                     setSelectedImg(partner.nidBackPic)
+                   }}
+                   className="img-fluid cursor-pointer"
+                   alt="Veltrix"
+                   src={partner.nidBackPic}
+                   width="100%"
+                 />
+                 <small>NID Back Image</small>
+                
+                 
+               </ImageWrapper>: null}
+                    </Col>
+                  </Row>
+                </CardBody>
+              </Card>
 
             <Row>
               <Col xl={6}>
@@ -299,7 +316,7 @@ const editDriver = (driverId) =>{
                                   </Td>
                                   <Td>
                                     <button
-                                      className="btn btn-info btn-circle btn-sm me-0 me-lg-2"
+                                      className="btn btn-info btn-circle btn-sm   me-xl-2"
                                       onClick={()=>editDriver(driver.id)}
                                     >
                                       <i className="fa fa-edit" />

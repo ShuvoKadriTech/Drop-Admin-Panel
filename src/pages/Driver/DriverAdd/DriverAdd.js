@@ -303,7 +303,7 @@ const DriverAdd = () => {
           <Container fluid={true}>
             <Breadcrumbs
               maintitle="Driver"
-              breadcrumbItem={"Add"}
+              breadcrumbItem={id ?"Edit" : "Add"}
               hideSettingBtn={true}
               isRefresh={false}
 
@@ -746,7 +746,7 @@ const DriverAdd = () => {
                     {loading ?
 
                       <Spinner animation="border" variant="info" size='sm' />
-                      : id ? "Edit" : "Add"
+                      : id ? "Update" : "Add"
 
                     }
 
