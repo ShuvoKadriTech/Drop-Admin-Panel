@@ -9,7 +9,8 @@ import requestApi from "../../../network/httpRequest";
 import { GET_SINGLE_CAR_TYPE, SINGLE_PARTNER } from "../../../network/Api";
 import Lightbox from "react-image-lightbox";
 import { Tbody, Td, Th, Thead, Tr,Table } from "react-super-responsive-table";
-import { getAllDriversByPartner } from "../../../store/Driver/driverAction";
+import { getAllDriversByPartner } from "../../../store/partner/partnerActions";
+
 
 
 const PartnerDetails = () => {
@@ -19,11 +20,11 @@ const PartnerDetails = () => {
   const { id } = useParams();
   const history = useHistory();
 
-  const {  message, error, partners, } = useSelector(
+  const {  message, error, partners,drivers } = useSelector(
     state => state.partnerReducer
   );
 
-const {loading, drivers} = useSelector(state => state.driverReducer)
+// const {loading, } = useSelector(state => state.driverReducer)
 
   const [partner, setPartner] = useState({});
   const [isZoom, setIsZoom] = useState(false);
@@ -323,9 +324,9 @@ const editDriver = (driverId) =>{
                                     </button>
                                     <button
                             className="btn btn-success btn-circle btn-sm"
-                            // onClick={() =>
-                            //   // history.push(`/partner/${partner.id}`)
-                            // }
+                            onClick={() =>
+                              history.push(`/driver/details/${driver.id}`)
+                            }
                           >
                             <i className="fa fa-eye" />
                           </button>

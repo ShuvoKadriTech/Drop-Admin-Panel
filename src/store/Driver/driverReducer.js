@@ -54,29 +54,6 @@ export const driverReducer = (state = initialState, action) => {
         status: false
       };
 
-    // GET ALL DRIVERS BY PARTNER ID
-
-    case actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_SEND:
-      return {
-        ...state,
-        loading: true
-      };
-
-    case actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        drivers: payload
-      };
-
-    case actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_FAIL:
-      return {
-        ...state,
-        loading: false,
-
-        error: payload
-      };
-
     // EDIT DRIVER
 
     case actionType.EDIT_DRIVER_REQUEST_SEND:
@@ -112,10 +89,11 @@ export const driverReducer = (state = initialState, action) => {
       };
 
     case actionType.GET_ALL_DRIVERS_REQUEST_SUCCESS:
+      console.log("payload", payload);
       return {
         ...state,
         loading: false,
-        drivers: payload.partners,
+        drivers: payload.drivers,
         error: null,
         message: null,
         paginate: payload.paginate,

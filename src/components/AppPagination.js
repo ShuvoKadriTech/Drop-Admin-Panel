@@ -9,6 +9,7 @@ const AppPagination = ({ paging, lisener, currentPage, hasNextPage, hasPreviousP
     const [next, setNextPageDisable] = useState(false);
 
     useEffect(() => {
+        // console.log("paging,currentPage---------",paging,currentPage)
         hasNextPage ? setNextPageDisable(false) : setNextPageDisable(true)
         hasPreviousPage ? setPreviousPageDisable(false) : setPreviousPageDisable(true)
     }, [hasNextPage, hasPreviousPage]);

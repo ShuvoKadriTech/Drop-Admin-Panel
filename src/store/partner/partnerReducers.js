@@ -14,7 +14,7 @@ const initialState = {
   statusKey: "all",
   createdByKey: "",
   status: false,
-
+  drivers: []
 };
 
 const partnerReducer = (state = initialState, action) => {
@@ -107,9 +107,9 @@ const partnerReducer = (state = initialState, action) => {
         message: null
       };
 
-      // ADD DRIVER BY PARTNER
+    // ADD DRIVER BY PARTNER
 
-      case actionType.ADD_DRIVER_REQUEST_SEND:
+    case actionType.ADD_DRIVER_REQUEST_SEND:
       return {
         ...state,
         loading: true,
@@ -137,6 +137,30 @@ const partnerReducer = (state = initialState, action) => {
         loading: false,
         error: payload,
         status: false
+      };
+
+    // GET ALL DRIVERS BY PARTNER
+
+    case actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true
+      };
+
+    case actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        drivers: payload,
+        status: false
+      };
+
+    case actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+
+        error: payload
       };
 
     case actionType.UPDATE_SEARCH_KEY:

@@ -67,37 +67,6 @@ import * as actionType from "../actionType";
 //   }
 // };
 
-// GET ALL DRIVER BY PARTNER
-
-export const getAllDriversByPartner = partnerId => async dispatch => {
-  try {
-    dispatch({
-      type: actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_SEND
-    });
-
-    const { data } = await requestApi().request(
-      GET_ALL_DRIVERS_BY_PARTNER + partnerId
-    );
-    // console.log("response", data);
-    if (data.status) {
-      dispatch({
-        type: actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_SUCCESS,
-        payload: data.data.drivers
-      });
-    } else {
-      dispatch({
-        type: actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_FAIL,
-        payload: data.error
-      });
-    }
-  } catch (error) {
-    dispatch({
-      type: actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_FAIL,
-      payload: error.message
-    });
-  }
-};
-
 // EDIT DRIVER
 
 export const editDriver = updateData => async dispatch => {
@@ -171,9 +140,7 @@ export const allDrivers = (refresh = false, page = 1) => async (
         type: actionType.GET_ALL_DRIVERS_REQUEST_SEND
       });
 
-      const {
-        data: { status, error, data }
-      } = await requestApi().request(ALL_DRIVERS, {
+      const { data } = await requestApi().request(ALL_DRIVERS, {
         params: {
           // searchKey: searchKey,
           page: page,
@@ -183,17 +150,17 @@ export const allDrivers = (refresh = false, page = 1) => async (
         }
       });
 
-      console.log("all drivers", data);
+      console.log("all drivers", data.data.drivers);
 
-      if (status) {
+      if (data.status) {
         dispatch({
           type: actionType.GET_ALL_DRIVERS_REQUEST_SUCCESS,
-          payload: data.drivers
+          payload: { drivers: data.data.drivers, paginate: data.data.paginate }
         });
       } else {
         dispatch({
           type: actionType.GET_ALL_DRIVERS_REQUEST_FAIL,
-          payload: error
+          payload: data.error
         });
       }
     }

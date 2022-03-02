@@ -35,12 +35,41 @@ const DriversList = () => {
     paging,
     hasNextPage,
     hasPreviousPage,
-    currentPage
+    currentPage,
+    searchKey,
+    createdByKey,
+    loading
   } = useSelector(state => state.driverReducer);
 
-  useEffect(() => {
-    dispatch(allDrivers(true));
-  }, []);
+  useEffect(
+    () => {
+      if (
+        (searchKey && statusKey && createdByKey) ||
+        (searchKey && statusKey) ||
+        (searchKey && createdByKey) ||
+        (statusKey && createdByKey) ||
+        searchKey ||
+        statusKey ||
+        createdByKey
+      ) {
+        callPartnerList(true);
+      } else {
+        // if (open) {
+        //   callPartnerList(true);
+        // } else {
+        //   callPartnerList();
+        // }
+
+        callPartnerList();
+      }
+    },
+    [searchKey, statusKey, createdByKey]
+  );
+
+  const callPartnerList = (refresh = false) => {
+    // console.log(searchKey);
+    dispatch(allDrivers(refresh));
+  };
 
   const searchKeyListener = () => {
     console.log("fatching data...");
@@ -77,8 +106,8 @@ const DriversList = () => {
               maintitle="Drivers"
               breadcrumbItem="List"
               hideSettingBtn={true}
-              // loading={loading}
-              // callList={callPartnerList}
+              loading={loading}
+              callList={callPartnerList}
               isAddNew={true}
               addNewRoute="driver/add"
             />
@@ -167,7 +196,7 @@ const DriversList = () => {
                 <Row className="mb-3">
                   <Col md={3} className="text-end" />
                 </Row>
-                <CardTitle className="h4"> Partner List</CardTitle>
+                <CardTitle className="h4"> Drivers List</CardTitle>
                 <Table
                   id="tech-companies-1"
                   className="table table__wrapper table-striped table-bordered table-hover text-center"
@@ -221,33 +250,33 @@ const DriversList = () => {
                             {driver.phone}
                           </Td>
                           <Td>
-                            {/* <ButtonWrapper>
-                            <button
-                              className="btn btn-info me-xl-3"
-                              onClick={() =>
-                                history.push(`/partner/edit/${partner.id}`)}
-                            >
-                              <i className="fa fa-edit" />
-                            </button>
-                            <button
-                              className="btn btn-success "
-                              onClick={() =>
-                                history.push(`/partner/${partner.id}`)}
-                            >
-                              <i className="fa fa-eye" />
-                            </button>
-                          </ButtonWrapper> */}
+                            <ButtonWrapper>
+                              {/* <button
+                                className="btn btn-info me-xl-3"
+                                onClick={() =>
+                                  history.push(`/partner/edit/${partner.id}`)}
+                              >
+                                <i className="fa fa-edit" />
+                              </button>
+                              <button
+                                className="btn btn-success "
+                                onClick={() =>
+                                  history.push(`/partner/${partner.id}`)}
+                              >
+                                <i className="fa fa-eye" />
+                              </button> */}
+                            </ButtonWrapper>
                           </Td>
                         </Tr>
                       );
                     })}
                   </Tbody>
-                  {/* {loading &&
-                  <Spinner
-                    style={{ position: "fixed", left: "50%", top: "50%" }}
-                    animation="border"
-                    variant="success"
-                  />} */}
+                  {loading &&
+                    <Spinner
+                      style={{ position: "fixed", left: "50%", top: "50%" }}
+                      animation="border"
+                      variant="info"
+                    />}
                 </Table>
               </CardBody>
             </Card>
