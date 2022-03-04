@@ -14,7 +14,7 @@ const initialState = {
   statusKey: "all",
   createdByKey: "",
   status: false,
-  drivers: []
+  drivers: [],
 };
 
 const partnerReducer = (state = initialState, action) => {
@@ -28,7 +28,7 @@ const partnerReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         message: null,
-        error: null
+        error: null,
       };
 
     case actionType.ADD_PARTNER_REQUEST_SUCCESS:
@@ -37,7 +37,7 @@ const partnerReducer = (state = initialState, action) => {
         loading: false,
         partners: [...state.partners, payload.partner],
         message: payload.message,
-        error: null
+        error: null,
       };
 
     case actionType.ADD_PARTNER_REQUEST_FAIL:
@@ -45,7 +45,7 @@ const partnerReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         message: null,
-        error: payload
+        error: payload,
       };
 
     // GET ALL PARTNERS
@@ -53,7 +53,7 @@ const partnerReducer = (state = initialState, action) => {
     case actionType.GET_ALL_PARTNER_REQUEST_SEND:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
 
     case actionType.GET_ALL_PARTNER_REQUEST_SUCCESS:
@@ -68,7 +68,7 @@ const partnerReducer = (state = initialState, action) => {
         hasNextPage: payload.paginate.metadata.hasNextPage,
         currentPage: payload.paginate.metadata.page.currentPage,
         hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
-        status: false
+        status: false,
       };
 
     case actionType.GET_ALL_PARTNER_REQUEST_FAIL:
@@ -76,7 +76,7 @@ const partnerReducer = (state = initialState, action) => {
         ...state,
         error: payload,
         message: null,
-        status: false
+        status: false,
       };
 
     // EDIT PARTNER
@@ -84,19 +84,19 @@ const partnerReducer = (state = initialState, action) => {
     case actionType.EDIT_PARTNER_REQUEST_SEND:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
 
     case actionType.EDIT_PARTNER_REQUEST_SUCCESS:
-      const updateData = state.partners.map(
-        item => (item.id === payload.partner.id ? payload.partner : item)
+      const updateData = state.partners.map((item) =>
+        item.id === payload.partner.id ? payload.partner : item
       );
       return {
         ...state,
         loading: false,
         message: payload.message,
         error: null,
-        partners: updateData
+        partners: updateData,
       };
 
     case actionType.EDIT_PARTNER_REQUEST_FAIL:
@@ -104,7 +104,7 @@ const partnerReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: payload,
-        message: null
+        message: null,
       };
 
     // ADD DRIVER BY PARTNER
@@ -114,7 +114,7 @@ const partnerReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         error: null,
-        success: false
+        success: false,
       };
 
     case actionType.ADD_DRIVER_REQUEST_SUCCESS:
@@ -122,7 +122,7 @@ const partnerReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         status: true,
-        error: null
+        error: null,
       };
 
     // case actionType.SET_STATUS_FALSE:
@@ -136,15 +136,40 @@ const partnerReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: payload,
-        status: false
+        status: false,
       };
+
+    // EDIT DRIVER
+
+    case actionType.EDIT_DRIVER_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        status: false,
+      };
+
+    case actionType.EDIT_DRIVER_REQUEST_SUCCESS:
+      // const newData = state.drivers.map(
+      //   driver => (driver.id == payload.id ? payload : driver)
+      // );
+      return {
+        ...state,
+
+        loading: false,
+        // drivers: updateData,
+        status: true,
+        error: null,
+      };
+
+    case actionType.EDIT_DRIVER_REQUEST_FAIL:
 
     // GET ALL DRIVERS BY PARTNER
 
     case actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_SEND:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
 
     case actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_SUCCESS:
@@ -152,7 +177,7 @@ const partnerReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         drivers: payload,
-        status: false
+        status: false,
       };
 
     case actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_FAIL:
@@ -160,25 +185,25 @@ const partnerReducer = (state = initialState, action) => {
         ...state,
         loading: false,
 
-        error: payload
+        error: payload,
       };
 
     case actionType.UPDATE_SEARCH_KEY:
       return {
         ...state,
-        searchKey: payload
+        searchKey: payload,
       };
 
     case actionType.UPDATE_STATUS_KEY:
       return {
         ...state,
-        statusKey: payload
+        statusKey: payload,
       };
 
     case actionType.UPDATE_CREATED_BY_KEY:
       return {
         ...state,
-        createdByKey: payload
+        createdByKey: payload,
       };
 
     default:

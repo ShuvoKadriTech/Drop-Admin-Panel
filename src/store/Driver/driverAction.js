@@ -67,60 +67,6 @@ import * as actionType from "../actionType";
 //   }
 // };
 
-// EDIT DRIVER
-
-export const editDriver = updateData => async dispatch => {
-  console.log(updateData);
-  try {
-    dispatch({
-      type: actionType.EDIT_DRIVER_REQUEST_SEND
-    });
-
-    const { data } = await requestApi().request(EDIT_DRIVER, {
-      method: "POST",
-      data: updateData
-    });
-    console.log("response", data);
-    if (data.status) {
-      toast.success(data.statusText, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-      });
-
-      dispatch({
-        type: actionType.EDIT_DRIVER_REQUEST_SUCCESS,
-        payload: data.data.driver
-      });
-    } else {
-      toast.warn(data.error, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-      });
-      dispatch({
-        type: actionType.EDIT_DRIVER_REQUEST_FAIL,
-        payload: data.error
-      });
-    }
-  } catch (error) {
-    dispatch({
-      type: actionType.EDIT_DRIVER_REQUEST_FAIL,
-      payload: error.message
-    });
-  }
-};
-
 // GET ALL DRIVERS
 
 export const allDrivers = (refresh = false, page = 1) => async (

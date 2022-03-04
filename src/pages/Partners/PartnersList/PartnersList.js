@@ -166,7 +166,8 @@ const PartnersList = () => {
                         placeholder="Find Partner by name or email or phone "
                         id="search"
                         value={searchKey}
-                        onKeyUp={event => searchKeyListener(event.target.value)}
+                        onChange={event =>
+                          searchKeyListener(event.target.value)}
                       />
                     </div>
                   </SearchWrapper>

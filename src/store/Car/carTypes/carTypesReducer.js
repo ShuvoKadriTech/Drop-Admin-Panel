@@ -16,7 +16,7 @@ import {
   GET_UPDATE_CAR_DATA,
   GET_SINGLE_CAR_TYPE_REQUEST_SEND,
   GET_SINGLE_CAR_TYPE_REQUEST_SUCCESS,
-  GET_SINGLE_CAR_TYPE_REQUEST_FAIL
+  GET_SINGLE_CAR_TYPE_REQUEST_FAIL,
 } from "../../actionType";
 import * as actionType from "../../actionType";
 
@@ -25,23 +25,27 @@ const initialState = {
   carTypes: [],
   error: null,
   message: null,
-  singleCarType: null, 
+  singleCarType: null,
   status: false,
   singleBrand: {},
   colors: [],
   years: [],
-  singleModel: {}
+  singleModel: {},
+  selectedCarType: null,
+  selectedCarBrand: null,
+  selectedBrandModel: null,
+  selectedModelColor: null,
+  selectedModelYear: null,
 };
 
 const carTypesReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
   switch (type) {
-
     case GET_CAR_TYPES_REQUEST_SEND:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
 
     case GET_CAR_TYPES_REQUEST_SUCCESS:
@@ -50,7 +54,7 @@ const carTypesReducer = (state = initialState, action) => {
         loading: false,
         carTypes: payload,
         error: null,
-        message: null
+        message: null,
       };
 
     case GET_CAR_TYPES_REQUEST_FAIL:
@@ -58,7 +62,7 @@ const carTypesReducer = (state = initialState, action) => {
         ...state,
         error: payload,
         message: null,
-        loading: false
+        loading: false,
       };
 
     // EDIT CAR TYPE
@@ -66,7 +70,7 @@ const carTypesReducer = (state = initialState, action) => {
     case EDIT_CAR_TYPE_REQUEST_SEND:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
 
     case EDIT_CAR_TYPE_REQUEST_SUCCESS:
@@ -74,26 +78,25 @@ const carTypesReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         message: payload,
-        error: null
+        error: null,
       };
 
     case GET_UPDATE_CAR_DATA:
-
-      const oldData = state.carTypes.find(i=>i.id===payload.id)
+      const oldData = state.carTypes.find((i) => i.id === payload.id);
 
       const newCarData = {
         ...oldData,
-        payload
-      }
-      const updateData = state.carTypes.map(
-        item => (item.id === payload.id ? newCarData : item)
+        payload,
+      };
+      const updateData = state.carTypes.map((item) =>
+        item.id === payload.id ? newCarData : item
       );
       return {
         ...state,
         loading: false,
         message: null,
         error: null,
-        carTypes: updateData
+        carTypes: updateData,
       };
 
     case EDIT_CAR_TYPE_REQUEST_FAIL:
@@ -101,7 +104,7 @@ const carTypesReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: payload,
-        message: null
+        message: null,
       };
 
     // ADD CAR TYPE
@@ -109,7 +112,7 @@ const carTypesReducer = (state = initialState, action) => {
     case ADD_CAR_TYPE_REQUEST_SEND:
       return {
         ...state,
-        loading: true
+        loading: true,
       };
 
     case ADD_CAR_TYPE_REQUEST_SUCCESS:
@@ -118,7 +121,7 @@ const carTypesReducer = (state = initialState, action) => {
         loading: false,
         carTypes: [...state.carTypes, payload.data],
         error: null,
-        message: payload.message
+        message: payload.message,
       };
 
     case CLEAR_SUCCESS_MESSAGE:
@@ -126,7 +129,7 @@ const carTypesReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: null,
-        message: null
+        message: null,
       };
 
     case ADD_CAR_TYPE_REQUEST_FAIL:
@@ -134,35 +137,34 @@ const carTypesReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: payload,
-        message: null
+        message: null,
       };
 
-      // GET SINGLE CAR TYPE_ID
-      case GET_SINGLE_CAR_TYPE_REQUEST_SEND:
-        return{
-          ...state,
-          loading: true,
-          status: false,
-          error: null
-        }
+    // GET SINGLE CAR TYPE_ID
+    case GET_SINGLE_CAR_TYPE_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false,
+        error: null,
+      };
 
-        case GET_SINGLE_CAR_TYPE_REQUEST_SUCCESS:
-        return{
-          ...state,
-          loading: false,
-          status: true,
-          singleCarType: payload,
-          error: null
-        }
+    case GET_SINGLE_CAR_TYPE_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        singleCarType: payload,
+        error: null,
+      };
 
-        case GET_SINGLE_CAR_TYPE_REQUEST_FAIL:
-        return{
-          ...state,
-          loading: false,
-          status: false,
-          error: payload
-        }
-
+    case GET_SINGLE_CAR_TYPE_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+      };
 
     // ADD CAR TYPE BRAND
 
@@ -172,12 +174,12 @@ const carTypesReducer = (state = initialState, action) => {
         loading: true,
         message: null,
         error: null,
-        status: false
+        status: false,
       };
 
     case actionType.ADD_BRAND_REQUEST_SUCCESS:
       let findCarType = state.carTypes.find(
-        type => type.id === payload.carBrand.carTypeId
+        (type) => type.id === payload.carBrand.carTypeId
       );
       findCarType.carBrands.push(payload.carBrand);
 
@@ -186,7 +188,7 @@ const carTypesReducer = (state = initialState, action) => {
         loading: false,
         status: true,
         singleCarType: findCarType,
-        error: null
+        error: null,
       };
 
     case actionType.ADD_BRAND_REQUEST_FAIL:
@@ -195,7 +197,7 @@ const carTypesReducer = (state = initialState, action) => {
         loading: false,
         message: null,
         status: false,
-        error: payload
+        error: payload,
       };
 
     // EDIT CAR BRAND
@@ -205,28 +207,30 @@ const carTypesReducer = (state = initialState, action) => {
         ...state,
         loading: true,
         message: null,
-        error: null, 
-        status: false
+        error: null,
+        status: false,
       };
     case actionType.EDIT_BRAND_REQUEST_SUCCESS:
       // const newData = state.carTypes.map(
       //   item => (item.id === payload.data.id ? payload.data : item)
       // );
 
-      let find = state.carTypes.find(type => type.id ===  payload.carBrand.carTypeId)
-
-      const newData = find?.carBrands.map(
-        item => (item.id === payload.carBrand.id ? payload.carBrand : item)
+      let find = state.carTypes.find(
+        (type) => type.id === payload.carBrand.carTypeId
       );
 
-      const data = {...find, carBrands: newData}
-
-      const update = state?.carTypes.map(
-        item => (item.id === data.id ? data : item)
+      const newData = find?.carBrands.map((item) =>
+        item.id === payload.carBrand.id ? payload.carBrand : item
       );
 
-    // console.log("find",find)
-    // console.log("newData",newData)
+      const data = { ...find, carBrands: newData };
+
+      const update = state?.carTypes.map((item) =>
+        item.id === data.id ? data : item
+      );
+
+      // console.log("find",find)
+      // console.log("newData",newData)
 
       return {
         ...state,
@@ -234,7 +238,7 @@ const carTypesReducer = (state = initialState, action) => {
         status: true,
         carTypes: update,
         singleCarType: data,
-        error: null
+        error: null,
       };
 
     case actionType.EDIT_BRAND_REQUEST_FAIL:
@@ -243,73 +247,86 @@ const carTypesReducer = (state = initialState, action) => {
         loading: false,
         message: null,
         status: false,
-        error: payload
+        error: payload,
       };
 
+    // ADD MODEL
 
-
-      // ADD MODEL 
-
-      case actionType.ADD_MODEL_REQUEST_SEND:
+    case actionType.ADD_MODEL_REQUEST_SEND:
       return {
         ...state,
         loading: true,
         message: null,
         status: false,
-        error: null
+        error: null,
       };
 
-      case actionType.ADD_MODEL_REQUEST_SUCCESS:
+    case actionType.ADD_MODEL_REQUEST_SUCCESS:
+      const getCarType = state.carTypes.find(
+        (type) => type.id == payload.carTypeId
+      );
+      console.log("car type", getCarType);
+      let getBrand = getCarType.carBrands.find(
+        (b) => b.id == payload.carModel.carBrandId
+      );
+      console.log("brand", getBrand);
 
-      const getCarType = state.carTypes.find(type => type.id == payload.carTypeId)
-      console.log("car type",getCarType)
-      let getBrand = getCarType.carBrands.find(b => b.id == payload.carModel.carBrandId)
-      console.log("brand",getBrand)
-
-      getBrand.carModels.push(payload.carModel)
+      getBrand.carModels.push(payload.carModel);
 
       return {
         ...state,
         loading: false,
         status: true,
         singleBrand: getBrand,
-        error: null
+        error: null,
       };
 
-      case actionType.ADD_MODEL_REQUEST_FAIL:
+    case actionType.ADD_MODEL_REQUEST_FAIL:
       return {
         ...state,
         loading: false,
         message: null,
         status: false,
-        error: payload
+        error: payload,
       };
 
-      // EDIT MODEL 
+    // EDIT MODEL
 
-      case actionType.EDIT_MODEL_REQUEST_SEND:
+    case actionType.EDIT_MODEL_REQUEST_SEND:
       return {
         ...state,
         loading: true,
         message: null,
-        error: null, 
-        status: false
+        error: null,
+        status: false,
       };
     case actionType.EDIT_MODEL_REQUEST_SUCCESS:
+      let singleCarType = state.carTypes.find(
+        (type) => type.id == payload.typeId
+      );
 
-      let singleCarType = state.carTypes.find(type => type.id == payload.typeId)
+      let singleBrand = singleCarType.carBrands.find(
+        (b) => b.id == payload.carModel.carBrandId
+      );
 
-      let singleBrand = singleCarType.carBrands.find(b => b.id == payload.carModel.carBrandId)
+      const updateModel = singleBrand.carModels.map((model) =>
+        model.id == payload.carModel.id ? payload.carModel : model
+      );
 
-      const updateModel = singleBrand.carModels.map(model => model.id == payload.carModel.id ? payload.carModel : model)
+      let updatedBrand = { ...singleBrand, carModels: updateModel };
 
-      let updatedBrand = {...singleBrand, carModels: updateModel}
+      const updatedBrands = singleCarType.carBrands.map((item) =>
+        item.id == updatedBrand.id ? updatedBrand : item
+      );
 
-      const updatedBrands = singleCarType.carBrands.map(item => item.id == updatedBrand.id ? updatedBrand : item)
+      const updatedSingleCarType = {
+        ...singleCarType,
+        carBrands: updatedBrands,
+      };
 
-      const updatedSingleCarType = {...singleCarType, carBrands: updatedBrands}
-
-      const finalData = state.carTypes.map(type => type.id == updatedSingleCarType.id ?updatedSingleCarType : type  )
+      const finalData = state.carTypes.map((type) =>
+        type.id == updatedSingleCarType.id ? updatedSingleCarType : type
+      );
 
       return {
         ...state,
@@ -317,121 +334,159 @@ const carTypesReducer = (state = initialState, action) => {
         status: true,
         carTypes: finalData,
         singleBrand: updatedBrand,
-        error: null
+        error: null,
       };
 
     case actionType.EDIT_MODEL_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+      };
 
-        return{
-          ...state,
-          loading: false,
-          status: false,
-          error: payload
-        };
+    // GET COLORS AND YEAR
 
-        // GET COLORS AND YEAR 
+    case actionType.GET_COLORS_YEARS_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+      };
 
-        case actionType.GET_COLORS_YEARS_REQUEST_SEND:
+    case actionType.GET_COLORS_YEARS_REQUEST_SUCCESS:
+      // console.log("payload", payload)
+      return {
+        ...state,
+        loading: false,
+        colors: payload.colors,
+        years: payload.years,
+        error: null,
+      };
 
-        return{
-          ...state,
-          loading: true,
-        }
-      
-        case actionType.GET_COLORS_YEARS_REQUEST_SUCCESS:
-        // console.log("payload", payload)
-        return{
-          ...state,
-          loading: false,
-          colors: payload.colors,
-          years: payload.years,
-          error: null
-        }
+    case actionType.GET_COLORS_YEARS_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
 
-        case actionType.GET_COLORS_YEARS_REQUEST_FAIL:
+    // ADD MODEL COLOR
 
-          return{
-            ...state,
-            loading: false,
-            error: payload
-          }
-      
-      // ADD MODEL COLOR
+    case actionType.ADD_MODEL_COLOR_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        message: null,
+        status: false,
+        error: null,
+      };
 
-      case actionType.ADD_MODEL_COLOR_REQUEST_SEND:
-        return {
-          ...state,
-          loading: true,
-          message: null,
-          status: false,
-          error: null
-        };
-  
-        case actionType.ADD_MODEL_COLOR_REQUEST_SUCCESS:
-  
-        const  type = state.carTypes.find(type => type.id == payload.carTypeId);
-        console.log("type", type)
-  
-        const brand = type.carBrands.find(b => b.id == payload.brandId);
-        console.log("brand", brand)
-        let model = brand.carModels.find(m => m.id == payload.modelColor.car_colors.carModelId);
-        console.log("before add model", model)
-        model.colors.push(payload.modelColor)
-        console.log("after add model", model)
-        return {
-          ...state,
-          loading: false,
-          status: true,
-          singleModel: model,
-          error: null
-        };
-  
-        case actionType.ADD_MODEL_COLOR_REQUEST_FAIL:
-          return{
-            ...state,
-            loading: false,
-            status: false,
-            error: payload
-          }
+    case actionType.ADD_MODEL_COLOR_REQUEST_SUCCESS:
+      const type = state.carTypes.find((type) => type.id == payload.carTypeId);
+      console.log("type", type);
 
+      const brand = type.carBrands.find((b) => b.id == payload.brandId);
+      console.log("brand", brand);
+      let model = brand.carModels.find(
+        (m) => m.id == payload.modelColor.car_colors.carModelId
+      );
+      console.log("before add model", model);
+      model.colors.push(payload.modelColor);
+      console.log("after add model", model);
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        singleModel: model,
+        error: null,
+      };
 
-    // ADD MODEL YEAR 
+    case actionType.ADD_MODEL_COLOR_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+      };
+
+    // ADD MODEL YEAR
 
     case actionType.ADD_MODEL_YEAR_REQUEST_SEND:
-        return {
-          ...state,
-          loading: true,
-          message: null,
-          status: false,
-          error: null
-        };
-  
-        case actionType.ADD_MODEL_YEAR_REQUEST_SUCCESS:
-        console.log("typeId",payload.typeId)
-        const  singleType = state.carTypes.find(type => type.id == payload.typeId);
-        console.log("type", singleType)
-  
-        const item = singleType.carBrands.find(b => b.id == payload.bId);
-        console.log("brand", item)
-        let getModel = item.carModels.find(m => m.id == payload.modelYear.car_years.carModelId);
-        console.log("before add model", getModel)
-        getModel.years.push(payload.modelYear)
-        console.log("after add model", getModel)
-        return {
-          ...state,
-          loading: false,
-          status: true,
-          singleModel: getModel,
-          error: null
-        };
-  
-        case actionType.ADD_MODEL_YEAR_REQUEST_FAIL:
-          return{
-            ...state,
-            loading: false,
-            status: false,
-            error: payload
-          }
+      return {
+        ...state,
+        loading: true,
+        message: null,
+        status: false,
+        error: null,
+      };
+
+    case actionType.ADD_MODEL_YEAR_REQUEST_SUCCESS:
+      console.log("typeId", payload.typeId);
+      const singleType = state.carTypes.find(
+        (type) => type.id == payload.typeId
+      );
+      console.log("type", singleType);
+
+      const item = singleType.carBrands.find((b) => b.id == payload.bId);
+      console.log("brand", item);
+      let getModel = item.carModels.find(
+        (m) => m.id == payload.modelYear.car_years.carModelId
+      );
+      console.log("before add model", getModel);
+      getModel.years.push(payload.modelYear);
+      console.log("after add model", getModel);
+      return {
+        ...state,
+        loading: false,
+        status: true,
+        singleModel: getModel,
+        error: null,
+      };
+
+    case actionType.ADD_MODEL_YEAR_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        status: false,
+        error: payload,
+      };
+
+    // SELECT CAR TYPE
+
+    case actionType.SELECT_CAR_TYPE:
+      return {
+        ...state,
+        loading: false,
+        selectedCarType: payload,
+      };
+
+    case actionType.SELECT_CAR_BRAND:
+      return {
+        ...state,
+        loading: false,
+        selectedCarBrand: payload,
+      };
+
+    case actionType.SELECT_CAR_BRAND_MODEL:
+      return {
+        ...state,
+        loading: false,
+        selectedBrandModel: payload,
+      };
+
+    case actionType.SELECT_CAR_MODEL_COLOR:
+      return {
+        ...state,
+        loading: false,
+        selectedModelColor: payload,
+      };
+
+    case actionType.SELECT_CAR_MODEL_YEAR:
+      return {
+        ...state,
+        loading: false,
+        selectedModelYear: payload,
+      };
 
     default:
       return state;

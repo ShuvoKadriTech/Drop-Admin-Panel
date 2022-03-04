@@ -15,7 +15,7 @@ import {
   GET_UPDATE_CAR_DATA,
   GET_SINGLE_CAR_TYPE_REQUEST_SEND,
   GET_SINGLE_CAR_TYPE_REQUEST_SUCCESS,
-  GET_SINGLE_CAR_TYPE_REQUEST_FAIL
+  GET_SINGLE_CAR_TYPE_REQUEST_FAIL,
 } from "../../actionType";
 import requestApi from "../../../network/httpRequest";
 import * as actionType from "../../actionType";
@@ -32,24 +32,24 @@ import {
   EDIT_MODEL,
   COLORS_YEARS,
   ADD_MODEL_COLOR,
-  ADD_MODEL_YEAR
+  ADD_MODEL_YEAR,
 } from "../../../network/Api";
 import { toast } from "react-toastify";
 import { GET_CAR_TYPE_FULL_DETAILS } from "./../../../network/Api";
 
 // ADD CAR TYPES
 
-export const addCarType = carData => async (dispatch, getState) => {
+export const addCarType = (carData) => async (dispatch, getState) => {
   try {
     dispatch({
-      type: ADD_CAR_TYPE_REQUEST_SEND
+      type: ADD_CAR_TYPE_REQUEST_SEND,
     });
 
     const {
-      data: { status, message, error, data }
+      data: { status, message, error, data },
     } = await requestApi().request(ADD_CAR_TYPE, {
       method: "POST",
-      data: carData
+      data: carData,
     });
 
     if (status) {
@@ -61,15 +61,15 @@ export const addCarType = carData => async (dispatch, getState) => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined
+        progress: undefined,
       });
       dispatch({
         type: ADD_CAR_TYPE_REQUEST_SUCCESS,
-        payload: { data, message }
+        payload: { data, message },
       });
 
       dispatch({
-        type: CLEAR_SUCCESS_MESSAGE
+        type: CLEAR_SUCCESS_MESSAGE,
       });
     } else {
       toast.warn(data.error, {
@@ -80,67 +80,69 @@ export const addCarType = carData => async (dispatch, getState) => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined
+        progress: undefined,
       });
       dispatch({
         type: ADD_CAR_TYPE_REQUEST_FAIL,
-        payload: error
+        payload: error,
       });
     }
   } catch (error) {
     dispatch({
       type: ADD_CAR_TYPE_REQUEST_FAIL,
-      payload: error
+      payload: error,
     });
   }
 };
 
 // GET CAR TYPES
 
-export const getCarTypes = (refresh = false) => async (dispatch, getState) => {
-  try {
-    const { carTypes } = getState().carTypesReducer;
+export const getCarTypes =
+  (refresh = false) =>
+  async (dispatch, getState) => {
+    try {
+      const { carTypes } = getState().carTypesReducer;
 
-    if (carTypes.length <= 0 || refresh) {
-      dispatch({
-        type: GET_CAR_TYPES_REQUEST_SEND
-      });
+      if (carTypes.length <= 0 || refresh) {
+        dispatch({
+          type: GET_CAR_TYPES_REQUEST_SEND,
+        });
 
-      const { data: { data, status, error } } = await requestApi().request(
-        GET_CAR_TYPES
-      );
-      console.log("carTypes", data);
-      if (status) {
-        dispatch({
-          type: GET_CAR_TYPES_REQUEST_SUCCESS,
-          payload: data
-        });
-      } else {
-        dispatch({
-          type: GET_CAR_TYPES_REQUEST_FAIL,
-          payload: error
-        });
+        const {
+          data: { data, status, error },
+        } = await requestApi().request(GET_CAR_TYPES);
+        console.log("carTypes", data);
+        if (status) {
+          dispatch({
+            type: GET_CAR_TYPES_REQUEST_SUCCESS,
+            payload: data.carTypes,
+          });
+        } else {
+          dispatch({
+            type: GET_CAR_TYPES_REQUEST_FAIL,
+            payload: error,
+          });
+        }
       }
+    } catch (error) {
+      dispatch({
+        type: GET_CAR_TYPES_REQUEST_FAIL,
+        payload: error.message,
+      });
     }
-  } catch (error) {
-    dispatch({
-      type: GET_CAR_TYPES_REQUEST_FAIL,
-      payload: error.message
-    });
-  }
-};
+  };
 
 // EDIT CAR TYPE
 
-export const editCarType = carData => async dispatch => {
+export const editCarType = (carData) => async (dispatch) => {
   try {
     dispatch({
-      type: EDIT_CAR_TYPE_REQUEST_SEND
+      type: EDIT_CAR_TYPE_REQUEST_SEND,
     });
 
     const { data } = await requestApi().request(EDIT_CAR_TYPE, {
       method: "POST",
-      data: carData
+      data: carData,
     });
 
     console.log(data);
@@ -149,26 +151,26 @@ export const editCarType = carData => async dispatch => {
       if (data.message) {
         dispatch({
           type: EDIT_CAR_TYPE_REQUEST_SUCCESS,
-          payload: data.message
+          payload: data.message,
         });
       }
       if (data.data.carType) {
         dispatch({
           type: GET_UPDATE_CAR_DATA,
-          payload: data.data.carType
+          payload: data.data.carType,
         });
       }
     } else {
       dispatch({
         type: EDIT_CAR_TYPE_REQUEST_FAIL,
-        payload: data.error
+        payload: data.error,
       });
     }
   } catch (error) {
     dispatch(
       dispatch({
         type: EDIT_CAR_TYPE_REQUEST_FAIL,
-        payload: error.message
+        payload: error.message,
       })
     );
   }
@@ -205,16 +207,16 @@ export const editCarType = carData => async dispatch => {
 
 // ADD CAR TYPE BRAND
 
-export const addCarBrand = carBrand => async dispatch => {
+export const addCarBrand = (carBrand) => async (dispatch) => {
   // console.log("car brand", carBrand);
 
   try {
     dispatch({
-      type: actionType.ADD_BRAND_REQUEST_SEND
+      type: actionType.ADD_BRAND_REQUEST_SEND,
     });
     const { data } = await requestApi().request(ADD_CAR_BRAND, {
       method: "POST",
-      data: carBrand
+      data: carBrand,
     });
     // console.log("car brand", data);
     if (data.status) {
@@ -226,12 +228,12 @@ export const addCarBrand = carBrand => async dispatch => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined
+        progress: undefined,
       });
 
       dispatch({
         type: actionType.ADD_BRAND_REQUEST_SUCCESS,
-        payload: { carBrand: data.data.carBrand }
+        payload: { carBrand: data.data.carBrand },
       });
     } else {
       toast.warn(data.error, {
@@ -242,35 +244,35 @@ export const addCarBrand = carBrand => async dispatch => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined
+        progress: undefined,
       });
       dispatch({
         type: actionType.ADD_BRAND_REQUEST_FAIL,
-        payload: data.error
+        payload: data.error,
       });
     }
   } catch (error) {
     dispatch({
       type: actionType.ADD_BRAND_REQUEST_FAIL,
-      payload: error.message
+      payload: error.message,
     });
   }
 };
 
 // EDIT CAR BRAND
 
-export const editCarBrand = carBrand => async (dispatch, getState) => {
+export const editCarBrand = (carBrand) => async (dispatch, getState) => {
   // console.log("carTypeId", carBrand);
   try {
     dispatch({
-      type: actionType.EDIT_BRAND_REQUEST_SEND
+      type: actionType.EDIT_BRAND_REQUEST_SEND,
     });
 
     const {
-      data: { status, data, message, error }
+      data: { status, data, message, error },
     } = await requestApi().request(EDIT_CAR_BRAND, {
       method: "POST",
-      data: carBrand
+      data: carBrand,
     });
 
     // console.log("edit car brand", data);
@@ -294,12 +296,12 @@ export const editCarBrand = carBrand => async (dispatch, getState) => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined
+        progress: undefined,
       });
 
       dispatch({
         type: actionType.EDIT_BRAND_REQUEST_SUCCESS,
-        payload: { carBrand: data.carBrand }
+        payload: { carBrand: data.carBrand },
       });
     } else {
       toast.warn(error, {
@@ -310,32 +312,32 @@ export const editCarBrand = carBrand => async (dispatch, getState) => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined
+        progress: undefined,
       });
       dispatch({
         type: actionType.EDIT_BRAND_REQUEST_FAIL,
-        payload: error
+        payload: error,
       });
     }
   } catch (error) {
     dispatch({
       type: actionType.EDIT_BRAND_REQUEST_FAIL,
-      payload: error.message
+      payload: error.message,
     });
   }
 };
 
 // ADD BRAND MODEL
 
-export const addBrandModel = (modelData, carTypeId) => async dispatch => {
+export const addBrandModel = (modelData, carTypeId) => async (dispatch) => {
   try {
     dispatch({
-      type: actionType.ADD_MODEL_REQUEST_SEND
+      type: actionType.ADD_MODEL_REQUEST_SEND,
     });
 
     const { data } = await requestApi().request(ADD_MODEL, {
       method: "POST",
-      data: modelData
+      data: modelData,
     });
 
     console.log("car brand model", data);
@@ -348,12 +350,12 @@ export const addBrandModel = (modelData, carTypeId) => async dispatch => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined
+        progress: undefined,
       });
 
       dispatch({
         type: actionType.ADD_MODEL_REQUEST_SUCCESS,
-        payload: { carModel: data.data.carModel, carTypeId }
+        payload: { carModel: data.data.carModel, carTypeId },
       });
     } else {
       toast.warn(data.error, {
@@ -364,17 +366,17 @@ export const addBrandModel = (modelData, carTypeId) => async dispatch => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined
+        progress: undefined,
       });
       dispatch({
         type: actionType.ADD_MODEL_REQUEST_FAIL,
-        payload: data.error
+        payload: data.error,
       });
     }
   } catch (error) {
     dispatch({
       type: actionType.ADD_MODEL_REQUEST_FAIL,
-      payload: error.message
+      payload: error.message,
     });
   }
 };
@@ -385,14 +387,14 @@ export const editBrandModel = (model, typeId) => async (dispatch, getState) => {
   console.log("model", model);
   try {
     dispatch({
-      type: actionType.EDIT_MODEL_REQUEST_SEND
+      type: actionType.EDIT_MODEL_REQUEST_SEND,
     });
 
     const {
-      data: { status, data, message, error }
+      data: { status, data, message, error },
     } = await requestApi().request(EDIT_MODEL, {
       method: "POST",
-      data: model
+      data: model,
     });
 
     // console.log("edit car model", data);
@@ -407,12 +409,12 @@ export const editBrandModel = (model, typeId) => async (dispatch, getState) => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined
+        progress: undefined,
       });
 
       dispatch({
         type: actionType.EDIT_MODEL_REQUEST_SUCCESS,
-        payload: { carModel: data.carModel, typeId }
+        payload: { carModel: data.carModel, typeId },
       });
     } else {
       toast.warn(error, {
@@ -423,170 +425,214 @@ export const editBrandModel = (model, typeId) => async (dispatch, getState) => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined
+        progress: undefined,
       });
       dispatch({
         type: actionType.EDIT_MODEL_REQUEST_FAIL,
-        payload: error
+        payload: error,
       });
     }
   } catch (error) {
     dispatch({
       type: actionType.EDIT_MODEL_REQUEST_FAIL,
-      payload: error.message
+      payload: error.message,
     });
   }
 };
 
 // GET ALL COLORS AND YEARS
-export const getColorsYears = () => async dispatch => {
+export const getColorsYears = () => async (dispatch) => {
   try {
     dispatch({
-      type: actionType.GET_COLORS_YEARS_REQUEST_SEND
+      type: actionType.GET_COLORS_YEARS_REQUEST_SEND,
     });
     const { data } = await requestApi().request(COLORS_YEARS);
     // console.log("color and years", data)
     if (data.status) {
       dispatch({
         type: actionType.GET_COLORS_YEARS_REQUEST_SUCCESS,
-        payload: { colors: data.data.colors, years: data.data.years }
+        payload: { colors: data.data.colors, years: data.data.years },
       });
     } else {
       dispatch({
         type: actionType.GET_COLORS_YEARS_REQUEST_FAIL,
-        payload: data.error
+        payload: data.error,
       });
     }
   } catch (error) {
     dispatch({
       type: actionType.GET_COLORS_YEARS_REQUEST_FAIL,
-      payload: error.message
+      payload: error.message,
     });
   }
 };
 
 // ADD COLOR FOR MODEL
 
-export const addModelColor = (
-  modelColor,
-  brandId,
-  carTypeId
-) => async dispatch => {
-  // console.log("modelColor, brandId, carTypeId",modelColor, brandId, carTypeId)
-  try {
-    dispatch({
-      type: actionType.ADD_MODEL_COLOR_REQUEST_SEND
-    });
-
-    const { data } = await requestApi().request(ADD_MODEL_COLOR, {
-      method: "POST",
-      data: modelColor
-    });
-    console.log("model add color", data);
-    if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-      });
-
+export const addModelColor =
+  (modelColor, brandId, carTypeId) => async (dispatch) => {
+    // console.log("modelColor, brandId, carTypeId",modelColor, brandId, carTypeId)
+    try {
       dispatch({
-        type: actionType.ADD_MODEL_COLOR_REQUEST_SUCCESS,
-        payload: {
-          modelColor: data.data.modelColor,
-          brandId: brandId,
-          carTypeId: carTypeId
-        }
+        type: actionType.ADD_MODEL_COLOR_REQUEST_SEND,
       });
-    } else {
-      toast.warn(data.error, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
+
+      const { data } = await requestApi().request(ADD_MODEL_COLOR, {
+        method: "POST",
+        data: modelColor,
       });
+      console.log("model add color", data);
+      if (data.status) {
+        toast.success(data.message, {
+          // position: "bottom-right",
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+
+        dispatch({
+          type: actionType.ADD_MODEL_COLOR_REQUEST_SUCCESS,
+          payload: {
+            modelColor: data.data.modelColor,
+            brandId: brandId,
+            carTypeId: carTypeId,
+          },
+        });
+      } else {
+        toast.warn(data.error, {
+          // position: "bottom-right",
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        dispatch({
+          type: actionType.ADD_MODEL_COLOR_REQUEST_FAIL,
+          payload: data.error,
+        });
+      }
+    } catch (error) {
       dispatch({
         type: actionType.ADD_MODEL_COLOR_REQUEST_FAIL,
-        payload: data.error
+        payload: error.message,
       });
     }
-  } catch (error) {
-    dispatch({
-      type: actionType.ADD_MODEL_COLOR_REQUEST_FAIL,
-      payload: error.message
-    });
-  }
-};
+  };
 
 // ADD YEAR
 
-export const addModelYear = (
-  modelYear,
-  brandId,
-  carTypeId
-) => async dispatch => {
-  // console.log("carTypeId, brandId", carTypeId, brandId);
-  try {
-    dispatch({
-      type: actionType.ADD_MODEL_YEAR_REQUEST_SEND
-    });
-
-    const { data } = await requestApi().request(ADD_MODEL_YEAR, {
-      method: "POST",
-      data: modelYear
-    });
-
-    console.log("model  year res", data);
-
-    if (data.status) {
-      toast.success(data.message, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-      });
-
+export const addModelYear =
+  (modelYear, brandId, carTypeId) => async (dispatch) => {
+    // console.log("carTypeId, brandId", carTypeId, brandId);
+    try {
       dispatch({
-        type: actionType.ADD_MODEL_YEAR_REQUEST_SUCCESS,
-        payload: {
-          modelYear: data.data.carYear,
-          bId: brandId,
-          typeId: carTypeId
-        }
+        type: actionType.ADD_MODEL_YEAR_REQUEST_SEND,
       });
-    } else {
-      toast.warn(data.error, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
+
+      const { data } = await requestApi().request(ADD_MODEL_YEAR, {
+        method: "POST",
+        data: modelYear,
       });
+
+      console.log("model  year res", data);
+
+      if (data.status) {
+        toast.success(data.message, {
+          // position: "bottom-right",
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+
+        dispatch({
+          type: actionType.ADD_MODEL_YEAR_REQUEST_SUCCESS,
+          payload: {
+            modelYear: data.data.carYear,
+            bId: brandId,
+            typeId: carTypeId,
+          },
+        });
+      } else {
+        toast.warn(data.error, {
+          // position: "bottom-right",
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        dispatch({
+          type: actionType.ADD_MODEL_YEAR_REQUEST_FAIL,
+          payload: data.error,
+        });
+      }
+    } catch (error) {
       dispatch({
         type: actionType.ADD_MODEL_YEAR_REQUEST_FAIL,
-        payload: data.error
+        payload: error.message,
       });
     }
-  } catch (error) {
-    dispatch({
-      type: actionType.ADD_MODEL_YEAR_REQUEST_FAIL,
-      payload: error.message
-    });
-  }
+  };
+
+// SELECT CAR TYPE
+
+export const selectCarType = (selectedType) => (dispatch) => {
+  // console.log("selected car type", selectedType);
+  dispatch({
+    type: actionType.SELECT_CAR_TYPE,
+    payload: selectedType,
+  });
+};
+
+// SELECT CAR BRAND
+
+export const selectCarBrand = (selectedBrand) => (dispatch) => {
+  // console.log("selected car brand", selectedBrand);
+  dispatch({
+    type: actionType.SELECT_CAR_BRAND,
+    payload: selectedBrand,
+  });
+};
+
+// SELECT CAR BRAND MODEL
+
+export const selectCarBrandModel = (selectedModel) => (dispatch) => {
+  // console.log("selected car brand model", selectedModel);
+  dispatch({
+    type: actionType.SELECT_CAR_BRAND_MODEL,
+    payload: selectedModel,
+  });
+};
+
+// SELECT MODEL COLOR
+
+export const selectModelColor = (selectedColor) => (dispatch) => {
+  // console.log("selected car brand model", selectedColor);
+  dispatch({
+    type: actionType.SELECT_CAR_MODEL_COLOR,
+    payload: selectedColor,
+  });
+};
+
+// SELECT MODEL YEAR
+
+export const selectModelYear = (selectedYear) => (dispatch) => {
+  // console.log("selected car brand model", selectedYear);
+  dispatch({
+    type: actionType.SELECT_CAR_MODEL_YEAR,
+    payload: selectedYear,
+  });
 };

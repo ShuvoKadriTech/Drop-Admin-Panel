@@ -3,6 +3,7 @@ import {
   ADD_DRIVER,
   ADD_PARTNER,
   ALL_PARTNER,
+  EDIT_DRIVER,
   EDIT_PARTNER,
   GET_ALL_DRIVERS_BY_PARTNER
 } from "../../network/Api";
@@ -189,10 +190,10 @@ export const addDriver = driver => async dispatch => {
       method: "POST",
       data: driver
     });
-    console.log("|===================", data);
+    // console.log("|===================", data);
     // console.log("response", data);
     if (data.status) {
-      toast.success(data.statusText, {
+      toast.success(data.message, {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 3000,
@@ -234,6 +235,60 @@ export const addDriver = driver => async dispatch => {
   }
 };
 
+// EDIT DRIVER
+
+export const editDriver = updateData => async dispatch => {
+  console.log("props", updateData);
+  try {
+    dispatch({
+      type: actionType.EDIT_DRIVER_REQUEST_SEND
+    });
+
+    const { data } = await requestApi().request(EDIT_DRIVER, {
+      method: "POST",
+      data: updateData
+    });
+    // console.log("response", data);
+    if (data.status) {
+      toast.success(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+
+      dispatch({
+        type: actionType.EDIT_DRIVER_REQUEST_SUCCESS,
+        payload: data.data.driver
+      });
+    } else {
+      toast.warn(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+      dispatch({
+        type: actionType.EDIT_DRIVER_REQUEST_FAIL,
+        payload: data.error
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.EDIT_DRIVER_REQUEST_FAIL,
+      payload: error.message
+    });
+  }
+};
+
 // GET ALL DRIVER BY PARTNER
 
 export const getAllDriversByPartner = partnerId => async dispatch => {
@@ -245,7 +300,7 @@ export const getAllDriversByPartner = partnerId => async dispatch => {
     const { data } = await requestApi().request(
       GET_ALL_DRIVERS_BY_PARTNER + partnerId
     );
-    console.log("response", data);
+    // console.log("response", data);
     if (data.status) {
       dispatch({
         type: actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_SUCCESS,

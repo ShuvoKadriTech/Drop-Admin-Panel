@@ -97,6 +97,16 @@ const DriversList = () => {
     }, delay);
   };
 
+  // EDIT PARTNER
+
+  const handleEdit = (driverId, partnerId) => {
+    history.push({
+      pathname: `/driver/edit/${driverId}`,
+      search: `?pID=${partnerId}`
+      // state: { detail: 'some_value' }
+    });
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -251,14 +261,14 @@ const DriversList = () => {
                           </Td>
                           <Td>
                             <ButtonWrapper>
-                              {/* <button
+                              <button
                                 className="btn btn-info me-xl-3"
                                 onClick={() =>
-                                  history.push(`/partner/edit/${partner.id}`)}
+                                  handleEdit(driver.id, driver.partnerId)}
                               >
                                 <i className="fa fa-edit" />
                               </button>
-                              <button
+                              {/* <button
                                 className="btn btn-success "
                                 onClick={() =>
                                   history.push(`/partner/${partner.id}`)}

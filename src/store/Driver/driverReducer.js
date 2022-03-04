@@ -22,63 +22,66 @@ export const driverReducer = (state = initialState, action) => {
 
   switch (type) {
     // ADD DRIVER
-    case actionType.ADD_DRIVER_REQUEST_SEND:
-      return {
-        ...state,
-        loading: true,
-        error: null,
-        status: false
-      };
+    // case actionType.ADD_DRIVER_REQUEST_SEND:
+    //   return {
+    //     ...state,
+    //     loading: true,
+    //     error: null,
+    //     status: false
+    //   };
 
-    case actionType.ADD_DRIVER_REQUEST_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        drivers: [...state.drivers, payload],
-        status: true,
-        error: null
-      };
+    // case actionType.ADD_DRIVER_REQUEST_SUCCESS:
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //     drivers: [...state.drivers, payload],
+    //     status: true,
+    //     error: null
+    //   };
 
-    case actionType.SET_STATUS_FALSE:
-      return {
-        ...state,
-        status: false
-      };
+    // case actionType.SET_STATUS_FALSE:
+    //   return {
+    //     ...state,
+    //     status: false
+    //   };
 
-    case actionType.ADD_DRIVER_REQUEST_FAIL:
-      return {
-        ...state,
-        loading: false,
-        message: null,
-        error: payload,
-        status: false
-      };
+    // case actionType.ADD_DRIVER_REQUEST_FAIL:
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //     message: null,
+    //     error: payload,
+    //     status: false
+    //   };
 
     // EDIT DRIVER
 
-    case actionType.EDIT_DRIVER_REQUEST_SEND:
-      return {
-        ...state,
-        loading: true,
-        error: null,
-        status: false
-      };
+    // case actionType.EDIT_DRIVER_REQUEST_SEND:
+    //   return {
+    //     ...state,
+    //     loading: true,
+    //     error: null,
+    //     status: false
+    //   };
 
-    case actionType.EDIT_DRIVER_REQUEST_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        drivers: [...state.drivers, payload],
-        status: true,
-        error: null
-      };
+    // case actionType.EDIT_DRIVER_REQUEST_SUCCESS:
+    //   const updateData = state.drivers.map(
+    //     driver => (driver.id == payload.id ? payload : driver)
+    //   );
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //     drivers: updateData,
+    //     status: true,
+    //     error: null
+    //   };
 
-    case actionType.EDIT_DRIVER_REQUEST_FAIL:
-      return {
-        ...state,
-        status: false,
-        error: payload
-      };
+    // case actionType.EDIT_DRIVER_REQUEST_FAIL:
+    //   return {
+    //     ...state,
+    //     status: false,
+    //     error: payload
+    //   };
 
     // ALL DRIVERS
 
@@ -89,7 +92,7 @@ export const driverReducer = (state = initialState, action) => {
       };
 
     case actionType.GET_ALL_DRIVERS_REQUEST_SUCCESS:
-      console.log("payload", payload);
+      // console.log("payload", payload);
       return {
         ...state,
         loading: false,
