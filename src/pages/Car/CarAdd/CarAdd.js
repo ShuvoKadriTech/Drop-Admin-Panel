@@ -4,7 +4,8 @@ import styled from "styled-components";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory, useLocation, Link } from "react-router-dom";
+import ImageSelectionDialog from './../../Utility/ImageSelectionDialog';
 import {
   Button,
   Card,
@@ -15,6 +16,7 @@ import {
   Modal,
   Row,
   Spinner,
+  Form,
 } from "reactstrap";
 import { SINGLE_PARTNER } from "../../../network/Api";
 import requestApi from "./../../../network/httpRequest";
@@ -23,15 +25,19 @@ import {
   getPartners,
 } from "./../../../store/partner/partnerActions";
 import { Autocomplete, Box, TextField } from "@mui/material";
+import { removeAllSelectedGalleryImage } from "../../../store/action/galleryAction";
 import {
+  getCarFuelTypes,
   getCarTypes,
   selectCarBrand,
   selectCarBrandModel,
+  selectCarFuel,
   selectCarType,
   selectModelColor,
   selectModelYear,
 } from "../../../store/Car/carTypes/carTypesAction";
 import { toast } from "react-toastify";
+import Dropzone from "react-dropzone"
 
 const CarAdd = () => {
   const { search, pathname } = useLocation();
@@ -49,6 +55,8 @@ const CarAdd = () => {
     selectedBrandModel,
     selectedModelColor,
     selectedModelYear,
+    carFuels,
+    selectedCarFuel
   } = useSelector((state) => state.carTypesReducer);
 
   const [openPartnerSearch, setOpenPartnerSearch] = useState(false);
@@ -58,6 +66,13 @@ const CarAdd = () => {
   const [searchModel, setSearchModel] = useState("");
   const [searchColor, setSearchColor] = useState("");
   const [searchYear, setSearchYear] = useState("");
+  const [searchCarFuel, setSearchCarFuel] = useState("");
+  const [carRegisterNumber, setCarRegisterNumber] = useState("");
+  const [carSmartCardFont, setCarSmartCardFont] = useState(null);
+  const [carSmartCardBack, setCarSmartCardBack] = useState(null);
+  const [imageId, setImageId] = useState(null);
+  const [modal_fullscreen, setmodal_fullscreen] = useState(false);
+  const [carImages, setCarImages] = useState([]);
 
   // GET PARTNER
 
@@ -158,7 +173,10 @@ const CarAdd = () => {
     if (carTypes.length <= 0) {
       dispatch(getCarTypes(true));
     }
-  }, [carTypes]);
+    if (carFuels.length <= 0) {
+      dispatch(getCarFuelTypes())
+    }
+  }, [carTypes, carFuels]);
 
   // const isSelectedCarType = (params) => {
   //   if (selectedCarType !== null) {
@@ -176,6 +194,17 @@ const CarAdd = () => {
   //     });
   //   }
   // };
+
+  // SELECT IMAGE
+
+  const handleImage = (imgId) => {
+    // console.log("id---", id);
+    const params = new URLSearchParams({ pID: selectedPartner.id });
+
+    history.replace({ pathname: pathname, search: params.toString() });
+    setImageId(imgId);
+    setmodal_fullscreen(true);
+  };
 
   return (
     <React.Fragment>
@@ -247,6 +276,7 @@ const CarAdd = () => {
                 <Row>
                   <Col xl={6}>
                     <Autocomplete
+                      className="cursor-pointer"
                       value={selectedCarType}
                       onChange={(event, newValue) => {
                         dispatch(selectCarType(newValue));
@@ -256,13 +286,13 @@ const CarAdd = () => {
                       inputValue={searchCarType}
                       onInputChange={(event, newInputValue) => {
                         setSearchCarType(newInputValue);
-                        console.log("input value", newInputValue);
+                        // console.log("input value", newInputValue);
                       }}
                       id="controllable-states-demo"
                       options={carTypes}
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
-                        <TextField {...params} label="Select a Color" />
+                        <TextField {...params} label="Select a Car Type" />
                       )}
                       renderOption={(props, option) => (
                         <Box
@@ -284,7 +314,8 @@ const CarAdd = () => {
                   <Col xl={6} className="py-4 py-xl-0">
                     <Autocomplete
                       disabled={selectedCarType == null}
-                      value={selectedCarBrand}
+                      value={selectedCarType && selectedCarBrand}
+                      // defaultValue={""}
                       onChange={(event, newValue) => {
                         dispatch(selectCarBrand(newValue));
                         // console.log("new",newValue)
@@ -296,7 +327,7 @@ const CarAdd = () => {
                         // console.log("input value", newInputValue);
                       }}
                       id="controllable-states-demo2"
-                      options={selectedCarType?.carBrands}
+                      options={selectedCarType ? selectedCarType?.carBrands : ""}
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
                         <TextField {...params} label="Select a Car Brand" />
@@ -319,7 +350,7 @@ const CarAdd = () => {
                     <Autocomplete
                       // clearOnBlur={true}
                       disabled={selectedCarBrand == null}
-                      value={selectedBrandModel}
+                      value={selectedCarBrand && selectedBrandModel}
                       onChange={(event, newValue) => {
                         dispatch(selectCarBrandModel(newValue));
                         // console.log("new",newValue)
@@ -331,7 +362,7 @@ const CarAdd = () => {
                         // console.log("input value", newInputValue);
                       }}
                       id="controllable-states-demo3"
-                      options={selectedCarBrand?.carModels}
+                      options={selectedCarBrand ? selectedCarBrand?.carModels : ""}
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
                         <TextField {...params} label="Select a Brand Model" />
@@ -350,7 +381,7 @@ const CarAdd = () => {
                   <Col xl={6} className="py-4 py-xl-0">
                     <Autocomplete
                       disabled={selectedBrandModel == null}
-                      value={selectedModelColor}
+                      value={selectedBrandModel && selectedModelColor}
                       onChange={(event, newValue) => {
                         dispatch(selectModelColor(newValue));
                         // console.log("new",newValue)
@@ -362,7 +393,7 @@ const CarAdd = () => {
                         // console.log("input value", newInputValue);
                       }}
                       id="controllable-states-demo4"
-                      options={selectedBrandModel?.colors}
+                      options={selectedBrandModel ? selectedBrandModel?.colors : ""}
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
                         <TextField {...params} label="Select a Color" />
@@ -386,7 +417,7 @@ const CarAdd = () => {
                   <Col xl={6}>
                     <Autocomplete
                       disabled={selectedBrandModel == null}
-                      value={selectedModelYear}
+                      value={selectedBrandModel && selectedModelYear}
                       onChange={(event, newValue) => {
                         dispatch(selectModelYear(newValue));
                         // console.log("new",newValue)
@@ -400,26 +431,257 @@ const CarAdd = () => {
                         // console.log("input value", newInputValue);
                       }}
                       id="controllable-states-demo5"
-                      options={selectedBrandModel?.years}
+                      options={selectedBrandModel ? selectedBrandModel?.years : ""}
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
                         <TextField {...params} label="Select a Year" />
                       )}
-                      // renderOption={(props, option) => (
-                      //   <Box
-                      //     component="li"
-                      //     sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                      //     {...props}
-                      //   >
-                      //     <span style={{ color: `${option.colorCode}` }}>
-                      //       {option.year}
-                      //     </span>
-                      //   </Box>
-                      // )}
+                    // renderOption={(props, option) => (
+                    //   <Box
+                    //     component="li"
+                    //     sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                    //     {...props}
+                    //   >
+                    //     <span style={{ color: `${option.colorCode}` }}>
+                    //       {option.year}
+                    //     </span>
+                    //   </Box>
+                    // )}
                     />
                   </Col>
-                  <Col xl={6}></Col>
+                  <Col xl={6} className="py-4 py-xl-0">
+                    <Autocomplete
+                      // disabled={selectedBrandModel == null}
+                      value={selectedCarFuel}
+                      onChange={(event, newValue) => {
+                        dispatch(selectCarFuel(newValue));
+                        // console.log("new",newValue)
+                      }}
+                      getOptionLabel={(option) => option.name}
+                      inputValue={searchCarFuel}
+                      onInputChange={(event, newInputValue) => {
+                        setSearchCarFuel(newInputValue);
+                        // console.log("input value", newInputValue);
+                      }}
+                      id="controllable-states-demo5"
+                      options={carFuels}
+                      sx={{ width: "100%" }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Select car fuel type" />
+                      )}
+
+                    />
+                  </Col>
                 </Row>
+
+
+                <Row className="py-xl-4">
+                  <Col xl={6}>
+                    <div>
+                      <TextField
+                        required
+                        id="outlined-required"
+                        label="Enter car license number"
+                        // defaultValue="Hello World"
+                        type="text"
+                        style={{ width: "100%" }}
+                        value={carRegisterNumber}
+                        onChange={event => setCarRegisterNumber(event.target.value)}
+                      />
+                    </div>
+                  </Col>
+
+                </Row>
+                {/* CAR SMART CARD IMAGE */}
+                <Row>
+                  <Col xl={6} className="py-4 py-xl-0">
+                    <div className="d-flex justify-content-center flex-column">
+                      <h6>Upload Car Smart Card Front Image</h6>
+                      <Card className="cursor-pointer">
+                        <div
+                          className="d-flex justify-content-center align-content-center"
+                          style={{
+                            border: "1px solid rgb(207 207 207)",
+                            height: "145px",
+                          }}
+                        >
+                          {carSmartCardFont ? (
+                            <ImageView>
+                              <>
+                                <img
+                                  src={carSmartCardFont}
+                                  className="img-thumbnail img__view"
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "contain",
+                                  }}
+                                  alt=""
+                                />
+                                <div className="button__wrapper">
+                                  <button
+                                    className="btn btn-danger "
+                                    // onClick={() => handleDelete(item.id)}
+                                    onClick={() => setCarSmartCardFont("")}
+                                  >
+                                    <i className="fa fa-trash" />
+                                  </button>
+                                </div>
+                              </>
+                            </ImageView>
+                          ) : (
+                            <div
+                              style={{ width: "100%", height: "100%" }}
+                              className="d-flex justify-content-center align-items-center"
+                              onClick={() => handleImage(1)}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ width: "50px" }}
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path strokeWidth="2" d="M12 4v16m8-8H4" />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                      </Card>
+                    </div>
+                  </Col>
+                  <Col xl={6}>
+                    <div className="d-flex justify-content-center flex-column">
+                      <h6>Upload Car Smart Card Back Image</h6>
+                      <Card className="cursor-pointer">
+                        <div
+                          className="d-flex justify-content-center align-content-center"
+                          style={{
+                            border: "1px solid rgb(207 207 207)",
+                            height: "145px",
+                          }}
+                        >
+                          {carSmartCardBack ? (
+                            <ImageView>
+                              <>
+                                <img
+                                  src={carSmartCardBack}
+                                  className="img-thumbnail img__view"
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "contain",
+                                  }}
+                                  alt=""
+                                />
+                                <div className="button__wrapper">
+                                  <button
+                                    className="btn btn-danger "
+                                    // onClick={() => handleDelete(item.id)}
+                                    onClick={() => setCarSmartCardBack("")}
+                                  >
+                                    <i className="fa fa-trash" />
+                                  </button>
+                                </div>
+                              </>
+                            </ImageView>
+                          ) : (
+                            <div
+                              style={{ width: "100%", height: "100%" }}
+                              className="d-flex justify-content-center align-items-center"
+                              onClick={() => handleImage(2)}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{ width: "50px" }}
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path strokeWidth="2" d="M12 4v16m8-8H4" />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                      </Card>
+                    </div>
+                  </Col>
+                </Row>
+
+              
+                {/* SELECT CAR IMAGE */}
+
+                <Row>
+                <div className="mb-5">
+                    <Form>
+                      <Dropzone
+                        // onDrop={acceptedFiles => {
+                        //   handleAcceptedFiles(acceptedFiles)
+                        // }}
+                      >
+                        {({ getRootProps, getInputProps }) => (
+                          <div className="dropzone" >
+                            <div
+                              className="dz-message needsclick"
+                              // {...getRootProps()}
+                              onClick={()=>handleImage(3)}
+                              
+                            >
+                              <input {...getInputProps()} />
+                              <div className="mb-3">
+                                <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
+                              </div>
+                              <h4>Drop files here or click to upload.</h4>
+                            </div>
+                          </div>
+                        )}
+                      </Dropzone>
+                      {/* <div className="dropzone-previews mt-3" id="file-previews">
+                        {selectedFiles.map((f, i) => {
+                          return (
+                            <Card
+                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
+                              key={i + "-file"}
+                            >
+                              <div className="p-2">
+                                <Row className="align-items-center position-relative">
+                                  <Col className="col-auto">
+                                    <img
+                                      data-dz-thumbnail=""
+                                      // height="80"
+                                      style={{
+                                        maxWidth: '80px'
+                                      }}
+                                      className=" bg-light"
+                                      alt={f.name}
+                                      src={f.preview}
+                                    />
+                                  </Col>
+                                  <Col>
+                                    <Link
+                                      to="#"
+                                      className="text-muted font-weight-bold"
+                                    >
+                                      {f.name}
+                                    </Link>
+                                    <p className="mb-0">
+                                      <strong>{f.formattedSize}</strong>
+                                    </p>
+                                  </Col>
+
+                                  <div className="position-absolute" style={{ left: '0px', top: '0px', width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+                                    <i onClick={() => removeSelection(i)} className="mdi mdi-delete text-danger " style={{ fontSize: '25px', cursor: 'pointer' }}></i>
+                                  </div>
+                                </Row>
+                              </div>
+                            </Card>
+                          )
+                        })}
+                      </div> */}
+                    </Form>
+                  </div>
+                </Row>
+
               </CardBody>
             </Card>
           </Container>
@@ -427,7 +689,7 @@ const CarAdd = () => {
 
         {/* SELECT PARTNER FROM DIALOG */}
 
-        <Modal isOpen={openPartnerSearch} toggle={() => {}}>
+        <Modal isOpen={openPartnerSearch} toggle={() => { }}>
           <div className="modal-header">
             <h5 className="modal-title mt-0" id="myModalLabel">
               Select Partner
@@ -480,6 +742,74 @@ const CarAdd = () => {
               </button> */}
           </div>
         </Modal>
+
+
+
+        {/* SELECT IMAGE FOR CAR SMART CAR */}
+
+        <Modal
+          size="xl"
+          isOpen={modal_fullscreen}
+          toggle={() => {
+            setmodal_fullscreen(!modal_fullscreen);
+          }}
+          className="modal-fullscreen"
+        >
+          <div className="modal-header">
+            <h5 className="modal-title mt-0" id="exampleModalFullscreenLabel">
+              Select Image
+            </h5>
+            <button
+              onClick={() => {
+                setmodal_fullscreen(false);
+              }}
+              type="button"
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <ImageSelectionDialog
+              lisener={(list) => {
+
+                const image = list[0].path;
+                console.log("image---", list);
+                // console.log("")
+                if (imageId == 1) {
+                  setCarSmartCardFont(image);
+                }
+                if (imageId == 2) {
+                  setCarSmartCardBack(image)
+                }
+                if(imageId == 3){
+                  const newArray = list.map(item => item.path)
+                  console.log("images---", newArray)
+                }
+
+                dispatch(removeAllSelectedGalleryImage());
+                setmodal_fullscreen(!modal_fullscreen);
+              }}
+              partnerId={selectedPartner?.id}
+            />
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              onClick={() => {
+                setmodal_fullscreen(!modal_fullscreen);
+              }}
+              className="btn btn-secondary waves-effect"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+
+
       </GlobalWrapper>
     </React.Fragment>
   );
@@ -557,5 +887,46 @@ const CarTypeWrapper = styled.div`
   span {
     margin-left: 15px;
     font-size: 15px;
+  }
+`;
+
+
+const ImageView = styled.div`
+  width: 100% !important;
+  max-width: 300px;
+
+  position: relative;
+  width: 100%;
+
+  .img_view {
+    opacity: 1;
+    transition: 0.5s ease;
+    backface-visibility: hidden;
+  }
+
+  .button__wrapper {
+    transition: 0.5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+
+    .remove__btn {
+      background-color: yellow;
+      font-size: 18px;
+      color: red;
+    }
+  }
+
+  &:hover {
+    .img_view {
+      opacity: 0.3;
+    }
+    .button__wrapper {
+      opacity: 1;
+    }
   }
 `;

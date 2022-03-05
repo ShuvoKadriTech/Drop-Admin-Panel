@@ -33,6 +33,7 @@ import {
   COLORS_YEARS,
   ADD_MODEL_COLOR,
   ADD_MODEL_YEAR,
+  GET_CAR_FUEL_TYPES,
 } from "../../../network/Api";
 import { toast } from "react-toastify";
 import { GET_CAR_TYPE_FULL_DETAILS } from "./../../../network/Api";
@@ -634,5 +635,47 @@ export const selectModelYear = (selectedYear) => (dispatch) => {
   dispatch({
     type: actionType.SELECT_CAR_MODEL_YEAR,
     payload: selectedYear,
+  });
+};
+
+
+
+// GET ALL CAR FUEL TYPES 
+
+export const getCarFuelTypes = () =>async dispatch =>{
+  try {
+    dispatch({
+      type: actionType.GET_CAR_FUEL_TYPES_REQUEST_SEND
+    })
+
+    const {data} = await requestApi().request(GET_CAR_FUEL_TYPES)
+
+    if(data.status){
+      dispatch({
+        type: actionType.GET_CAR_FUEL_TYPES_REQUEST_SUCCESS,
+        payload: data.data.carFuels
+      })
+    }else{
+      dispatch({
+        type: actionType.GET_CAR_FUEL_TYPES_REQUEST_FAIL,
+        payload: data.error
+      })
+    }
+
+  } catch (error) {
+    dispatch({
+      type: actionType.GET_CAR_FUEL_TYPES_REQUEST_FAIL,
+      payload: error.message
+    })
+  }
+}
+
+// SELECT CAR FUEL TYPE
+
+export const selectCarFuel = (selectedFuel) => (dispatch) => {
+  // console.log("selected car brand model", selectedYear);
+  dispatch({
+    type: actionType.SELECT_CAR_FUEL_TYPE,
+    payload: selectedFuel,
   });
 };

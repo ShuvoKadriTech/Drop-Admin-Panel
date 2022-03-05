@@ -36,6 +36,7 @@ const initialState = {
   selectedBrandModel: null,
   selectedModelColor: null,
   selectedModelYear: null,
+  carFuels: []
 };
 
 const carTypesReducer = (state = initialState, action) => {
@@ -458,6 +459,10 @@ const carTypesReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         selectedCarType: payload,
+        selectedCarBrand: null,
+        selectedBrandModel: null,
+        selectedModelColor: null,
+        selectedModelYear: null
       };
 
     case actionType.SELECT_CAR_BRAND:
@@ -465,6 +470,9 @@ const carTypesReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         selectedCarBrand: payload,
+        selectedBrandModel: null,
+        selectedModelColor: null,
+        selectedModelYear: null
       };
 
     case actionType.SELECT_CAR_BRAND_MODEL:
@@ -472,20 +480,55 @@ const carTypesReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         selectedBrandModel: payload,
+        selectedModelColor: null,
+        selectedModelYear: null
+
       };
 
     case actionType.SELECT_CAR_MODEL_COLOR:
       return {
         ...state,
         loading: false,
-        selectedModelColor: payload,
+        selectedModelColor: payload
       };
 
     case actionType.SELECT_CAR_MODEL_YEAR:
       return {
         ...state,
         loading: false,
-        selectedModelYear: payload,
+        selectedModelYear: state.selectedBrandModel ? payload : null,
+      };
+
+      
+
+
+    // GET CAR FUEL TYPES 
+
+    case actionType.GET_CAR_FUEL_TYPES_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true
+      }
+
+    case actionType.GET_CAR_FUEL_TYPES_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        carFuels: payload
+      }
+
+    case actionType.GET_CAR_FUEL_TYPES_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload
+      }
+
+      case actionType.SELECT_CAR_FUEL_TYPE:
+      return {
+        ...state,
+        loading: false,
+        selectedCarFuel: payload,
       };
 
     default:

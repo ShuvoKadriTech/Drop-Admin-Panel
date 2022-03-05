@@ -96,4 +96,8 @@ export const ADD_MODEL_COLOR = ADMIN_ENDPOINT + "/car-color/add-new";
 
 export const ADD_MODEL_YEAR = ADMIN_ENDPOINT + "/car-year/add-new";
 
+//  CAR FUEL 
+
+export const GET_CAR_FUEL_TYPES = ADMIN_ENDPOINT + "/car-fuel-types";
+
 // END ADMIN API
