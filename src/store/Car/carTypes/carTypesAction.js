@@ -34,6 +34,7 @@ import {
   ADD_MODEL_COLOR,
   ADD_MODEL_YEAR,
   GET_CAR_FUEL_TYPES,
+  ADD_CAR,
 } from "../../../network/Api";
 import { toast } from "react-toastify";
 import { GET_CAR_TYPE_FULL_DETAILS } from "./../../../network/Api";
@@ -638,37 +639,34 @@ export const selectModelYear = (selectedYear) => (dispatch) => {
   });
 };
 
+// GET ALL CAR FUEL TYPES
 
-
-// GET ALL CAR FUEL TYPES 
-
-export const getCarFuelTypes = () =>async dispatch =>{
+export const getCarFuelTypes = () => async (dispatch) => {
   try {
     dispatch({
-      type: actionType.GET_CAR_FUEL_TYPES_REQUEST_SEND
-    })
+      type: actionType.GET_CAR_FUEL_TYPES_REQUEST_SEND,
+    });
 
-    const {data} = await requestApi().request(GET_CAR_FUEL_TYPES)
+    const { data } = await requestApi().request(GET_CAR_FUEL_TYPES);
 
-    if(data.status){
+    if (data.status) {
       dispatch({
         type: actionType.GET_CAR_FUEL_TYPES_REQUEST_SUCCESS,
-        payload: data.data.carFuels
-      })
-    }else{
+        payload: data.data.carFuels,
+      });
+    } else {
       dispatch({
         type: actionType.GET_CAR_FUEL_TYPES_REQUEST_FAIL,
-        payload: data.error
-      })
+        payload: data.error,
+      });
     }
-
   } catch (error) {
     dispatch({
       type: actionType.GET_CAR_FUEL_TYPES_REQUEST_FAIL,
-      payload: error.message
-    })
+      payload: error.message,
+    });
   }
-}
+};
 
 // SELECT CAR FUEL TYPE
 
@@ -678,4 +676,59 @@ export const selectCarFuel = (selectedFuel) => (dispatch) => {
     type: actionType.SELECT_CAR_FUEL_TYPE,
     payload: selectedFuel,
   });
+};
+
+// ADD NEW CAR FOR PARTNER
+
+export const addCar = (carData) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.ADD_CAR_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(ADD_CAR, {
+      method: "POST",
+      data: carData,
+    });
+
+    console.log("CAR DATA-----", data);
+
+    if (data.status) {
+      // toast.success(data.message, {
+      //   // position: "bottom-right",
+      //   position: toast.POSITION.TOP_RIGHT,
+      //   autoClose: 3000,
+      //   hideProgressBar: true,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      // });
+
+      dispatch({
+        type: actionType.ADD_CAR_REQUEST_SUCCESS,
+        payload: data.data.car,
+      });
+    } else {
+      toast.warn(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      dispatch({
+        type: actionType.ADD_CAR_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.ADD_CAR_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
 };

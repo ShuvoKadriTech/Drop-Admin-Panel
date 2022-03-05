@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react"
-import MetaTags from 'react-meta-tags';
+import React, { useState, useEffect } from "react";
+import MetaTags from "react-meta-tags";
 import {
   Row,
   Col,
@@ -13,62 +13,64 @@ import {
   FormGroup,
   Input,
   InputGroup,
-  Label
-} from "reactstrap"
-import Dropzone from "react-dropzone"
+  Label,
+} from "reactstrap";
+import Dropzone from "react-dropzone";
 // Breadcrumb
-import Breadcrumbs from "../../components/Common/Breadcrumb"
+import Breadcrumbs from "../../components/Common/Breadcrumb";
 
-import { Link, useHistory, useParams } from "react-router-dom"
-import { toast } from 'react-toastify';
+import { Link, useHistory, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { removeImage, selectImage, uploadMultipleImage, selectFolder, clearUploadImage, addFolderList } from '../../store/action/uploadImage.action'
-import Select from "react-select"
+import {
+  removeImage,
+  selectImage,
+  uploadMultipleImage,
+  selectFolder,
+  clearUploadImage,
+  addFolderList,
+} from "../../store/action/uploadImage.action";
+import Select from "react-select";
 //SweetAlert
-import SweetAlert from "react-bootstrap-sweetalert"
+import SweetAlert from "react-bootstrap-sweetalert";
 import { UPLOAD_IMAGE_DONE } from "../../store/actionType";
 
+const FormUpload = ({ lisener }) => {
+  const route = useHistory();
 
-const FormUpload = ({lisener}) => {
+  const dispatch = useDispatch();
 
+  const {
+    loading,
+    selectedFiles,
+    error,
+    folderList,
+    selectedFolder,
+    uploadedImages,
+  } = useSelector((state) => state.uploadImage);
 
-
-  const route = useHistory()
-  
-  const dispatch = useDispatch()
-
-  const { loading, selectedFiles, error, folderList, selectedFolder,uploadedImages } = useSelector(state => state.uploadImage)
-
-
-  const {folderList : listFolder} = useSelector(state => state.imageReducer)
+  const { folderList: listFolder } = useSelector((state) => state.imageReducer);
 
   // function handleSelectGroup(item) {
   //   console.log(item);
   //   setSelectedFolder(item)
   // }
 
-
   useEffect(() => {
-    dispatch(addFolderList(listFolder))
+    dispatch(addFolderList(listFolder));
   }, []);
 
-
   useEffect(() => {
+    if (uploadedImages && uploadedImages.length > 0) {
+      dispatch(clearUploadImage());
 
-    if(uploadedImages && uploadedImages.length>0){
-      dispatch(clearUploadImage())
-
-      if(lisener != null){
-        lisener()
-      }else{
-        route.push("image-gallery")
+      if (lisener != null) {
+        lisener();
+      } else {
+        route.push("image-gallery");
       }
-      
     }
-    
   }, [uploadedImages]);
-
-
 
   useEffect(() => {
     if (error) {
@@ -83,19 +85,18 @@ const FormUpload = ({lisener}) => {
         progress: undefined,
       });
     }
-  }, [error])
-
+  }, [error]);
 
   function handleAcceptedFiles(files) {
-    files.map(file =>
+    files.map((file) =>
       Object.assign(file, {
         preview: URL.createObjectURL(file),
         formattedSize: formatBytes(file.size),
       })
-    )
+    );
     // setselectedFiles([...selectedFiles, ...files])
 
-    dispatch(selectImage(files))
+    dispatch(selectImage(files));
   }
 
   const removeSelection = (index) => {
@@ -104,14 +105,12 @@ const FormUpload = ({lisener}) => {
     // console.log(list);
     // setselectedFiles([...list])
 
-    dispatch(removeImage(index))
-  }
-
+    dispatch(removeImage(index));
+  };
 
   const uploadImage = () => {
-
     if (selectedFiles.length <= 0) {
-      return toast.warn('Select a Image', {
+      return toast.warn("Select a Image", {
         // position: "bottom-right",
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 3000,
@@ -122,9 +121,9 @@ const FormUpload = ({lisener}) => {
         progress: undefined,
       });
     }
-    
+
     if (!selectedFolder) {
-      return toast.warn('Select a Folder', {
+      return toast.warn("Select a Folder", {
         // position: "bottom-right",
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 3000,
@@ -136,8 +135,8 @@ const FormUpload = ({lisener}) => {
       });
     }
 
-    if(selectedFolder.value==null){
-      return toast.warn('Select a Folder', {
+    if (selectedFolder.value == null) {
+      return toast.warn("Select a Folder", {
         // position: "bottom-right",
         position: toast.POSITION.BOTTOM_RIGHT,
         autoClose: 3000,
@@ -148,27 +147,23 @@ const FormUpload = ({lisener}) => {
         progress: undefined,
       });
     }
-
-
 
     if (selectedFiles.length > 0 && selectedFolder.value) {
-      dispatch(uploadMultipleImage())
+      dispatch(uploadMultipleImage());
     }
-
-
-  }
+  };
 
   /**
    * Formats the size
    */
   function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return "0 Bytes"
-    const k = 1024
-    const dm = decimals < 0 ? 0 : decimals
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
   }
 
   return (
@@ -178,8 +173,11 @@ const FormUpload = ({lisener}) => {
           <title>Image Upload | Quicar - Admin Dashboard</title>
         </MetaTags>
         <Container fluid={true}>
-          <Breadcrumbs maintitle="Gallery" breadcrumbItem="Upload Image" hideSettingBtn={true} />
-
+          <Breadcrumbs
+            maintitle="Gallery"
+            breadcrumbItem="Upload Image"
+            hideSettingBtn={true}
+          />
 
           <Row>
             <Col lg="4" sm="6">
@@ -188,13 +186,11 @@ const FormUpload = ({lisener}) => {
                 <Select
                   value={selectedFolder}
                   onChange={(item) => {
-                    console.log(item)
+                    console.log(item);
                     dispatch(selectFolder(item));
                   }}
                   options={folderList}
                   classNamePrefix="select2-selection"
-
-
                 />
               </div>
             </Col>
@@ -211,8 +207,8 @@ const FormUpload = ({lisener}) => {
                   <div className="mb-5">
                     <Form>
                       <Dropzone
-                        onDrop={acceptedFiles => {
-                          handleAcceptedFiles(acceptedFiles)
+                        onDrop={(acceptedFiles) => {
+                          handleAcceptedFiles(acceptedFiles);
                         }}
                       >
                         {({ getRootProps, getInputProps }) => (
@@ -230,7 +226,10 @@ const FormUpload = ({lisener}) => {
                           </div>
                         )}
                       </Dropzone>
-                      <div className="dropzone-previews mt-3" id="file-previews">
+                      <div
+                        className="dropzone-previews mt-3"
+                        id="file-previews"
+                      >
                         {selectedFiles.map((f, i) => {
                           return (
                             <Card
@@ -244,7 +243,7 @@ const FormUpload = ({lisener}) => {
                                       data-dz-thumbnail=""
                                       // height="80"
                                       style={{
-                                        maxWidth: '80px'
+                                        maxWidth: "80px",
                                       }}
                                       className=" bg-light"
                                       alt={f.name}
@@ -263,27 +262,47 @@ const FormUpload = ({lisener}) => {
                                     </p>
                                   </Col>
 
-                                  <div className="position-absolute" style={{ left: '0px', top: '0px', width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-                                    <i onClick={() => removeSelection(i)} className="mdi mdi-delete text-danger " style={{ fontSize: '25px', cursor: 'pointer' }}></i>
+                                  <div
+                                    className="position-absolute"
+                                    style={{
+                                      left: "0px",
+                                      top: "0px",
+                                      width: "100%",
+                                      display: "flex",
+                                      justifyContent: "flex-end",
+                                    }}
+                                  >
+                                    <i
+                                      onClick={() => removeSelection(i)}
+                                      className="mdi mdi-delete text-danger "
+                                      style={{
+                                        fontSize: "25px",
+                                        cursor: "pointer",
+                                      }}
+                                    ></i>
                                   </div>
                                 </Row>
                               </div>
                             </Card>
-                          )
+                          );
                         })}
                       </div>
                     </Form>
                   </div>
                   <div className="text-center mt-4">
-
-                    {!loading ? <button
-                      type="button"
-                      className="btn btn-primary waves-effect waves-light"
-                      onClick={uploadImage}
-                    >
-                      Upload Files
-                    </button> : <div className="btn btn-primary waves-effect waves-light">loading...</div>}
-
+                    {!loading ? (
+                      <button
+                        type="button"
+                        className="btn btn-primary waves-effect waves-light"
+                        onClick={uploadImage}
+                      >
+                        Upload Files
+                      </button>
+                    ) : (
+                      <div className="btn btn-primary waves-effect waves-light">
+                        loading...
+                      </div>
+                    )}
                   </div>
                 </CardBody>
               </Card>
@@ -292,7 +311,7 @@ const FormUpload = ({lisener}) => {
         </Container>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default FormUpload
+export default FormUpload;

@@ -5,9 +5,10 @@ import GlobalWrapper from "../../../components/GlobalWrapper";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, Link } from "react-router-dom";
-import ImageSelectionDialog from './../../Utility/ImageSelectionDialog';
+import ImageSelectionDialog from "./../../Utility/ImageSelectionDialog";
+// import SendIcon from "@mui/icons-material/Send";
+import Button from "@mui/material/Button";
 import {
-  Button,
   Card,
   CardBody,
   Col,
@@ -27,6 +28,7 @@ import {
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { removeAllSelectedGalleryImage } from "../../../store/action/galleryAction";
 import {
+  addCar,
   getCarFuelTypes,
   getCarTypes,
   selectCarBrand,
@@ -37,7 +39,7 @@ import {
   selectModelYear,
 } from "../../../store/Car/carTypes/carTypesAction";
 import { toast } from "react-toastify";
-import Dropzone from "react-dropzone"
+import Dropzone from "react-dropzone";
 
 const CarAdd = () => {
   const { search, pathname } = useLocation();
@@ -45,7 +47,7 @@ const CarAdd = () => {
   const dispatch = useDispatch();
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
-  const { partners, searchKey, status, loading } = useSelector(
+  const { partners, searchKey, status } = useSelector(
     (state) => state.partnerReducer
   );
   const {
@@ -56,7 +58,8 @@ const CarAdd = () => {
     selectedModelColor,
     selectedModelYear,
     carFuels,
-    selectedCarFuel
+    selectedCarFuel,
+    loading,
   } = useSelector((state) => state.carTypesReducer);
 
   const [openPartnerSearch, setOpenPartnerSearch] = useState(false);
@@ -174,7 +177,7 @@ const CarAdd = () => {
       dispatch(getCarTypes(true));
     }
     if (carFuels.length <= 0) {
-      dispatch(getCarFuelTypes())
+      dispatch(getCarFuelTypes());
     }
   }, [carTypes, carFuels]);
 
@@ -204,6 +207,100 @@ const CarAdd = () => {
     history.replace({ pathname: pathname, search: params.toString() });
     setImageId(imgId);
     setmodal_fullscreen(true);
+  };
+
+  // REMOVE CAR IMAGE
+
+  const removeSelection = (index) => {
+    const list = carImages;
+    list.splice(index, 1);
+    console.log("rest images", list);
+    setCarImages([...list]);
+
+    // dispatch(removeImage(index))
+  };
+
+  const handleSubmit = () => {
+    if (
+      selectedCarType == null ||
+      selectedCarBrand == null ||
+      selectedBrandModel == null ||
+      selectedModelColor == null ||
+      selectedModelYear == null ||
+      selectedCarFuel == null
+    ) {
+      return toast.warn("Please Fillup all required Field", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    if (carSmartCardFont == null || carSmartCardBack == null) {
+      return toast.warn("Please add car smart card both side image", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    if (carImages.length < 3) {
+      return toast.warn("Please add minimum 3 images of car", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    //   {
+    //     "partnerId": 4,
+    //     "carTypeId": 1,
+    //     "carBrandId": 1,
+    //     "carModelId": 1,
+    //     "carYearId": 1,
+    //     "carColorId":1,
+    //     "carFuelId":1,
+    //     "carRegisterNumber": "324242ADC",
+    //     "carSmartCardFont": "body.carSmartCardFont",
+    //     "carSmartCardBack": "body.carSmartCardBack",
+    //     "carImages":[
+    //         "image-url-1",
+    //         "image-url-2"
+    //     ]
+    // }
+
+    const carImagesPath = carImages.map((image) => image.path);
+    // console.log("path----", carImagesPath);
+
+    const data = {
+      partnerId: selectedPartner.id,
+      carTypeId: selectedCarType.id,
+      carBrandId: selectedCarBrand.id,
+      carModelId: selectedBrandModel.id,
+      carColorId: selectedModelColor.id,
+      carYearId: selectedModelYear.id,
+      carFuelId: selectedCarFuel.id,
+      carRegisterNumber,
+      carSmartCardFont,
+      carSmartCardBack,
+      carImages: carImagesPath,
+    };
+
+    dispatch(addCar(data));
+
+    // console.log("car data-------------------", data);
   };
 
   return (
@@ -327,7 +424,9 @@ const CarAdd = () => {
                         // console.log("input value", newInputValue);
                       }}
                       id="controllable-states-demo2"
-                      options={selectedCarType ? selectedCarType?.carBrands : ""}
+                      options={
+                        selectedCarType ? selectedCarType?.carBrands : ""
+                      }
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
                         <TextField {...params} label="Select a Car Brand" />
@@ -362,7 +461,9 @@ const CarAdd = () => {
                         // console.log("input value", newInputValue);
                       }}
                       id="controllable-states-demo3"
-                      options={selectedCarBrand ? selectedCarBrand?.carModels : ""}
+                      options={
+                        selectedCarBrand ? selectedCarBrand?.carModels : ""
+                      }
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
                         <TextField {...params} label="Select a Brand Model" />
@@ -393,7 +494,9 @@ const CarAdd = () => {
                         // console.log("input value", newInputValue);
                       }}
                       id="controllable-states-demo4"
-                      options={selectedBrandModel ? selectedBrandModel?.colors : ""}
+                      options={
+                        selectedBrandModel ? selectedBrandModel?.colors : ""
+                      }
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
                         <TextField {...params} label="Select a Color" />
@@ -431,22 +534,24 @@ const CarAdd = () => {
                         // console.log("input value", newInputValue);
                       }}
                       id="controllable-states-demo5"
-                      options={selectedBrandModel ? selectedBrandModel?.years : ""}
+                      options={
+                        selectedBrandModel ? selectedBrandModel?.years : ""
+                      }
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
                         <TextField {...params} label="Select a Year" />
                       )}
-                    // renderOption={(props, option) => (
-                    //   <Box
-                    //     component="li"
-                    //     sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                    //     {...props}
-                    //   >
-                    //     <span style={{ color: `${option.colorCode}` }}>
-                    //       {option.year}
-                    //     </span>
-                    //   </Box>
-                    // )}
+                      // renderOption={(props, option) => (
+                      //   <Box
+                      //     component="li"
+                      //     sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                      //     {...props}
+                      //   >
+                      //     <span style={{ color: `${option.colorCode}` }}>
+                      //       {option.year}
+                      //     </span>
+                      //   </Box>
+                      // )}
                     />
                   </Col>
                   <Col xl={6} className="py-4 py-xl-0">
@@ -457,24 +562,22 @@ const CarAdd = () => {
                         dispatch(selectCarFuel(newValue));
                         // console.log("new",newValue)
                       }}
-                      getOptionLabel={(option) => option.name}
+                      getOptionLabel={(option) => (option ? option.name : "")}
                       inputValue={searchCarFuel}
                       onInputChange={(event, newInputValue) => {
                         setSearchCarFuel(newInputValue);
                         // console.log("input value", newInputValue);
                       }}
-                      id="controllable-states-demo5"
+                      id="controllable-states-demo6"
                       options={carFuels}
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
                         <TextField {...params} label="Select car fuel type" />
                       )}
-
                     />
                   </Col>
                 </Row>
-
-
+                {/* CAR SMART CAR IMAGES */}
                 <Row className="py-xl-4">
                   <Col xl={6}>
                     <div>
@@ -486,11 +589,12 @@ const CarAdd = () => {
                         type="text"
                         style={{ width: "100%" }}
                         value={carRegisterNumber}
-                        onChange={event => setCarRegisterNumber(event.target.value)}
+                        onChange={(event) =>
+                          setCarRegisterNumber(event.target.value)
+                        }
                       />
                     </div>
                   </Col>
-
                 </Row>
                 {/* CAR SMART CARD IMAGE */}
                 <Row>
@@ -522,7 +626,7 @@ const CarAdd = () => {
                                   <button
                                     className="btn btn-danger "
                                     // onClick={() => handleDelete(item.id)}
-                                    onClick={() => setCarSmartCardFont("")}
+                                    onClick={() => setCarSmartCardFont(null)}
                                   >
                                     <i className="fa fa-trash" />
                                   </button>
@@ -578,7 +682,7 @@ const CarAdd = () => {
                                   <button
                                     className="btn btn-danger "
                                     // onClick={() => handleDelete(item.id)}
-                                    onClick={() => setCarSmartCardBack("")}
+                                    onClick={() => setCarSmartCardBack(null)}
                                   >
                                     <i className="fa fa-trash" />
                                   </button>
@@ -608,24 +712,22 @@ const CarAdd = () => {
                   </Col>
                 </Row>
 
-              
                 {/* SELECT CAR IMAGE */}
 
                 <Row>
-                <div className="mb-5">
+                  <div className="mb-5">
                     <Form>
                       <Dropzone
-                        // onDrop={acceptedFiles => {
-                        //   handleAcceptedFiles(acceptedFiles)
-                        // }}
+                      // onDrop={acceptedFiles => {
+                      //   handleAcceptedFiles(acceptedFiles)
+                      // }}
                       >
                         {({ getRootProps, getInputProps }) => (
-                          <div className="dropzone" >
+                          <div className="dropzone cursor-pointer">
                             <div
                               className="dz-message needsclick"
                               // {...getRootProps()}
-                              onClick={()=>handleImage(3)}
-                              
+                              onClick={() => handleImage(3)}
                             >
                               <input {...getInputProps()} />
                               <div className="mb-3">
@@ -636,8 +738,11 @@ const CarAdd = () => {
                           </div>
                         )}
                       </Dropzone>
-                      {/* <div className="dropzone-previews mt-3" id="file-previews">
-                        {selectedFiles.map((f, i) => {
+                      <div
+                        className="dropzone-previews mt-3"
+                        id="file-previews"
+                      >
+                        {carImages?.map((f, i) => {
                           return (
                             <Card
                               className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
@@ -650,11 +755,11 @@ const CarAdd = () => {
                                       data-dz-thumbnail=""
                                       // height="80"
                                       style={{
-                                        maxWidth: '80px'
+                                        maxWidth: "80px",
                                       }}
                                       className=" bg-light"
-                                      alt={f.name}
-                                      src={f.preview}
+                                      alt={"image"}
+                                      src={f.path}
                                     />
                                   </Col>
                                   <Col>
@@ -665,23 +770,54 @@ const CarAdd = () => {
                                       {f.name}
                                     </Link>
                                     <p className="mb-0">
-                                      <strong>{f.formattedSize}</strong>
+                                      <strong>{f.size}</strong>
                                     </p>
                                   </Col>
 
-                                  <div className="position-absolute" style={{ left: '0px', top: '0px', width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-                                    <i onClick={() => removeSelection(i)} className="mdi mdi-delete text-danger " style={{ fontSize: '25px', cursor: 'pointer' }}></i>
+                                  <div
+                                    className="position-absolute"
+                                    style={{
+                                      left: "0px",
+                                      top: "0px",
+                                      width: "100%",
+                                      display: "flex",
+                                      justifyContent: "flex-end",
+                                    }}
+                                  >
+                                    <i
+                                      onClick={() => removeSelection(i)}
+                                      className="mdi mdi-delete text-danger "
+                                      style={{
+                                        fontSize: "25px",
+                                        cursor: "pointer",
+                                      }}
+                                    ></i>
                                   </div>
                                 </Row>
                               </div>
                             </Card>
-                          )
+                          );
                         })}
-                      </div> */}
+                      </div>
                     </Form>
                   </div>
                 </Row>
 
+                {/* SUBMIT BUTTON */}
+
+                <div className="d-flex justify-content-center">
+                  <Button
+                    style={{ width: "40%" }}
+                    variant="contained"
+                    onClick={handleSubmit}
+                  >
+                    {loading ? (
+                      <Spinner animation="border" variant="info" size="sm" />
+                    ) : (
+                      "Add"
+                    )}
+                  </Button>
+                </div>
               </CardBody>
             </Card>
           </Container>
@@ -689,7 +825,7 @@ const CarAdd = () => {
 
         {/* SELECT PARTNER FROM DIALOG */}
 
-        <Modal isOpen={openPartnerSearch} toggle={() => { }}>
+        <Modal isOpen={openPartnerSearch} toggle={() => {}}>
           <div className="modal-header">
             <h5 className="modal-title mt-0" id="myModalLabel">
               Select Partner
@@ -743,8 +879,6 @@ const CarAdd = () => {
           </div>
         </Modal>
 
-
-
         {/* SELECT IMAGE FOR CAR SMART CAR */}
 
         <Modal
@@ -774,19 +908,18 @@ const CarAdd = () => {
           <div className="modal-body">
             <ImageSelectionDialog
               lisener={(list) => {
-
-                const image = list[0].path;
-                console.log("image---", list);
+                const image = list[0];
+                // console.log("full image---", carImage);
                 // console.log("")
                 if (imageId == 1) {
-                  setCarSmartCardFont(image);
+                  setCarSmartCardFont(image.path);
                 }
                 if (imageId == 2) {
-                  setCarSmartCardBack(image)
+                  setCarSmartCardBack(image.path);
                 }
-                if(imageId == 3){
-                  const newArray = list.map(item => item.path)
-                  console.log("images---", newArray)
+                if (imageId == 3) {
+                  setCarImages([...carImages, image]);
+                  // console.log("images---", newArray)
                 }
 
                 dispatch(removeAllSelectedGalleryImage());
@@ -808,8 +941,6 @@ const CarAdd = () => {
             </button>
           </div>
         </Modal>
-
-
       </GlobalWrapper>
     </React.Fragment>
   );
@@ -889,7 +1020,6 @@ const CarTypeWrapper = styled.div`
     font-size: 15px;
   }
 `;
-
 
 const ImageView = styled.div`
   width: 100% !important;
