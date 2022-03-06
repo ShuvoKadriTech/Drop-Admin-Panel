@@ -7,12 +7,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import requestApi from "../../../network/httpRequest";
 import { GET_SINGLE_CAR_TYPE, SINGLE_PARTNER } from "../../../network/Api";
-import Lightbox from "";
+
 import { Tbody, Td, Th, Thead, Tr, Table } from "react-super-responsive-table";
-import { getAllDriversByPartner } from "../../../store/partner/partnerActions";
+import Lightbox from "react-image-lightbox";
+import "react-image-lightbox/style.css";
+// import { getAllDriversByPartner } from "../../../store/partner/partnerActions";
 
 const PartnerDetails = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const { id } = useParams();
   const history = useHistory();
 
@@ -25,19 +27,19 @@ const PartnerDetails = () => {
   const [partner, setPartner] = useState({});
   const [isZoom, setIsZoom] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
-
-
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
   const [carImageGalley, setCarImageGalley] = useState([]);
-  const [othersImageGalley, setOIthersImageGalley] = useState([]);
+  // const [othersImageGalley, setOIthersImageGalley] = useState([]);
 
-  
+  const showImageGallery = (images) => {
+    console.log("before images clicked--------");
+    const newImages = images.map((image) => image.path);
 
-  const showImageGallery =(images)=>{
-     const newImages = images.map(image=>image.path)
-     setCarImageGalley(newImages)
+    setCarImageGalley(newImages);
+    console.log("after images----", carImageGalley);
     setIsZoom(true);
-  }
- 
+  };
 
   useEffect(() => {
     if (id) {
@@ -64,7 +66,7 @@ const PartnerDetails = () => {
     // console.log("partner",data)
     if (data.status) {
       setPartner(data.data.partner);
-      console.log("data", partner)
+      // console.log("data", partner)
     }
   };
 
@@ -97,6 +99,17 @@ const PartnerDetails = () => {
     });
   };
 
+  // EDIT CAR EVENT
+
+  const editCar = (carId) => {
+    history.push({
+      pathname: `/car/edit/${carId}`,
+      search: `?pID=${id}`,
+      // state: { detail: 'some_value' }
+    });
+    // history.push(`/partner/edit/${partner.id}`)
+  };
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -110,15 +123,50 @@ const PartnerDetails = () => {
               // callList={callPartnerList}
             />
 
-            {isZoom ? (
+            {isOpen && (
               <Lightbox
                 mainSrc={selectedImg}
                 enableZoom={true}
                 imageCaption="img"
                 onCloseRequest={() => {
-                  setIsZoom(!isZoom);
+                  setIsOpen(!isOpen);
                 }}
-               
+              />
+            )}
+
+            {isZoom ? (
+              <Lightbox
+                // closeLabel={"close button"}
+                // closeButtonAriaLabel={"close button"}
+                mainSrc={carImageGalley[photoIndex]}
+                nextSrc={
+                  carImageGalley[(photoIndex + 1) % carImageGalley.length]
+                }
+                prevSrc={
+                  carImageGalley[
+                    (photoIndex + carImageGalley.length - 1) %
+                      carImageGalley.length
+                  ]
+                }
+                onCloseRequest={() => setIsZoom(false)}
+                onMovePrevRequest={
+                  () =>
+                    setPhotoIndex(
+                      (photoIndex + carImageGalley.length - 1) %
+                        carImageGalley.length
+                    )
+                  // setPhotoIndex({
+                  //   photoIndex:
+                  //     (photoIndex + carImageGalley.length - 1) %
+                  //     carImageGalley.length
+                  // })
+                }
+                onMoveNextRequest={
+                  () => setPhotoIndex((photoIndex + 1) % carImageGalley.length)
+                  // setPhotoIndex({
+                  //   photoIndex: (photoIndex + 1) % carImageGalley.length,
+                  // })
+                }
               />
             ) : null}
 
@@ -151,7 +199,7 @@ const PartnerDetails = () => {
                       >
                         <img
                           onClick={() => {
-                            setIsZoom(true);
+                            setIsOpen(true);
                             setSelectedImg(partner.img);
                           }}
                           className="img-fluid cursor-pointer"
@@ -199,60 +247,60 @@ const PartnerDetails = () => {
               </CardBody>
             </Card>
 
-            {partner.nidFontPic || partner.nidBackPic ? <Card>
-              <CardBody>
-                <Row>
-                  <Col md={6}>
-                    {partner.nidFontPic ? (
-                      <ImageWrapper
-                        style={{
-                          width: "100%",
-                          height: "200px",
-                          padding: "10px 0px",
-                        }}
-                      >
-                        <img
-                          onClick={() => {
-                            setIsZoom(true);
-                            setSelectedImg(partner.nidFontPic);
+            {partner.nidFontPic || partner.nidBackPic ? (
+              <Card>
+                <CardBody>
+                  <Row>
+                    <Col md={6}>
+                      {partner.nidFontPic ? (
+                        <ImageWrapper
+                          style={{
+                            width: "100%",
+                            height: "200px",
+                            padding: "10px 0px",
                           }}
-                          className="img-fluid cursor-pointer"
-                          alt="Veltrix"
-                          src={partner.nidFontPic}
-                          width="100%"
-                        />
-                        <small>NID Front Image</small>
-                      </ImageWrapper>
-                    ) : null}
-                  </Col>
-                  <Col md={6}>
-                    {partner.nidBackPic ? (
-                      <ImageWrapper
-                        style={{
-                          width: "100%",
-                          height: "200px",
-                          padding: "10px 0px",
-                        }}
-                      >
-                        <img
-                          onClick={() => {
-                            setIsZoom(true);
-                            setSelectedImg(partner.nidBackPic);
+                        >
+                          <img
+                            onClick={() => {
+                              setIsOpen(true);
+                              setSelectedImg(partner.nidFontPic);
+                            }}
+                            className="img-fluid cursor-pointer"
+                            alt="Veltrix"
+                            src={partner.nidFontPic}
+                            width="100%"
+                          />
+                          <small>NID Front Image</small>
+                        </ImageWrapper>
+                      ) : null}
+                    </Col>
+                    <Col md={6}>
+                      {partner.nidBackPic ? (
+                        <ImageWrapper
+                          style={{
+                            width: "100%",
+                            height: "200px",
+                            padding: "10px 0px",
                           }}
-                          className="img-fluid cursor-pointer"
-                          alt="Veltrix"
-                          src={partner.nidBackPic}
-                          width="100%"
-                        />
-                        <small>NID Back Image</small>
-                      </ImageWrapper>
-                    ) : null}
-                  </Col>
-                </Row>
-              </CardBody>
-            </Card> : null}
-
-            
+                        >
+                          <img
+                            onClick={() => {
+                              setIsOpen(true);
+                              setSelectedImg(partner.nidBackPic);
+                            }}
+                            className="img-fluid cursor-pointer"
+                            alt="Veltrix"
+                            src={partner.nidBackPic}
+                            width="100%"
+                          />
+                          <small>NID Back Image</small>
+                        </ImageWrapper>
+                      ) : null}
+                    </Col>
+                  </Row>
+                </CardBody>
+              </Card>
+            ) : null}
 
             <Row>
               <Col xl={6}>
@@ -306,7 +354,7 @@ const PartnerDetails = () => {
                                     >
                                       <img
                                         onClick={() => {
-                                          setIsZoom(true);
+                                          setIsOpen(true);
                                           setSelectedImg(driver.img);
                                         }}
                                         className="img-fluid cursor-pointer"
@@ -323,22 +371,24 @@ const PartnerDetails = () => {
                                   <Td>{driver.name}</Td>
                                   <Td>{driver.phone}</Td>
                                   <Td>
-                                    <button
-                                      className="btn btn-info btn-circle btn-sm   me-xl-2"
-                                      onClick={() => editDriver(driver.id)}
-                                    >
-                                      <i className="fa fa-edit" />
-                                    </button>
-                                    <button
-                                      className="btn btn-success btn-circle btn-sm"
-                                      onClick={() =>
-                                        history.push(
-                                          `/driver/details/${driver.id}`
-                                        )
-                                      }
-                                    >
-                                      <i className="fa fa-eye" />
-                                    </button>
+                                    <ButtonWrapper>
+                                      <button
+                                        className="btn btn-info me-xl-0"
+                                        onClick={() => editDriver(driver.id)}
+                                      >
+                                        <i className="fa fa-edit" />
+                                      </button>
+                                      <button
+                                        className="btn btn-success "
+                                        onClick={() =>
+                                          history.push(
+                                            `/driver/details/${driver.id}`
+                                          )
+                                        }
+                                      >
+                                        <i className="fa fa-eye" />
+                                      </button>
+                                    </ButtonWrapper>
                                   </Td>
                                 </Tr>
                               );
@@ -390,7 +440,7 @@ const PartnerDetails = () => {
                                   className="align-middle"
                                   style={{
                                     fontSize: "15px",
-                                    fontWeight: "500"
+                                    fontWeight: "500",
                                   }}
                                 >
                                   <Td>
@@ -399,7 +449,8 @@ const PartnerDetails = () => {
                                     >
                                       <img
                                         onClick={() => {
-                                          showImageGallery(carImageGalley);
+                                          showImageGallery(car?.car_images);
+                                          // setIsZoom(true);
                                         }}
                                         className="img-fluid cursor-pointer"
                                         alt=""
@@ -412,19 +463,24 @@ const PartnerDetails = () => {
                                       />
                                     </div>
                                   </Td>
+                                  <Td>{car?.car_type?.name}</Td>
+                                  <Td>{car?.car_brand?.name}</Td>
                                   <Td>
-                                    {car?.car_type?.name}
-                                  </Td>
-                                  <Td>
-                                    {car?.car_brand?.name}
-                                  </Td>
-                                  <Td>
-                                    <button
-                                      className="btn btn-info "
-                                      // onClick={() => handleEditColor(color.id)}
-                                    >
-                                      <i className="fa fa-edit" />
-                                    </button>
+                                    <ButtonWrapper>
+                                      <button
+                                        className="btn btn-info me-xl-3"
+                                        onClick={() => editCar(car.id)}
+                                      >
+                                        <i className="fa fa-edit" />
+                                      </button>
+                                      <button
+                                        className="btn btn-success "
+                                        // onClick={() =>
+                                        //   history.push(`/partner/${partner.id}`)}
+                                      >
+                                        <i className="fa fa-eye" />
+                                      </button>
+                                    </ButtonWrapper>
                                   </Td>
                                 </Tr>
                               );
@@ -443,6 +499,18 @@ const PartnerDetails = () => {
     </React.Fragment>
   );
 };
+
+const ButtonWrapper = styled.div`
+  .btn {
+    width: 30px;
+    height: 30px;
+    padding: 6px 0px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.42857;
+  }
+`;
 
 const Details = styled.div`
   display: flex;

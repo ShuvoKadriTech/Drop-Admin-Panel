@@ -200,7 +200,7 @@ const DriverAdd = () => {
   };
 
   const handleImage = (imgId) => {
-    console.log("id---", id);
+    // console.log("id---", id);
     const params = new URLSearchParams({ pID: selectedPartner.id });
 
     history.replace({ pathname: pathname, search: params.toString() });

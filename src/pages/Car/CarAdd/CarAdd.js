@@ -4,7 +4,7 @@ import styled from "styled-components";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useLocation, Link } from "react-router-dom";
+import { useHistory, useLocation, Link, useParams } from "react-router-dom";
 import ImageSelectionDialog from "./../../Utility/ImageSelectionDialog";
 // import SendIcon from "@mui/icons-material/Send";
 import Button from "@mui/material/Button";
@@ -30,12 +30,11 @@ import {
   selectCarBrandModel,
   selectModelColor,
   selectModelYear,
-  selectCarFuel
+  selectCarFuel,
 } from "./../../../store/partner/partnerActions";
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { removeAllSelectedGalleryImage } from "../../../store/action/galleryAction";
 import {
-
   getCarFuelTypes,
   getCarTypes,
 } from "../../../store/Car/carTypes/carTypesAction";
@@ -46,21 +45,23 @@ const CarAdd = () => {
   const { search, pathname } = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
+  const { id } = useParams();
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
-  const {
-     partners, searchKey,status,
-     selectedCarType,
+
+  let {
+    partners,
+    searchKey,
+    status,
+    selectedCarType,
     selectedCarBrand,
     selectedBrandModel,
     selectedModelColor,
     selectedModelYear,
     selectedCarFuel,
-    loading
-     } = useSelector(
-    (state) => state.partnerReducer
-  );
-  const {carTypes,carFuels} = useSelector((state) => state.carTypesReducer);
+    loading,
+  } = useSelector((state) => state.partnerReducer);
+  const { carTypes, carFuels } = useSelector((state) => state.carTypesReducer);
 
   const [openPartnerSearch, setOpenPartnerSearch] = useState(false);
   const [selectedPartner, setSelectedPartner] = useState();
@@ -127,7 +128,6 @@ const CarAdd = () => {
     dispatch(updateSearchKey(value));
   };
 
-
   // CALL PARTNER WITH SEARCH KEY
 
   useEffect(() => {
@@ -149,38 +149,36 @@ const CarAdd = () => {
 
     console.log("selected partner", partner);
 
-    // if (id) {
-    //   console.log("selected partner-----", partner);
-    //   if (partner) {
-    //     // const findDriver = partner.drivers.find((driver) => driver.id == id);
-    //     // if (findDriver) {
-    //     //   const {
-    //     //     name,
-    //     //     email,
-    //     //     phone,
-    //     //     dob,
-    //     //     img,
-    //     //     address,
-    //     //     licenseNumber,
-    //     //     nid,
-    //     //     nidFontPic,
-    //     //     nidBackPic,
-    //     //     licenseFontPic,
-    //     //     licenseBackPic,
-    //     //   } = findDriver;
-    //     //   setDriverInfo({ name, email, phone, address, licenseNumber, nid });
-    //     //   setDateOfBirth(dob.toLocaleString());
-    //     //   setDriverImage(img);
-    //     //   setNidFrontImage(nidFontPic);
-    //     //   setNidBackImage(nidBackPic);
-    //     //   setLicenseFrontImage(licenseFontPic);
-    //     //   setLicenseBackImage(licenseBackPic);
-    //     // }
-    //   }
-    // }
+    if (id) {
+      // console.log("selectedPartner----------", selectedPartner);
+      const findCar = selectedPartner?.cars.find((car) => car.id == id);
+      console.log("findCar------------------", findCar);
+      // selectedCarType = findCar.car_type;
+      if (findCar) {
+        const {
+          car_type,
+          car_brand,
+          car_fuel_type,
+          year,
+          color,
+          car_model,
+          car_images,
+          carSmartCardBack,
+          carSmartCardFont,
+        } = findCar;
+        dispatch(selectCarType(car_type));
+        // dispatch(selectCarBrand(car_brand));
+        // dispatch(selectCarBrandModel(car_model));
+        // dispatch(selectModelColor(color));
+        // dispatch(selectModelYear(year));
+        // dispatch(selectCarFuel(car_fuel_type));
+        // setCarSmartCardFont(carSmartCardFont);
+        // setCarSmartCardBack(carSmartCardBack);
+        // setCarImages(car_images);
+      }
+      // selectedCarType = findCar.carType;
+    }
   };
-
-
 
   useEffect(() => {
     if (carTypes.length <= 0) {
@@ -251,7 +249,7 @@ const CarAdd = () => {
       });
     }
 
-    if(carRegisterNumber == null || carRegisterNumber == ""){
+    if (carRegisterNumber == null || carRegisterNumber == "") {
       return toast.warn("Please add car registration number", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -288,7 +286,6 @@ const CarAdd = () => {
       });
     }
 
-
     const carImagesPath = carImages.map((image) => image.path);
     // console.log("path----", carImagesPath);
 
@@ -311,15 +308,15 @@ const CarAdd = () => {
     // console.log("car data-------------------", data);
   };
 
-  // SUCCESS 
+  // SUCCESS
 
-  useEffect(()=>{
-    if(status){
+  useEffect(() => {
+    if (status) {
       // const pID = searchParams.get('pID')
       // history.push(`/partner/${pID}`);
       history.goBack();
     }
-  },[status])
+  }, [status]);
 
   return (
     <React.Fragment>
@@ -398,7 +395,10 @@ const CarAdd = () => {
                         dispatch(selectCarType(newValue));
                         // console.log("new",newValue)
                       }}
-                      getOptionLabel={(option) => option.name}
+                      getOptionLabel={(option) => option?.name}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id == value.id
+                      }
                       inputValue={searchCarType}
                       onInputChange={(event, newInputValue) => {
                         setSearchCarType(newInputValue);
@@ -437,6 +437,9 @@ const CarAdd = () => {
                         // console.log("new",newValue)
                       }}
                       getOptionLabel={(option) => option.name}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
                       inputValue={searchCarBrand}
                       onInputChange={(event, newInputValue) => {
                         setSearchCarBrand(newInputValue);
@@ -474,6 +477,9 @@ const CarAdd = () => {
                         // console.log("new",newValue)
                       }}
                       getOptionLabel={(option) => option.name}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
                       inputValue={searchModel}
                       onInputChange={(event, newInputValue) => {
                         setSearchModel(newInputValue);
@@ -507,6 +513,9 @@ const CarAdd = () => {
                         // console.log("new",newValue)
                       }}
                       getOptionLabel={(option) => option.name}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
                       inputValue={searchColor}
                       onInputChange={(event, newInputValue) => {
                         setSearchColor(newInputValue);
@@ -547,6 +556,9 @@ const CarAdd = () => {
                       getOptionLabel={(option) =>
                         option ? option.year.toString() : ""
                       }
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
                       inputValue={searchYear.toString()}
                       onInputChange={(event, newInputValue) => {
                         setSearchYear(newInputValue);
@@ -582,6 +594,9 @@ const CarAdd = () => {
                         // console.log("new",newValue)
                       }}
                       getOptionLabel={(option) => (option ? option.name : "")}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
                       inputValue={searchCarFuel}
                       onInputChange={(event, newInputValue) => {
                         setSearchCarFuel(newInputValue);

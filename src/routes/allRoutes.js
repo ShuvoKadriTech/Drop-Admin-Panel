@@ -176,6 +176,9 @@ const userRoutes = [
 
   // CAR
   { path: "/car/add", component: CarAdd },
+  { path: "/car/edit/:id", component: CarAdd },
+
+  // CAR TYPES
   { path: "/car-types", component: CarTypes },
   { path: "/add-car-type", component: AddCarType },
   { path: "/car-type/edit/:id", component: AddCarType },
@@ -287,7 +290,7 @@ const userRoutes = [
   { path: "/pages-gallery", component: PagesGallery },
 
   // this route should be at the end of all other routes
-  { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> }
+  { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> },
 ];
 
 const authRoutes = [
@@ -316,7 +319,7 @@ const authRoutes = [
   { path: "/auth-email-verification", component: EmailVerification },
   { path: "/auth-email-verification-2", component: EmailVerification2 },
   { path: "/auth-two-step-verification", component: TwostepVerification },
-  { path: "/auth-two-step-verification-2", component: TwostepVerification2 }
+  { path: "/auth-two-step-verification-2", component: TwostepVerification2 },
 
   // this route should be at the end of all other routes
   // { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> }
