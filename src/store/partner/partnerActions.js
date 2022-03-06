@@ -5,7 +5,8 @@ import {
   ALL_PARTNER,
   EDIT_DRIVER,
   EDIT_PARTNER,
-  GET_ALL_DRIVERS_BY_PARTNER
+  GET_ALL_DRIVERS_BY_PARTNER,
+ADD_CAR
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
@@ -345,4 +346,151 @@ export const updateCreatedByKey = value => dispatch => {
     type: actionType.UPDATE_CREATED_BY_KEY,
     payload: value
   });
+};
+
+
+// SELECT CAR TYPE
+
+export const selectCarType = (selectedType) => (dispatch) => {
+  // console.log("selected car type", selectedType);
+  dispatch({
+    type: actionType.SELECT_CAR_TYPE,
+    payload: selectedType,
+  });
+};
+
+// SELECT CAR BRAND
+
+export const selectCarBrand = (selectedBrand) => (dispatch) => {
+  // console.log("selected car brand", selectedBrand);
+  dispatch({
+    type: actionType.SELECT_CAR_BRAND,
+    payload: selectedBrand,
+  });
+};
+
+// SELECT CAR BRAND MODEL
+
+export const selectCarBrandModel = (selectedModel) => (dispatch) => {
+  // console.log("selected car brand model", selectedModel);
+  dispatch({
+    type: actionType.SELECT_CAR_BRAND_MODEL,
+    payload: selectedModel,
+  });
+};
+
+// SELECT MODEL COLOR
+
+export const selectModelColor = (selectedColor) => (dispatch) => {
+  // console.log("selected car brand model", selectedColor);
+  dispatch({
+    type: actionType.SELECT_CAR_MODEL_COLOR,
+    payload: selectedColor,
+  });
+};
+
+// SELECT MODEL YEAR
+
+export const selectModelYear = (selectedYear) => (dispatch) => {
+  // console.log("selected car brand model", selectedYear);
+  dispatch({
+    type: actionType.SELECT_CAR_MODEL_YEAR,
+    payload: selectedYear,
+  });
+};
+
+// SELECT CAR FUEL TYPE
+
+export const selectCarFuel = (selectedFuel) => (dispatch) => {
+  // console.log("selected car brand model", selectedYear);
+  dispatch({
+    type: actionType.SELECT_CAR_FUEL_TYPE,
+    payload: selectedFuel,
+  });
+};
+
+
+// ADD NEW CAR FOR PARTNER
+
+export const addCar = (carData) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.ADD_CAR_REQUEST_SEND,
+    });
+
+    const { data } = await requestApi().request(ADD_CAR, {
+      method: "POST",
+      data: carData,
+    });
+
+    console.log("CAR DATA-----", data);
+
+    if (data.status) {
+      // toast.success(data.message, {
+      //   // position: "bottom-right",
+      //   position: toast.POSITION.TOP_RIGHT,
+      //   autoClose: 3000,
+      //   hideProgressBar: true,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      // });
+
+      dispatch({
+        type: actionType.ADD_CAR_REQUEST_SUCCESS,
+        payload: data.data.car,
+      });
+    } else {
+      toast.warn(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      dispatch({
+        type: actionType.ADD_CAR_REQUEST_FAIL,
+        payload: data.error,
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.ADD_CAR_REQUEST_FAIL,
+      payload: error.message,
+    });
+  }
+};
+
+
+export const getAllCarsByPartner = partnerId => async dispatch => {
+  try {
+    dispatch({
+      type: actionType.GET_ALL_CARS_BY_PARTNER_REQUEST_SEND
+    });
+
+    const { data } = await requestApi().request(
+      GET_ALL_DRIVERS_BY_PARTNER + partnerId
+    );
+    // console.log("response", data);
+    if (data.status) {
+      dispatch({
+        type: actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_SUCCESS,
+        payload: data.data.drivers
+      });
+    } else {
+      dispatch({
+        type: actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_FAIL,
+        payload: data.error
+      });
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.GET_ALL_DRIVERS_BY_PARTNER_REQUEST_FAIL,
+      payload: error.message
+    });
+  }
 };

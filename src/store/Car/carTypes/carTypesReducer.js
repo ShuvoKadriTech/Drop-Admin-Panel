@@ -31,14 +31,9 @@ const initialState = {
   colors: [],
   years: [],
   singleModel: {},
-  selectedCarType: null,
-  selectedCarBrand: null,
-  selectedBrandModel: null,
-  selectedModelColor: null,
-  selectedModelYear: null,
-  selectedCarFuel: null,
+  
   carFuels: [],
-  cars: [],
+
 };
 
 const carTypesReducer = (state = initialState, action) => {
@@ -454,51 +449,6 @@ const carTypesReducer = (state = initialState, action) => {
         error: payload,
       };
 
-    // SELECT CAR TYPE
-
-    case actionType.SELECT_CAR_TYPE:
-      return {
-        ...state,
-        loading: false,
-        selectedCarType: payload,
-        selectedCarBrand: null,
-        selectedBrandModel: null,
-        selectedModelColor: null,
-        selectedModelYear: null,
-      };
-
-    case actionType.SELECT_CAR_BRAND:
-      return {
-        ...state,
-        loading: false,
-        selectedCarBrand: payload,
-        selectedBrandModel: null,
-        selectedModelColor: null,
-        selectedModelYear: null,
-      };
-
-    case actionType.SELECT_CAR_BRAND_MODEL:
-      return {
-        ...state,
-        loading: false,
-        selectedBrandModel: payload,
-        selectedModelColor: null,
-        selectedModelYear: null,
-      };
-
-    case actionType.SELECT_CAR_MODEL_COLOR:
-      return {
-        ...state,
-        loading: false,
-        selectedModelColor: payload,
-      };
-
-    case actionType.SELECT_CAR_MODEL_YEAR:
-      return {
-        ...state,
-        loading: false,
-        selectedModelYear: state.selectedBrandModel ? payload : null,
-      };
 
     // GET CAR FUEL TYPES
 
@@ -529,39 +479,7 @@ const carTypesReducer = (state = initialState, action) => {
         selectedCarFuel: payload,
       };
 
-    // ADD CAR
-
-    case actionType.ADD_CAR_REQUEST_SEND:
-      return {
-        ...state,
-        loading: true,
-      };
-
-    case actionType.ADD_CAR_REQUEST_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        cars: [...state.cars, payload],
-        error: null,
-        // message: payload.message,
-      };
-
-    // case CLEAR_SUCCESS_MESSAGE:
-    //   return {
-    //     ...state,
-    //     loading: false,
-    //     error: null,
-    //     message: null,
-    //   };
-
-    case actionType.ADD_CAR_REQUEST_FAIL:
-      return {
-        ...state,
-        loading: false,
-        error: payload,
-        message: null,
-      };
-
+ 
     default:
       return state;
   }

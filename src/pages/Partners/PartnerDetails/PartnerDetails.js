@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import requestApi from "../../../network/httpRequest";
 import { GET_SINGLE_CAR_TYPE, SINGLE_PARTNER } from "../../../network/Api";
-import Lightbox from "react-image-lightbox";
+import Lightbox from "";
 import { Tbody, Td, Th, Thead, Tr, Table } from "react-super-responsive-table";
 import { getAllDriversByPartner } from "../../../store/partner/partnerActions";
 
@@ -26,6 +26,19 @@ const PartnerDetails = () => {
   const [isZoom, setIsZoom] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
 
+
+  const [carImageGalley, setCarImageGalley] = useState([]);
+  const [othersImageGalley, setOIthersImageGalley] = useState([]);
+
+  
+
+  const showImageGallery =(images)=>{
+     const newImages = images.map(image=>image.path)
+     setCarImageGalley(newImages)
+    setIsZoom(true);
+  }
+ 
+
   useEffect(() => {
     if (id) {
       const findPartner = partners.find((type) => type?.id === id);
@@ -35,7 +48,7 @@ const PartnerDetails = () => {
         callApi(id);
       }
 
-      dispatch(getAllDriversByPartner(id));
+      // dispatch(getAllDriversByPartner(id));
     } else {
       history.push("/partner/list", { replace: true });
     }
@@ -51,7 +64,7 @@ const PartnerDetails = () => {
     // console.log("partner",data)
     if (data.status) {
       setPartner(data.data.partner);
-      // console.log("data", partner)
+      console.log("data", partner)
     }
   };
 
@@ -105,7 +118,7 @@ const PartnerDetails = () => {
                 onCloseRequest={() => {
                   setIsZoom(!isZoom);
                 }}
-                alsie
+               
               />
             ) : null}
 
@@ -186,7 +199,7 @@ const PartnerDetails = () => {
               </CardBody>
             </Card>
 
-            <Card>
+            {partner.nidFontPic || partner.nidBackPic ? <Card>
               <CardBody>
                 <Row>
                   <Col md={6}>
@@ -237,7 +250,9 @@ const PartnerDetails = () => {
                   </Col>
                 </Row>
               </CardBody>
-            </Card>
+            </Card> : null}
+
+            
 
             <Row>
               <Col xl={6}>
@@ -274,7 +289,7 @@ const PartnerDetails = () => {
                             </Tr>
                           </Thead>
                           <Tbody>
-                            {drivers.map((driver, index) => {
+                            {partner?.drivers?.map((driver, index) => {
                               return (
                                 <Tr
                                   key={index}
@@ -361,14 +376,14 @@ const PartnerDetails = () => {
                         >
                           <Thead>
                             <Tr>
-                              <Th>Serial No</Th>
-                              <Th>Color Name</Th>
-                              <Th>Color Code</Th>
+                              <Th>Image</Th>
+                              <Th>Car Type Name</Th>
+                              <Th>Brand Name</Th>
                               <Th>Action</Th>
                             </Tr>
                           </Thead>
-                          {/* <Tbody>
-                            {colors.map((color, index) => {
+                          <Tbody>
+                            {partner?.cars?.map((car, index) => {
                               return (
                                 <Tr
                                   key={index}
@@ -378,19 +393,35 @@ const PartnerDetails = () => {
                                     fontWeight: "500"
                                   }}
                                 >
-                                  <Th>
-                                    {index + 1}
-                                  </Th>
                                   <Td>
-                                    {color.name}
+                                    <div
+                                      style={{ width: "50px", height: "50px" }}
+                                    >
+                                      <img
+                                        onClick={() => {
+                                          showImageGallery(carImageGalley);
+                                        }}
+                                        className="img-fluid cursor-pointer"
+                                        alt=""
+                                        src={car?.car_images[0].path}
+                                        style={{
+                                          width: "100%",
+                                          height: "100%",
+                                          objectFit: "contain",
+                                        }}
+                                      />
+                                    </div>
                                   </Td>
-                                  <Td style={{ color: `${color.colorCode}` }}>
-                                    {color.colorCode}
+                                  <Td>
+                                    {car?.car_type?.name}
+                                  </Td>
+                                  <Td>
+                                    {car?.car_brand?.name}
                                   </Td>
                                   <Td>
                                     <button
                                       className="btn btn-info "
-                                      onClick={() => handleEditColor(color.id)}
+                                      // onClick={() => handleEditColor(color.id)}
                                     >
                                       <i className="fa fa-edit" />
                                     </button>
@@ -398,7 +429,7 @@ const PartnerDetails = () => {
                                 </Tr>
                               );
                             })}
-                          </Tbody> */}
+                          </Tbody>
                         </Table>
                       </CardBody>
                     </Card>

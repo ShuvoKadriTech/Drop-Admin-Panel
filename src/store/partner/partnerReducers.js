@@ -15,6 +15,13 @@ const initialState = {
   createdByKey: "",
   status: false,
   drivers: [],
+  cars: [],
+  selectedCarType: null,
+  selectedCarBrand: null,
+  selectedBrandModel: null,
+  selectedModelColor: null,
+  selectedModelYear: null,
+  selectedCarFuel: null,
 };
 
 const partnerReducer = (state = initialState, action) => {
@@ -163,6 +170,14 @@ const partnerReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_DRIVER_REQUEST_FAIL:
+      return {
+        ...state,
+
+        loading: false,
+        // drivers: updateData,
+        status: false,
+        error: payload,
+      };
 
     // GET ALL DRIVERS BY PARTNER
 
@@ -184,7 +199,6 @@ const partnerReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-
         error: payload,
       };
 
@@ -204,6 +218,104 @@ const partnerReducer = (state = initialState, action) => {
       return {
         ...state,
         createdByKey: payload,
+      };
+
+
+    // SELECT CAR TYPE
+
+    case actionType.SELECT_CAR_TYPE:
+      return {
+        ...state,
+        loading: false,
+        selectedCarType: payload,
+        selectedCarBrand: null,
+        selectedBrandModel: null,
+        selectedModelColor: null,
+        selectedModelYear: null,
+      };
+
+
+
+
+    case actionType.SELECT_CAR_BRAND:
+      return {
+        ...state,
+        loading: false,
+        selectedCarBrand: payload,
+        selectedBrandModel: null,
+        selectedModelColor: null,
+        selectedModelYear: null,
+      };
+
+    case actionType.SELECT_CAR_BRAND_MODEL:
+      return {
+        ...state,
+        loading: false,
+        selectedBrandModel: payload,
+        selectedModelColor: null,
+        selectedModelYear: null,
+      };
+
+    case actionType.SELECT_CAR_MODEL_COLOR:
+      return {
+        ...state,
+        loading: false,
+        selectedModelColor: payload,
+      };
+
+    case actionType.SELECT_CAR_MODEL_YEAR:
+      return {
+        ...state,
+        loading: false,
+        selectedModelYear: state.selectedBrandModel ? payload : null,
+      };
+
+    case actionType.SELECT_CAR_FUEL_TYPE:
+      return {
+        ...state,
+        loading: false,
+        selectedCarFuel: payload,
+      };
+    // ADD CAR
+
+    case actionType.ADD_CAR_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        status: false
+      };
+
+    case actionType.ADD_CAR_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        cars: [...state.cars, payload],
+        error: null,
+        status: true,
+        selectedCarType: null,
+        selectedCarBrand: null,
+        selectedBrandModel: null,
+        selectedModelColor: null,
+        selectedModelYear: null,
+        selectedCarFuel: null,
+        // message: payload.message,
+      };
+
+    // case CLEAR_SUCCESS_MESSAGE:
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //     error: null,
+    //     message: null,
+    //   };
+
+    case actionType.ADD_CAR_REQUEST_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+        message: null,
+        status: false
       };
 
     default:

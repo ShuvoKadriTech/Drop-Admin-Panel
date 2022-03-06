@@ -24,19 +24,20 @@ import requestApi from "./../../../network/httpRequest";
 import {
   updateSearchKey,
   getPartners,
+  addCar,
+  selectCarType,
+  selectCarBrand,
+  selectCarBrandModel,
+  selectModelColor,
+  selectModelYear,
+  selectCarFuel
 } from "./../../../store/partner/partnerActions";
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { removeAllSelectedGalleryImage } from "../../../store/action/galleryAction";
 import {
-  addCar,
+
   getCarFuelTypes,
   getCarTypes,
-  selectCarBrand,
-  selectCarBrandModel,
-  selectCarFuel,
-  selectCarType,
-  selectModelColor,
-  selectModelYear,
 } from "../../../store/Car/carTypes/carTypesAction";
 import { toast } from "react-toastify";
 import Dropzone from "react-dropzone";
@@ -47,20 +48,19 @@ const CarAdd = () => {
   const dispatch = useDispatch();
 
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
-  const { partners, searchKey, status } = useSelector(
-    (state) => state.partnerReducer
-  );
   const {
-    carTypes,
-    selectedCarType,
+     partners, searchKey,status,
+     selectedCarType,
     selectedCarBrand,
     selectedBrandModel,
     selectedModelColor,
     selectedModelYear,
-    carFuels,
     selectedCarFuel,
-    loading,
-  } = useSelector((state) => state.carTypesReducer);
+    loading
+     } = useSelector(
+    (state) => state.partnerReducer
+  );
+  const {carTypes,carFuels} = useSelector((state) => state.carTypesReducer);
 
   const [openPartnerSearch, setOpenPartnerSearch] = useState(false);
   const [selectedPartner, setSelectedPartner] = useState();
@@ -121,9 +121,14 @@ const CarAdd = () => {
     history.replace({ pathname: pathname, search: params.toString() });
   };
 
+  // SEARCH KEY LISTENER
+
   const searchKeyListener = (value) => {
     dispatch(updateSearchKey(value));
   };
+
+
+  // CALL PARTNER WITH SEARCH KEY
 
   useEffect(() => {
     if (searchKey) {
@@ -131,11 +136,14 @@ const CarAdd = () => {
     }
   }, [searchKey]);
 
+  // CALL PARTNER LIST
+
   const callPartnerList = (refresh = false) => {
     // console.log(searchKey);
     dispatch(getPartners(refresh));
   };
 
+  // SET PARTNER
   const setPartner = (partner) => {
     setSelectedPartner(partner);
 
@@ -171,6 +179,8 @@ const CarAdd = () => {
     //   }
     // }
   };
+
+
 
   useEffect(() => {
     if (carTypes.length <= 0) {
@@ -240,6 +250,19 @@ const CarAdd = () => {
         progress: undefined,
       });
     }
+
+    if(carRegisterNumber == null || carRegisterNumber == ""){
+      return toast.warn("Please add car registration number", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
     if (carSmartCardFont == null || carSmartCardBack == null) {
       return toast.warn("Please add car smart card both side image", {
         // position: "bottom-right",
@@ -264,22 +287,7 @@ const CarAdd = () => {
         progress: undefined,
       });
     }
-    //   {
-    //     "partnerId": 4,
-    //     "carTypeId": 1,
-    //     "carBrandId": 1,
-    //     "carModelId": 1,
-    //     "carYearId": 1,
-    //     "carColorId":1,
-    //     "carFuelId":1,
-    //     "carRegisterNumber": "324242ADC",
-    //     "carSmartCardFont": "body.carSmartCardFont",
-    //     "carSmartCardBack": "body.carSmartCardBack",
-    //     "carImages":[
-    //         "image-url-1",
-    //         "image-url-2"
-    //     ]
-    // }
+
 
     const carImagesPath = carImages.map((image) => image.path);
     // console.log("path----", carImagesPath);
@@ -303,13 +311,24 @@ const CarAdd = () => {
     // console.log("car data-------------------", data);
   };
 
+  // SUCCESS 
+
+  useEffect(()=>{
+    if(status){
+      // const pID = searchParams.get('pID')
+      // history.push(`/partner/${pID}`);
+      history.goBack();
+    }
+  },[status])
+
   return (
     <React.Fragment>
       <GlobalWrapper>
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumbs
-              maintitle="Car"
+              maintitle="Partner"
+              title="Car"
               breadcrumbItem={"Add"}
               //   hideSettingBtn={true}
               isRefresh={false}
