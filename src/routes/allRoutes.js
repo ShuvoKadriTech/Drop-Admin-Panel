@@ -141,6 +141,7 @@ import CarModel from "../pages/Car/CarModel/CarModel";
 import DriversList from "./../pages/Driver/DriversList/DriversList";
 import DriverDetails from "../pages/Driver/DriverDetails/DriverDetails";
 import CarAdd from "../pages/Car/CarAdd/CarAdd";
+import RideList from "../pages/Ride/List/RideList";
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
 
@@ -199,6 +200,9 @@ const userRoutes = [
   // YEAR
 
   { path: "/year", component: Year },
+
+  // RIDE
+  { path: "/ride/list", component: RideList },
 
   // ADMIN CONTROL
 

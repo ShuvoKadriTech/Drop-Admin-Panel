@@ -7,7 +7,7 @@ import {
   Col,
   Container,
   Row,
-  Spinner
+  Spinner,
 } from "reactstrap";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +15,7 @@ import {
   getPartners,
   updateSearchKey,
   updateStatusKey,
-  updateCreatedByKey
+  updateCreatedByKey,
 } from "../../../store/partner/partnerActions";
 import AppPagination from "../../../components/AppPagination";
 import styled from "styled-components";
@@ -46,8 +46,8 @@ const PartnersList = () => {
     partners,
     searchKey,
     statusKey,
-    createdByKey
-  } = useSelector(state => state.partnerReducer);
+    createdByKey,
+  } = useSelector((state) => state.partnerReducer);
 
   // useEffect(
   //   () => {
@@ -56,35 +56,32 @@ const PartnersList = () => {
   //   []
   // );
 
-  useEffect(
-    () => {
-      if (
-        (searchKey && statusKey && createdByKey) ||
-        (searchKey && statusKey) ||
-        (searchKey && createdByKey) ||
-        (statusKey && createdByKey) ||
-        searchKey ||
-        statusKey ||
-        createdByKey
-      ) {
+  useEffect(() => {
+    if (
+      (searchKey && statusKey && createdByKey) ||
+      (searchKey && statusKey) ||
+      (searchKey && createdByKey) ||
+      (statusKey && createdByKey) ||
+      searchKey ||
+      statusKey ||
+      createdByKey
+    ) {
+      callPartnerList(true);
+    } else {
+      if (open) {
         callPartnerList(true);
       } else {
-        if (open) {
-          callPartnerList(true);
-        } else {
-          callPartnerList();
-        }
+        callPartnerList();
       }
-    },
-    [searchKey, statusKey, createdByKey]
-  );
+    }
+  }, [searchKey, statusKey, createdByKey]);
 
   const callPartnerList = (refresh = false) => {
     // console.log(searchKey);
     dispatch(getPartners(refresh));
   };
 
-  const searchKeyListener = value => {
+  const searchKeyListener = (value) => {
     setOpen(true);
     dispatch(updateSearchKey(value));
   };
@@ -117,15 +114,15 @@ const PartnersList = () => {
             addNewRoute="partner/add"
           />
 
-          {isZoom
-            ? <Lightbox
-                mainSrc={partnerImage}
-                enableZoom={true}
-                onCloseRequest={() => {
-                  setIsZoom(!isZoom);
-                }}
-              />
-            : null}
+          {isZoom ? (
+            <Lightbox
+              mainSrc={partnerImage}
+              enableZoom={true}
+              onCloseRequest={() => {
+                setIsZoom(!isZoom);
+              }}
+            />
+          ) : null}
 
           <Card>
             <CardBody>
@@ -141,8 +138,9 @@ const PartnersList = () => {
                         id="demo-simple-select"
                         value={statusKey}
                         label="Status"
-                        onChange={event =>
-                          dispatch(updateStatusKey(event.target.value))}
+                        onChange={(event) =>
+                          dispatch(updateStatusKey(event.target.value))
+                        }
                       >
                         <MenuItem value={"all"} active>
                           All
@@ -166,8 +164,9 @@ const PartnersList = () => {
                         placeholder="Find Partner by name or email or phone "
                         id="search"
                         value={searchKey}
-                        onChange={event =>
-                          searchKeyListener(event.target.value)}
+                        onChange={(event) =>
+                          searchKeyListener(event.target.value)
+                        }
                       />
                     </div>
                   </SearchWrapper>
@@ -183,8 +182,9 @@ const PartnersList = () => {
                         id="demo-simple-select"
                         value={createdByKey}
                         label="CreatedBy"
-                        onChange={event =>
-                          dispatch(updateCreatedByKey(event.target.value))}
+                        onChange={(event) =>
+                          dispatch(updateCreatedByKey(event.target.value))
+                        }
                       >
                         <MenuItem value={"admin"}>Admin</MenuItem>
                         <MenuItem value={"self"}>Self</MenuItem>
@@ -216,72 +216,78 @@ const PartnersList = () => {
                   </Tr>
                 </Thead>
                 <Tbody style={{ position: "relative" }}>
-                  {partners.map((partner, index) => {
-                    return (
-                      <Tr
-                        key={index}
-                        className="align-middle"
-                        style={{
-                          fontSize: "15px",
-                          fontWeight: "500"
-                        }}
-                      >
-                        <Th>
-                          <div style={{ width: "50px", height: "50px" }}>
-                            <img
-                              onClick={() => {
-                                setIsZoom(true);
-                                setPartnerImage(partner.img);
-                              }}
-                              className="img-fluid cursor-pointer"
-                              alt=""
-                              src={partner.img}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "contain"
-                              }}
-                            />
-                          </div>
-                        </Th>
+                  {partners &&
+                    partners.map((partner, index) => {
+                      return (
+                        <Tr
+                          key={index}
+                          className="align-middle"
+                          style={{
+                            fontSize: "15px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          <Th>
+                            <div style={{ width: "50px", height: "50px" }}>
+                              <img
+                                onClick={() => {
+                                  setIsZoom(true);
+                                  setPartnerImage(partner.img);
+                                }}
+                                className="img-fluid cursor-pointer"
+                                alt=""
+                                src={partner.img}
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "contain",
+                                }}
+                              />
+                            </div>
+                          </Th>
 
-                        <Td>
-                          {partner.name}
-                        </Td>
-                        <Td>
-                          {partner.email}
-                        </Td>
-                        <Td>
-                          {partner.phone}
-                        </Td>
-                        <Td>
-                          <ButtonWrapper>
-                            <button
-                              className="btn btn-info me-xl-3"
-                              onClick={() =>
-                                history.push(`/partner/edit/${partner.id}`)}
-                            >
-                              <i className="fa fa-edit" />
-                            </button>
-                            <button
-                              className="btn btn-success "
-                              onClick={() =>
-                                history.push(`/partner/${partner.id}`)}
-                            >
-                              <i className="fa fa-eye" />
-                            </button>
-                          </ButtonWrapper>
-                        </Td>
-                      </Tr>
-                    );
-                  })}
+                          <Td>{partner.name}</Td>
+                          <Td>{partner.email}</Td>
+                          <Td>{partner.phone}</Td>
+                          <Td>
+                            <ButtonWrapper>
+                              <button
+                                className="btn btn-info me-xl-3"
+                                onClick={() =>
+                                  history.push(`/partner/edit/${partner.id}`)
+                                }
+                              >
+                                <i className="fa fa-edit" />
+                              </button>
+                              <button
+                                className="btn btn-success "
+                                onClick={() =>
+                                  history.push(`/partner/${partner.id}`)
+                                }
+                              >
+                                <i className="fa fa-eye" />
+                              </button>
+                            </ButtonWrapper>
+                          </Td>
+                        </Tr>
+                      );
+                    })}
+                  {loading && (
+                    <Tr>
+                      <Td>
+                        <Spinner
+                          style={{
+                            position: "fixed",
+                            left: "50%",
+                            top: "50%",
+                          }}
+                          animation="border"
+                          variant="success"
+                        />
+                      </Td>
+                    </Tr>
+                  )}
                 </Tbody>
-                {loading &&
-                  <Spinner
-                    style={{ position: "fixed", left: "50%", top: "50%" }}
-                    animation="border"
-                    variant="success"
-                  />}
               </Table>
             </CardBody>
           </Card>
@@ -293,7 +299,7 @@ const PartnersList = () => {
                   hasNextPage={hasNextPage}
                   hasPreviousPage={hasPreviousPage}
                   currentPage={currentPage}
-                  lisener={page => dispatch(getPartners(true, page))}
+                  lisener={(page) => dispatch(getPartners(true, page))}
                 />
               </div>
             </Col>

@@ -23,6 +23,7 @@ import yearReducer from "./Car/year/yearReducer";
 import { roleReducer } from "./AdminControl/Role/roleReducer";
 import partnerReducer from "./partner/partnerReducers";
 import { driverReducer } from "./Driver/driverReducer";
+import rideReducer from "./Ride/rideReducer";
 
 const rootReducer = combineReducers({
   // public
@@ -42,7 +43,8 @@ const rootReducer = combineReducers({
   yearReducer,
   roleReducer,
   partnerReducer,
-  driverReducer
+  driverReducer,
+  rideReducer,
 });
 
 export default rootReducer;
