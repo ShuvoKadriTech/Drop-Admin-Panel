@@ -77,25 +77,28 @@ const CarAdd = () => {
   const [imageId, setImageId] = useState(null);
   const [modal_fullscreen, setmodal_fullscreen] = useState(false);
   const [carImages, setCarImages] = useState([]);
+  const [loaded, setLoaded] = useState(false);
 
   // GET PARTNER
 
   useEffect(() => {
-    const pID = searchParams.get("pID");
-    console.log("partner Id ===-", pID);
-    if (pID) {
-      const findPartner = partners.find((partner) => partner.id == pID);
-      if (findPartner) {
-        console.log("find partner", findPartner);
-        setPartner(findPartner);
+    if(carTypes.length>0){
+      const pID = searchParams.get("pID");
+      console.log("partner Id ===-", pID);
+      if (pID) {
+        const findPartner = partners.find((partner) => partner.id == pID);
+        if (findPartner) {
+          console.log("find partner", findPartner);
+          setPartner(findPartner);
+        } else {
+          console.log("call partner for api");
+          callPartner(pID);
+        }
       } else {
-        console.log("call partner for api");
-        callPartner(pID);
+        setOpenPartnerSearch(true);
       }
-    } else {
-      setOpenPartnerSearch(true);
     }
-  }, []);
+  }, [carTypes]);
 
   //  CALL PARTNER
 
@@ -145,13 +148,18 @@ const CarAdd = () => {
 
   // SET PARTNER
   const setPartner = (partner) => {
+
+
+    // partner
+
     setSelectedPartner(partner);
 
-    console.log("selected partner", partner);
+    // console.log("selected partner", partner);
 
     if (id) {
       // console.log("selectedPartner----------", selectedPartner);
-      const findCar = selectedPartner?.cars.find((car) => car.id == id);
+      console.log("id------", id);
+      const findCar = partner?.cars.find((car) => car.id == id);
       console.log("findCar------------------", findCar);
       // selectedCarType = findCar.car_type;
       if (findCar) {
@@ -165,20 +173,37 @@ const CarAdd = () => {
           car_images,
           carSmartCardBack,
           carSmartCardFont,
+          setCarRegisterNumber
         } = findCar;
-        dispatch(selectCarType(car_type));
-        // dispatch(selectCarBrand(car_brand));
-        // dispatch(selectCarBrandModel(car_model));
+        // car_type
+
+
+        
+        const find = carTypes.find(item=>item.id==car_type.id);
+        console.log("find",find);
+
+
+
+        dispatch(selectCarType(find));
+       find !== null && dispatch(selectCarBrand(car_brand));
+        // selectedCarBrand !== null && dispatch(selectCarBrandModel(car_model));
+  
+        // 
+        // 
         // dispatch(selectModelColor(color));
         // dispatch(selectModelYear(year));
         // dispatch(selectCarFuel(car_fuel_type));
         // setCarSmartCardFont(carSmartCardFont);
         // setCarSmartCardBack(carSmartCardBack);
         // setCarImages(car_images);
+        // setCarRegisterNumber(setCarRegisterNumber)
       }
       // selectedCarType = findCar.carType;
     }
   };
+
+
+
 
   useEffect(() => {
     if (carTypes.length <= 0) {
@@ -395,7 +420,7 @@ const CarAdd = () => {
                         dispatch(selectCarType(newValue));
                         // console.log("new",newValue)
                       }}
-                      getOptionLabel={(option) => option?.name}
+                      getOptionLabel={(option) => option ? option.name : ""}
                       isOptionEqualToValue={(option, value) =>
                         option.id == value.id
                       }
@@ -405,7 +430,7 @@ const CarAdd = () => {
                         // console.log("input value", newInputValue);
                       }}
                       id="controllable-states-demo"
-                      options={carTypes}
+                      options={carTypes.length > 0 ? carTypes : []}
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
                         <TextField {...params} label="Select a Car Type" />
@@ -430,13 +455,13 @@ const CarAdd = () => {
                   <Col xl={6} className="py-4 py-xl-0">
                     <Autocomplete
                       disabled={selectedCarType == null}
-                      value={selectedCarType && selectedCarBrand}
+                      value={selectedCarType !== null && selectedCarBrand}
                       // defaultValue={""}
                       onChange={(event, newValue) => {
                         dispatch(selectCarBrand(newValue));
                         // console.log("new",newValue)
                       }}
-                      getOptionLabel={(option) => option.name}
+                      getOptionLabel={(option) => option ? option.name : ""}
                       isOptionEqualToValue={(option, value) =>
                         option.id === value.id
                       }
@@ -447,7 +472,7 @@ const CarAdd = () => {
                       }}
                       id="controllable-states-demo2"
                       options={
-                        selectedCarType ? selectedCarType?.carBrands : ""
+                        selectedCarType !== null  ? selectedCarType.carBrands :  []
                       }
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
@@ -471,12 +496,12 @@ const CarAdd = () => {
                     <Autocomplete
                       // clearOnBlur={true}
                       disabled={selectedCarBrand == null}
-                      value={selectedCarBrand && selectedBrandModel}
+                      value={selectedCarBrand !==null  && selectedBrandModel}
                       onChange={(event, newValue) => {
                         dispatch(selectCarBrandModel(newValue));
                         // console.log("new",newValue)
                       }}
-                      getOptionLabel={(option) => option.name}
+                      getOptionLabel={(option) => option ? option.name : ""}
                       isOptionEqualToValue={(option, value) =>
                         option.id === value.id
                       }
@@ -487,7 +512,7 @@ const CarAdd = () => {
                       }}
                       id="controllable-states-demo3"
                       options={
-                        selectedCarBrand ? selectedCarBrand?.carModels : ""
+                        selectedCarBrand !==null ? selectedCarBrand.carModels : []
                       }
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
@@ -507,12 +532,12 @@ const CarAdd = () => {
                   <Col xl={6} className="py-4 py-xl-0">
                     <Autocomplete
                       disabled={selectedBrandModel == null}
-                      value={selectedBrandModel && selectedModelColor}
+                      value={selectedBrandModel !== null && selectedModelColor}
                       onChange={(event, newValue) => {
                         dispatch(selectModelColor(newValue));
                         // console.log("new",newValue)
                       }}
-                      getOptionLabel={(option) => option.name}
+                      getOptionLabel={(option) => option ? option.name : ""}
                       isOptionEqualToValue={(option, value) =>
                         option.id === value.id
                       }
@@ -523,7 +548,7 @@ const CarAdd = () => {
                       }}
                       id="controllable-states-demo4"
                       options={
-                        selectedBrandModel ? selectedBrandModel?.colors : ""
+                        selectedBrandModel !==null ? selectedBrandModel.colors : []
                       }
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
@@ -548,7 +573,7 @@ const CarAdd = () => {
                   <Col xl={6}>
                     <Autocomplete
                       disabled={selectedBrandModel == null}
-                      value={selectedBrandModel && selectedModelYear}
+                      value={selectedBrandModel !== null && selectedModelYear}
                       onChange={(event, newValue) => {
                         dispatch(selectModelYear(newValue));
                         // console.log("new",newValue)
@@ -566,7 +591,7 @@ const CarAdd = () => {
                       }}
                       id="controllable-states-demo5"
                       options={
-                        selectedBrandModel ? selectedBrandModel?.years : ""
+                        selectedBrandModel !==null ? selectedBrandModel?.years : []
                       }
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
@@ -603,7 +628,7 @@ const CarAdd = () => {
                         // console.log("input value", newInputValue);
                       }}
                       id="controllable-states-demo6"
-                      options={carFuels}
+                      options={carFuels.length > 0 ? carFuels  : []}
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
                         <TextField {...params} label="Select car fuel type" />
