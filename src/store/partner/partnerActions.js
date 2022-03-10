@@ -352,7 +352,7 @@ export const updateCreatedByKey = value => dispatch => {
 // SELECT CAR TYPE
 
 export const selectCarType = (selectedType) => (dispatch) => {
-  console.log("selected car type", selectedType);
+  // console.log("selected car type", selectedType);
   dispatch({
     type: actionType.SELECT_CAR_TYPE,
     payload: selectedType,

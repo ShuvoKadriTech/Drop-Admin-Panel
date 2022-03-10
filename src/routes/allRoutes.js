@@ -142,6 +142,11 @@ import DriversList from "./../pages/Driver/DriversList/DriversList";
 import DriverDetails from "../pages/Driver/DriverDetails/DriverDetails";
 import CarAdd from "../pages/Car/CarAdd/CarAdd";
 import RideList from "../pages/Ride/List/RideList";
+import CarDetails from "../pages/Car/CarDetails/CarDetails";
+
+
+
+
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
 
@@ -178,6 +183,7 @@ const userRoutes = [
   // CAR
   { path: "/car/add", component: CarAdd },
   { path: "/car/edit/:id", component: CarAdd },
+  {path: "/car/details/:id", component: CarDetails},
 
   // CAR TYPES
   { path: "/car-types", component: CarTypes },

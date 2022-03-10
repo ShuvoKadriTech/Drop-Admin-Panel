@@ -158,7 +158,7 @@ const CarAdd = () => {
 
     if (id) {
       // console.log("selectedPartner----------", selectedPartner);
-      console.log("id------", id);
+      // console.log("id------", id);
       const findCar = partner?.cars.find((car) => car.id == id);
       console.log("findCar------------------", findCar);
       // selectedCarType = findCar.car_type;
@@ -173,30 +173,29 @@ const CarAdd = () => {
           car_images,
           carSmartCardBack,
           carSmartCardFont,
-          setCarRegisterNumber
+          carRegisterNumber
         } = findCar;
         // car_type
 
 
         
-        const find = carTypes.find(item=>item.id==car_type.id);
-        console.log("find",find);
+        const findCarType = carTypes.find(item=>item.id==car_type.id);
+        const findBrand = findCarType.carBrands.find(brand => brand.id == car_brand.id);
+        const findModel = findBrand.carModels.find(model => model.id == car_model.id);
+        const findColor = findModel.colors.find(c => c.id == color.id)
+        const findYear = findModel.years.find(y => y.id == year.id)
+        console.log("findCarType",findCarType)
 
-
-
-        dispatch(selectCarType(find));
-       find !== null && dispatch(selectCarBrand(car_brand));
-        // selectedCarBrand !== null && dispatch(selectCarBrandModel(car_model));
-  
-        // 
-        // 
-        // dispatch(selectModelColor(color));
-        // dispatch(selectModelYear(year));
-        // dispatch(selectCarFuel(car_fuel_type));
-        // setCarSmartCardFont(carSmartCardFont);
-        // setCarSmartCardBack(carSmartCardBack);
-        // setCarImages(car_images);
-        // setCarRegisterNumber(setCarRegisterNumber)
+        dispatch(selectCarType(findCarType));
+        dispatch(selectCarBrand(findBrand));
+        dispatch(selectCarBrandModel(findModel));
+        dispatch(selectModelColor(findColor));     
+        dispatch(selectModelYear(findYear));
+        dispatch(selectCarFuel(car_fuel_type));
+        setCarSmartCardFont(carSmartCardFont);
+        setCarSmartCardBack(carSmartCardBack);
+        setCarImages(car_images);
+        setCarRegisterNumber(carRegisterNumber)
       }
       // selectedCarType = findCar.carType;
     }
@@ -351,7 +350,7 @@ const CarAdd = () => {
             <Breadcrumbs
               maintitle="Partner"
               title="Car"
-              breadcrumbItem={"Add"}
+              breadcrumbItem={ id ? "Edit" : "Add"}
               //   hideSettingBtn={true}
               isRefresh={false}
             />
@@ -420,7 +419,7 @@ const CarAdd = () => {
                         dispatch(selectCarType(newValue));
                         // console.log("new",newValue)
                       }}
-                      getOptionLabel={(option) => option ? option.name : ""}
+                      getOptionLabel={(option) => option.name ? option.name : ""}
                       isOptionEqualToValue={(option, value) =>
                         option.id == value.id
                       }
@@ -430,7 +429,7 @@ const CarAdd = () => {
                         // console.log("input value", newInputValue);
                       }}
                       id="controllable-states-demo"
-                      options={carTypes.length > 0 ? carTypes : []}
+                      options={carTypes.length > 0  ? carTypes : []}
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
                         <TextField {...params} label="Select a Car Type" />
@@ -455,7 +454,7 @@ const CarAdd = () => {
                   <Col xl={6} className="py-4 py-xl-0">
                     <Autocomplete
                       disabled={selectedCarType == null}
-                      value={selectedCarType !== null && selectedCarBrand}
+                      value={selectedCarType !== null && selectedCarBrand }
                       // defaultValue={""}
                       onChange={(event, newValue) => {
                         dispatch(selectCarBrand(newValue));
@@ -496,7 +495,7 @@ const CarAdd = () => {
                     <Autocomplete
                       // clearOnBlur={true}
                       disabled={selectedCarBrand == null}
-                      value={selectedCarBrand !==null  && selectedBrandModel}
+                      value={selectedCarBrand !==null && selectedBrandModel }
                       onChange={(event, newValue) => {
                         dispatch(selectCarBrandModel(newValue));
                         // console.log("new",newValue)
@@ -579,7 +578,7 @@ const CarAdd = () => {
                         // console.log("new",newValue)
                       }}
                       getOptionLabel={(option) =>
-                        option ? option.year.toString() : ""
+                        option.year ? option.year.toString() : ""
                       }
                       isOptionEqualToValue={(option, value) =>
                         option.id === value.id
@@ -798,13 +797,13 @@ const CarAdd = () => {
                         )}
                       </Dropzone>
                       <div
-                        className="dropzone-previews mt-3"
+                        className="d-flex flex-wrap justify-content-center mt-3"
                         id="file-previews"
                       >
                         {carImages?.map((f, i) => {
                           return (
                             <Card
-                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
+                              className="mt-1 mb-0 me-2 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
                               key={i + "-file"}
                             >
                               <div className="p-2">
@@ -821,7 +820,7 @@ const CarAdd = () => {
                                       src={f.path}
                                     />
                                   </Col>
-                                  <Col>
+                                  {/* <Col>
                                     <Link
                                       to="#"
                                       className="text-muted font-weight-bold"
@@ -831,7 +830,7 @@ const CarAdd = () => {
                                     <p className="mb-0">
                                       <strong>{f.size}</strong>
                                     </p>
-                                  </Col>
+                                  </Col> */}
 
                                   <div
                                     className="position-absolute"
@@ -872,7 +871,7 @@ const CarAdd = () => {
                   >
                     {loading ? (
                       <Spinner animation="border" variant="info" size="sm" />
-                    ) : (
+                    ) : id ? "Edit" : (
                       "Add"
                     )}
                   </Button>

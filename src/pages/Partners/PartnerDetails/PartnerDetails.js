@@ -110,6 +110,16 @@ const PartnerDetails = () => {
     // history.push(`/partner/edit/${partner.id}`)
   };
 
+  // CAR DETAILS 
+
+  const CarDetails = (carId) =>{
+    history.push({
+      pathname: `/car/details/${carId}`,
+      search: `?pID=${id}`,
+      // state: { detail: 'some_value' }
+    });
+  }
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -475,8 +485,12 @@ const PartnerDetails = () => {
                                       </button>
                                       <button
                                         className="btn btn-success "
+                                        nClick={() => CarDetails(car.id)}
                                         // onClick={() =>
-                                        //   history.push(`/partner/${partner.id}`)}
+                                        //   history.push(
+                                        //     `/car/details/${car.id}`
+                                        //   )
+                                        // }
                                       >
                                         <i className="fa fa-eye" />
                                       </button>
