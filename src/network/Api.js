@@ -108,4 +108,8 @@ export const ADD_CAR = ADMIN_ENDPOINT + "/cars/add-new";
 
 export const ALL_RIDES = ADMIN_ENDPOINT + "/ride";
 
+// USERS
+
+export const ALL_USERS = ADMIN_ENDPOINT + "/user";
+
 // END ADMIN API

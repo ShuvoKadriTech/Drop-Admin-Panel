@@ -9,7 +9,7 @@ import {
   Col,
   Container,
   Row,
-  Spinner
+  Spinner,
 } from "reactstrap";
 import AppPagination from "../../../components/AppPagination";
 import InputLabel from "@mui/material/InputLabel";
@@ -21,7 +21,10 @@ import Lightbox from "react-image-lightbox";
 import { useHistory } from "react-router-dom";
 import {
   allDrivers,
-  updateStatusKey
+  updateCreatedByKey,
+  updateCurrntStatusKey,
+  updateSearchKey,
+  updateStatusKey,
 } from "../../../store/Driver/driverAction";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -37,72 +40,61 @@ const DriversList = () => {
     hasPreviousPage,
     currentPage,
     searchKey,
-    createdByKey,
-    loading
-  } = useSelector(state => state.driverReducer);
+    currentStatusKey,
+    loading,
+  } = useSelector((state) => state.driverReducer);
 
-  useEffect(
-    () => {
-      if (
-        (searchKey && statusKey && createdByKey) ||
-        (searchKey && statusKey) ||
-        (searchKey && createdByKey) ||
-        (statusKey && createdByKey) ||
-        searchKey ||
-        statusKey ||
-        createdByKey
-      ) {
-        callPartnerList(true);
-      } else {
-        // if (open) {
-        //   callPartnerList(true);
-        // } else {
-        //   callPartnerList();
-        // }
+  useEffect(() => {
+    if (searchKey || statusKey || currentStatusKey) {
+      callDriverList(true);
+    } else {
+      // if (open) {
+      //   callPartnerList(true);
+      // } else {
+      //   callPartnerList();
+      // }
 
-        callPartnerList();
-      }
-    },
-    [searchKey, statusKey, createdByKey]
-  );
+      callDriverList();
+    }
+  }, [searchKey, statusKey, currentStatusKey]);
 
-  const callPartnerList = (refresh = false) => {
+  const callDriverList = (refresh = false) => {
     // console.log(searchKey);
     dispatch(allDrivers(refresh));
   };
 
-  const searchKeyListener = () => {
-    console.log("fatching data...");
+  const searchKeyListener = (value) => {
+    // console.log("fatching data...");
     // setOpen(true);
-    // dispatch(updateSearchKey(value));
+    dispatch(updateSearchKey(value));
   };
 
-  const handleSearchKey = () => {
-    // console.log("call");
-    debounce(searchKeyListener, 1000);
-    //
-  };
+  // const handleSearchKey = () => {
+  //   // console.log("call");
+  //   debounce(searchKeyListener, 1000);
+  //   //
+  // };
 
   // DEBOUNCE SEARCH
 
-  const debounce = (func, delay) => {
-    //
-    let timer;
+  // const debounce = (func, delay) => {
+  //   //
+  //   let timer;
 
-    // console.log("yes....");
-    clearTimeout(timer);
+  //   // console.log("yes....");
+  //   clearTimeout(timer);
 
-    timer = setTimeout(() => {
-      func();
-    }, delay);
-  };
+  //   timer = setTimeout(() => {
+  //     func();
+  //   }, delay);
+  // };
 
   // EDIT PARTNER
 
   const handleEdit = (driverId, partnerId) => {
     history.push({
       pathname: `/driver/edit/${driverId}`,
-      search: `?pID=${partnerId}`
+      search: `?pID=${partnerId}`,
       // state: { detail: 'some_value' }
     });
   };
@@ -117,7 +109,7 @@ const DriversList = () => {
               breadcrumbItem="List"
               hideSettingBtn={true}
               loading={loading}
-              callList={callPartnerList}
+              callList={callDriverList}
               isAddNew={true}
               addNewRoute="driver/add"
             />
@@ -146,17 +138,16 @@ const DriversList = () => {
                           id="demo-simple-select"
                           value={statusKey}
                           label="Status"
-                          onChange={event =>
-                            dispatch(updateStatusKey(event.target.value))}
+                          onChange={(event) =>
+                            dispatch(updateStatusKey(event.target.value))
+                          }
                         >
                           <MenuItem value={"all"} active>
                             All
                           </MenuItem>
                           <MenuItem value={"pending"}>Pending</MenuItem>
-                          <MenuItem value={"block"}>Block</MenuItem>
-                          <MenuItem value={"permanent-block"}>
-                            Permanent Block
-                          </MenuItem>
+                          <MenuItem value={"active"}>active</MenuItem>
+                          <MenuItem value={"cancel"}>cancel</MenuItem>
                         </Select>
                       </FormControl>
                     </div>
@@ -168,11 +159,13 @@ const DriversList = () => {
                         <input
                           className="form-control"
                           type="search"
-                          placeholder="Find Partner by name or email or phone "
+                          placeholder="Search"
                           id="search"
                           autoComplete="off"
-                          // value={searchKey}
-                          onKeyUp={handleSearchKey}
+                          value={searchKey}
+                          onChange={(event) =>
+                            searchKeyListener(event.target.value)
+                          }
                         />
                       </div>
                     </SearchWrapper>
@@ -181,18 +174,19 @@ const DriversList = () => {
                     <div>
                       <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">
-                          Created By
+                          Current Status
                         </InputLabel>
                         <Select
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
-                          //   value={createdByKey}
-                          label="CreatedBy"
-                          //   onChange={event =>
-                          //     dispatch(updateCreatedByKey(event.target.value))}
+                          value={currentStatusKey}
+                          label="Current Status"
+                          onChange={(event) =>
+                            dispatch(updateCurrntStatusKey(event.target.value))
+                          }
                         >
-                          <MenuItem value={"admin"}>Admin</MenuItem>
-                          <MenuItem value={"self"}>Self</MenuItem>
+                          <MenuItem value={"online"}>Online</MenuItem>
+                          <MenuItem value={"offline"}>Offline</MenuItem>
                         </Select>
                       </FormControl>
                     </div>
@@ -228,7 +222,7 @@ const DriversList = () => {
                           className="align-middle"
                           style={{
                             fontSize: "15px",
-                            fontWeight: "500"
+                            fontWeight: "500",
                           }}
                         >
                           <Th>
@@ -244,27 +238,22 @@ const DriversList = () => {
                                 style={{
                                   width: "100%",
                                   height: "100%",
-                                  objectFit: "contain"
+                                  objectFit: "contain",
                                 }}
                               />
                             </div>
                           </Th>
 
-                          <Td>
-                            {driver.name}
-                          </Td>
-                          <Td>
-                            {driver.email}
-                          </Td>
-                          <Td>
-                            {driver.phone}
-                          </Td>
+                          <Td>{driver.name}</Td>
+                          <Td>{driver.email}</Td>
+                          <Td>{driver.phone}</Td>
                           <Td>
                             <ButtonWrapper>
                               <button
                                 className="btn btn-info me-xl-3"
                                 onClick={() =>
-                                  handleEdit(driver.id, driver.partnerId)}
+                                  handleEdit(driver.id, driver.partnerId)
+                                }
                               >
                                 <i className="fa fa-edit" />
                               </button>
@@ -281,12 +270,13 @@ const DriversList = () => {
                       );
                     })}
                   </Tbody>
-                  {loading &&
+                  {loading && (
                     <Spinner
                       style={{ position: "fixed", left: "50%", top: "50%" }}
                       animation="border"
                       variant="info"
-                    />}
+                    />
+                  )}
                 </Table>
               </CardBody>
             </Card>
@@ -299,7 +289,7 @@ const DriversList = () => {
                     hasNextPage={hasNextPage}
                     hasPreviousPage={hasPreviousPage}
                     currentPage={currentPage}
-                    lisener={page => dispatch(allDrivers(true, page))}
+                    lisener={(page) => dispatch(allDrivers(true, page))}
                   />
                   {/* <h2>Paginate</h2> */}
                 </div>

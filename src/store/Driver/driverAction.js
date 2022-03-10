@@ -3,7 +3,7 @@ import {
   ADD_DRIVER,
   ALL_DRIVERS,
   EDIT_DRIVER,
-  GET_ALL_DRIVERS_BY_PARTNER
+  GET_ALL_DRIVERS_BY_PARTNER,
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
@@ -69,69 +69,76 @@ import * as actionType from "../actionType";
 
 // GET ALL DRIVERS
 
-export const allDrivers = (refresh = false, page = 1) => async (
-  dispatch,
-  getState
-) => {
-  try {
-    const {
-      drivers,
-      searchKey,
-      statusKey,
-      createdByKey
-    } = getState().driverReducer;
+export const allDrivers =
+  (refresh = false, page = 1) =>
+  async (dispatch, getState) => {
+    try {
+      const { drivers, searchKey, statusKey, currentStatusKey } =
+        getState().driverReducer;
 
-    if (drivers.length <= 0 || refresh) {
-      dispatch({
-        type: actionType.GET_ALL_DRIVERS_REQUEST_SEND
-      });
+      if (drivers.length < 1 || refresh) {
+        dispatch({
+          type: actionType.GET_ALL_DRIVERS_REQUEST_SEND,
+        });
 
-      const { data } = await requestApi().request(ALL_DRIVERS, {
-        params: {
-          // searchKey: searchKey,
-          page: page,
-          pageSize: 10
-          // status: statusKey,
-          // createdBy: createdByKey
+        const { data } = await requestApi().request(ALL_DRIVERS, {
+          params: {
+            searchKey: searchKey,
+            page: page,
+            pageSize: 10,
+            status: statusKey,
+            currentStatus: currentStatusKey,
+          },
+        });
+
+        // console.log("all drivers", data.data.drivers);
+
+        if (data.status) {
+          dispatch({
+            type: actionType.GET_ALL_DRIVERS_REQUEST_SUCCESS,
+            payload: {
+              drivers: data.data.drivers,
+              paginate: data.data.paginate,
+            },
+          });
+        } else {
+          dispatch({
+            type: actionType.GET_ALL_DRIVERS_REQUEST_FAIL,
+            payload: data.error,
+          });
         }
-      });
-
-      console.log("all drivers", data.data.drivers);
-
-      if (data.status) {
-        dispatch({
-          type: actionType.GET_ALL_DRIVERS_REQUEST_SUCCESS,
-          payload: { drivers: data.data.drivers, paginate: data.data.paginate }
-        });
-      } else {
-        dispatch({
-          type: actionType.GET_ALL_DRIVERS_REQUEST_FAIL,
-          payload: data.error
-        });
       }
+    } catch (error) {
+      dispatch({
+        type: actionType.GET_ALL_DRIVERS_REQUEST_FAIL,
+        payload: error.message,
+      });
     }
-  } catch (error) {
-    dispatch({
-      type: actionType.GET_ALL_DRIVERS_REQUEST_FAIL,
-      payload: error.message
-    });
-  }
-};
+  };
 
 // UPDATE STATUS KEY
 
-export const updateStatusKey = value => dispatch => {
+export const updateStatusKey = (value) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_STATUS_KEY,
-    payload: value
+    payload: value,
   });
 };
 
 // SEARCH KEY UPDATE
 
-export const updateSearchKey = value => dispatch => {
+export const updateSearchKey = (value) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_SEARCH_KEY,
-    payload: value
+    payload: value,
+  });
+};
+
+//  UPDATE CREATED BY KEY
+
+export const updateCurrntStatusKey = (value) => (dispatch) => {
+  dispatch({
+    type: actionType.UPDATE_CURRENT_STATUS_KEY,
+    payload: value,
   });
 };

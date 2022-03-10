@@ -12,9 +12,9 @@ const initialState = {
   currentPage: 1,
   hasPreviousPage: false,
   searchKey: "",
-  statusKey: "all",
-  createdByKey: "",
-  status: false
+  statusKey: "",
+  currentStatusKey: "",
+  status: false,
 };
 
 export const driverReducer = (state = initialState, action) => {
@@ -88,7 +88,10 @@ export const driverReducer = (state = initialState, action) => {
     case actionType.GET_ALL_DRIVERS_REQUEST_SEND:
       return {
         ...state,
-        loading: true
+        loading: true,
+        status: false,
+        message: null,
+        error: null,
       };
 
     case actionType.GET_ALL_DRIVERS_REQUEST_SUCCESS:
@@ -104,7 +107,7 @@ export const driverReducer = (state = initialState, action) => {
         hasNextPage: payload.paginate.metadata.hasNextPage,
         currentPage: payload.paginate.metadata.page.currentPage,
         hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
-        status: false
+        status: false,
       };
 
     case actionType.GET_ALL_DRIVERS_REQUEST_FAIL:
@@ -112,7 +115,7 @@ export const driverReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: payload,
-        message: null
+        message: null,
       };
 
     // EDIT STATUS KEY UPDATE
@@ -120,14 +123,22 @@ export const driverReducer = (state = initialState, action) => {
     case actionType.UPDATE_STATUS_KEY:
       return {
         ...state,
-        statusKey: payload
+        statusKey: payload,
       };
 
     // UPDATE SEARCH KEY
     case actionType.UPDATE_SEARCH_KEY:
       return {
         ...state,
-        searchKey: payload
+        searchKey: payload,
+      };
+
+    // UPDATE CURRENT STATUS KEY
+
+    case actionType.UPDATE_CURRENT_STATUS_KEY:
+      return {
+        ...state,
+        currentStatusKey: payload,
       };
 
     default:
