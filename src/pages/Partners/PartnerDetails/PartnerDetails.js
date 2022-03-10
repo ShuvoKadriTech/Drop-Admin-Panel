@@ -33,11 +33,11 @@ const PartnerDetails = () => {
   // const [othersImageGalley, setOIthersImageGalley] = useState([]);
 
   const showImageGallery = (images) => {
-    console.log("before images clicked--------");
+    // console.log("before images clicked--------");
     const newImages = images.map((image) => image.path);
 
     setCarImageGalley(newImages);
-    console.log("after images----", carImageGalley);
+    // console.log("after images----", carImageGalley);
     setIsZoom(true);
   };
 
@@ -110,15 +110,15 @@ const PartnerDetails = () => {
     // history.push(`/partner/edit/${partner.id}`)
   };
 
-  // CAR DETAILS 
+  // CAR DETAILS
 
-  const CarDetails = (carId) =>{
+  const CarDetails = (carId) => {
     history.push({
       pathname: `/car/details/${carId}`,
       search: `?pID=${id}`,
       // state: { detail: 'some_value' }
     });
-  }
+  };
 
   return (
     <React.Fragment>

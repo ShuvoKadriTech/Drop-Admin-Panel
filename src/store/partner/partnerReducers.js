@@ -132,11 +132,11 @@ const partnerReducer = (state = initialState, action) => {
         error: null,
       };
 
-    // case actionType.SET_STATUS_FALSE:
-    //   return {
-    //     ...state,
-    //     status: false
-    //   };
+    case actionType.SET_STATUS_FALSE:
+      return {
+        ...state,
+        status: false,
+      };
 
     case actionType.ADD_DRIVER_REQUEST_FAIL:
       return {
@@ -220,7 +220,6 @@ const partnerReducer = (state = initialState, action) => {
         createdByKey: payload,
       };
 
-
     // SELECT CAR TYPE
 
     case actionType.SELECT_CAR_TYPE:
@@ -233,9 +232,6 @@ const partnerReducer = (state = initialState, action) => {
         selectedModelColor: null,
         selectedModelYear: null,
       };
-
-
-
 
     case actionType.SELECT_CAR_BRAND:
       return {
@@ -282,7 +278,7 @@ const partnerReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: true,
-        status: false
+        status: false,
       };
 
     case actionType.ADD_CAR_REQUEST_SUCCESS:
@@ -315,7 +311,7 @@ const partnerReducer = (state = initialState, action) => {
         loading: false,
         error: payload,
         message: null,
-        status: false
+        status: false,
       };
 
     default:
