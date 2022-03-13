@@ -160,7 +160,7 @@ const CarAdd = () => {
       // console.log("selectedPartner----------", selectedPartner);
       // console.log("id------", id);
       const findCar = partner?.cars.find((car) => car.id == id);
-      console.log("findCar------------------", findCar);
+      // console.log("findCar------------------", findCar);
       // selectedCarType = findCar.car_type;
       if (findCar) {
         const {
@@ -327,7 +327,11 @@ const CarAdd = () => {
       carImages: carImagesPath,
     };
 
-    dispatch(addCar(data));
+    if(id){
+      
+    }else{
+      dispatch(addCar(data));
+    }
 
     // console.log("car data-------------------", data);
   };

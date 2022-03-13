@@ -469,6 +469,8 @@ export const addCar = (carData) => async (dispatch) => {
   }
 };
 
+// ALL CARS BY PARTNER
+
 export const getAllCarsByPartner = (partnerId) => async (dispatch) => {
   try {
     dispatch({
@@ -497,3 +499,23 @@ export const getAllCarsByPartner = (partnerId) => async (dispatch) => {
     });
   }
 };
+
+
+// EDIT CAR 
+
+// export const editCar = (value) => async (dispatch) => {
+
+
+// try {
+//   dispatch({
+//     type: actionType.EDIT_CAR_REQUEST_SEND
+//   })
+
+//   const {data} = await requestApi().request()
+
+// } catch (error) {
+  
+// }
+
+
+// }

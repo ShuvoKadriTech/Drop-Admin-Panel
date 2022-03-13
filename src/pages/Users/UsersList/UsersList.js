@@ -25,11 +25,15 @@ import {
   updateStatusKey,
   usersList,
 } from "../../../store/Users/UsersAction";
+import { useHistory } from 'react-router-dom';
+import AppPagination from "../../../components/AppPagination";
 
 const BlankPage = () => {
-  const dispatch = useDispatch();
 
-  const { loading, users, statusKey, searchKey, createdByKey } = useSelector(
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const { loading, users, statusKey, searchKey, createdByKey,paging,hasNextPage,hasPreviousPage,currentPage } = useSelector(
     (state) => state.usersReducer
   );
 
@@ -88,7 +92,7 @@ const BlankPage = () => {
                             dispatch(updateStatusKey(event.target.value))
                           }
                         >
-                          <MenuItem value={"all"} active>
+                          <MenuItem value={"all"}>
                             All
                           </MenuItem>
                           <MenuItem value={"pending"}>Pending</MenuItem>
@@ -201,9 +205,9 @@ const BlankPage = () => {
                               <ButtonWrapper>
                                 <button
                                   className="btn btn-info me-xl-3"
-                                  // onClick={() =>
-                                  //   history.push(`/partner/edit/${partner.id}`)
-                                  // }
+                                  onClick={() =>
+                                    history.push(`/users/edit/${user.id}`)
+                                  }
                                 >
                                   <i className="fa fa-edit" />
                                 </button>
@@ -225,7 +229,7 @@ const BlankPage = () => {
                         <Td>
                           <Spinner
                             style={{
-                              position: "fixed",
+                            position: "fixed",
                               left: "50%",
                               top: "50%",
                             }}
@@ -245,6 +249,21 @@ const BlankPage = () => {
                 )}
               </CardBody>
             </Card>
+
+            <Row>
+            <Col xl={12}>
+              <div className="d-flex justify-content-center">
+                <AppPagination
+                  paging={paging}
+                  hasNextPage={hasNextPage}
+                  hasPreviousPage={hasPreviousPage}
+                  currentPage={currentPage}
+                  lisener={(page) => dispatch(usersList(true, page))}
+                />
+              </div>
+            </Col>
+          </Row>
+
           </Container>
         </div>
       </GlobalWrapper>
@@ -269,6 +288,8 @@ const SearchWrapper = styled.div`
       border: none;
       color: black !important;
     }
+
+
   }
 `;
 

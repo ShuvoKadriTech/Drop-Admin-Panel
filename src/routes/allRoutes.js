@@ -163,6 +163,7 @@ const userRoutes = [
 
   { path: "/users/list", component: UsersList },
   { path: "/users/add", component: AddUser },
+  { path: "/users/edit/:id", component: AddUser },
 
   // Partners
 

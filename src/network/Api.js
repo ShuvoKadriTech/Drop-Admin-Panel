@@ -103,6 +103,7 @@ export const GET_CAR_FUEL_TYPES = ADMIN_ENDPOINT + "/car-fuel-types";
 // ADD CAR FOR PARTNER
 
 export const ADD_CAR = ADMIN_ENDPOINT + "/cars/add-new";
+// export const EDIT_CAR = ADMIN_ENDPOINT + "/cars/edit-new";
 
 // RIDE
 
@@ -111,5 +112,8 @@ export const ALL_RIDES = ADMIN_ENDPOINT + "/ride";
 // USERS
 
 export const ALL_USERS = ADMIN_ENDPOINT + "/user";
+export const ADD_USER = ADMIN_ENDPOINT + "/user/add";
+export const EDIT_USER = ADMIN_ENDPOINT + "/user/update";
+export const SINGLE_USER = ADMIN_ENDPOINT + "/user/single-user-info-by-id";
 
 // END ADMIN API
