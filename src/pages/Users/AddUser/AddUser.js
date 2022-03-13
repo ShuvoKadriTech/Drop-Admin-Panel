@@ -166,7 +166,7 @@ const AddUser = () => {
                           onChange={event => setName(event.target.value)}
                         />
                       </Col>
-                      <Col xl={6}>
+                      <Col xl={6} className="my-4 my-xl-0">
                         <TextField
                           required
                           id="outlined-required"
@@ -192,7 +192,7 @@ const AddUser = () => {
                           className="w-100"
                         />
                       </Col>
-                      <Col xl={6}>
+                      <Col xl={6} className="mt-4 mt-xl-0">
                         <Wrapper className="form-group mb-0">
                           <Flatpickr
                             className="form-control d-block"
@@ -216,7 +216,7 @@ const AddUser = () => {
                     <div className="d-flex align-items-center flex-column">
                       <h6>Upload User Image</h6>
                       <Card
-                        style={{ width: "385px", height: "160px" }}
+                        style={{ maxWidth: "385px",width: "100%", height: "160px" }}
                         className="cursor-pointer"
                       >
                         <div className="d-flex justify-content-center align-content-center h-100" style={{ border: "1px solid rgb(207 207 207)" }}>
