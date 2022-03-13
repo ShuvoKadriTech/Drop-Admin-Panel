@@ -25,7 +25,7 @@ export const AllRides =
           },
         });
 
-        console.log("rides----------", data);
+        // console.log("rides----------", data);
 
         if (data.status) {
           dispatch({
@@ -62,5 +62,23 @@ export const updateRideTypeKey = (value) => (dispatch) => {
   dispatch({
     type: actionType.UPDATE_RIDE_TYPE_KEY,
     payload: value,
+  });
+};
+
+// SELECT CAR TYPE
+
+export const selectCarType = (carType) => (dispatch) => {
+  dispatch({
+    type: actionType.SELECT_RIDE_CAR_TYPE,
+    payload: carType,
+  });
+};
+
+// SELECT RIDE USER
+
+export const selectUser = (user) => (dispatch) => {
+  dispatch({
+    type: actionType.SELECT_RIDE_USER,
+    payload: user,
   });
 };

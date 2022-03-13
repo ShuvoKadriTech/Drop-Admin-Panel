@@ -13,6 +13,8 @@ const initialState = {
   hasPreviousPage: false,
   searchKey: "",
   typeKey: "all",
+  selectedCarType: null,
+  selectedUser: null,
 };
 
 const rideReducer = (state = initialState, action) => {
@@ -60,6 +62,22 @@ const rideReducer = (state = initialState, action) => {
       return {
         ...state,
         typeKey: payload,
+      };
+
+    // SELECTD CAR TYPE
+
+    case actionType.SELECT_RIDE_CAR_TYPE:
+      return {
+        ...state,
+        selectedCarType: payload,
+      };
+
+    // SELECT USER
+
+    case actionType.SELECT_RIDE_USER:
+      return {
+        ...state,
+        selectedUser: payload,
       };
 
     default:
