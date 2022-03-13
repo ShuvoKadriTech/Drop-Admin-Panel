@@ -144,6 +144,7 @@ import CarAdd from "../pages/Car/CarAdd/CarAdd";
 import RideList from "../pages/Ride/List/RideList";
 import CarDetails from "../pages/Car/CarDetails/CarDetails";
 import AddUser from "../pages/Users/AddUser/AddUser";
+import RideAdd from "../pages/Ride/RideAdd/RideAdd";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -209,6 +210,7 @@ const userRoutes = [
 
   // RIDE
   { path: "/ride/list", component: RideList },
+  { path: "/ride/add", component: RideAdd },
 
   // ADMIN CONTROL
 
