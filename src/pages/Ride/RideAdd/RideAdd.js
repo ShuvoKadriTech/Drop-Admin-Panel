@@ -6,7 +6,12 @@ import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getCarTypes } from "../../../store/Car/carTypes/carTypesAction";
-import { selectCarType, selectPickupTime, selectReturnTime, selectTrip } from "../../../store/Ride/rideAction";
+import {
+  selectCarType,
+  selectPickupTime,
+  selectReturnTime,
+  selectTrip,
+} from "../../../store/Ride/rideAction";
 import { usersList } from "../../../store/Users/UsersAction";
 import { selectUser } from "./../../../store/Ride/rideAction";
 import PlacesAutocomplete from "react-places-autocomplete";
@@ -14,7 +19,6 @@ import {
   geocodeByAddress,
   geocodeByPlaceId,
   getLatLng,
-
 } from "react-places-autocomplete";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -36,9 +40,13 @@ const RideAdd = () => {
 
   const { carTypes } = useSelector((state) => state.carTypesReducer);
 
-  const { selectedCarType, selectedUser, selectedTrip, selectedPickupTime, selectedReturnTime } = useSelector(
-    (state) => state.rideReducer
-  );
+  const {
+    selectedCarType,
+    selectedUser,
+    selectedTrip,
+    selectedPickupTime,
+    selectedReturnTime,
+  } = useSelector((state) => state.rideReducer);
 
   const { users } = useSelector((state) => state.usersReducer);
 
@@ -50,8 +58,6 @@ const RideAdd = () => {
   const [dropSelectedAddress, setDropSelectedAddress] = useState("");
   const [dropAddress, setDropAddress] = useState({});
   const [dropLatLng, setDropLatLng] = useState({});
-  
-
 
   useEffect(() => {
     if (carTypes.length < 1) {
@@ -76,19 +82,17 @@ const RideAdd = () => {
     setPickupSelectedAddress(address);
     geocodeByAddress(address);
     geocodeByPlaceId(placeId)
-      // .then((results) => getLatLng(results[0]))
-      .then((results) => {
+      .then((results) => setPickupAddress(results[0]))
+      // .then((results) => {
+      //   setPickupAddress(results[0]);
 
-        setPickupAddress(results[0])
-
-        getLatLng(results[0])
-
-      })
-      .then((latLng) => setPickupLatLng(latLng))
+      //   getLatLng(results[0]);
+      // })
+      // .then((latLng) => console.log("success", latLng))
       .catch((error) => console.error("Error", error));
   };
 
-  // RETURN ADDRESS CHANGE 
+  // RETURN ADDRESS CHANGE
 
   const handleReturnAddressChange = (address) => {
     // console.log("address", address);
@@ -97,56 +101,81 @@ const RideAdd = () => {
 
   // RETURN ADDRESS SELECTED
 
-  const handleReturnAddressSelect = (address, placeId) => {
-    console.log("select-------------", address);
+  const handleDropAddressSelect = (address, placeId) => {
+    // console.log("select-------------", address);
     setDropSelectedAddress(address);
     geocodeByAddress(address);
     geocodeByPlaceId(placeId)
-      .then((results) => {
-        setDropAddress(results[0])
-
-        getLatLng(results[0])
-        // console.log("drop address", results)
-      })
-      .then((latLng) => console.log(latLng))
+      .then((results) => setDropAddress(results[0]))
+      // .then((latLng) => console.log(latLng))
       .catch((error) => console.error("Error", error));
   };
 
+  // GET LAT LNG FROM ADDRESS
 
-  // useEffect(()=>{
-  //   if(Object.keys(dropLatLng).length > 0  && Object.keys(pickupLatLng).length > 0 ){
-  //     console.log("pickup and drop ",pickupLatLng, dropLatLng)
-  //   }
-  // },[dropLatLng,pickupLatLng])
-
-  const  calcdistance = (lat1, lon1, lat2, lon2) =>{
-      var R = 6371; // km
-      var dLat = toRad(lat2-lat1);
-      var dLon = toRad(lon2-lon1);
-      var lat1 = toRad(lat1);
-      var lat2 = toRad(lat2);
-
-      var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
-      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-      var d = R * c;
-      return d;
+  useEffect(() => {
+    if (Object.keys(pickupAddress).length > 0) {
+      getLatLng(pickupAddress).then((latlng) => setPickupLatLng(latlng));
     }
-
-    function toRad(Value) 
-    {
-        return Value * Math.PI / 180;
+    if (Object.keys(dropAddress).length > 0) {
+      getLatLng(dropAddress).then((latlng) => setDropLatLng(latlng));
     }
+  }, [pickupAddress, dropAddress]);
 
+  // GET DISTANCE
 
-  // SUBMIT RIDE DATA 
+  useEffect(() => {
+    if (
+      Object.keys(pickupLatLng).length > 0 &&
+      Object.keys(dropLatLng).length > 0
+    ) {
+      // let {lat,lng} = pickupLatLng;
+      // let {lat,lng} = dropLatLng;
+      calcDistance(
+        pickupLatLng.lat,
+        pickupLatLng.lng,
+        dropLatLng.lat,
+        dropLatLng.lng
+      );
+    }
+  }, [pickupLatLng, dropLatLng]);
 
-  const handleSubmit = () => {
-    console.log("pickup latlng", pickupLatLng);
-    console.log("drop latlng", dropLatLng);
+  const calcDistance = (lat1, lon1, lat2, lon2) => {
+    var R = 6371; // km
+    var dLat = toRad(lat2 - lat1);
+    var dLon = toRad(lon2 - lon1);
+    var lat1 = toRad(lat1);
+    var lat2 = toRad(lat2);
 
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+    console.log("distance", d);
+  };
+
+  function toRad(Value) {
+    return (Value * Math.PI) / 180;
   }
 
+  // GET DURATION
+
+  useEffect(() => {
+    if (selectedPickupTime !== null && selectedReturnTime !== null) {
+      const diffTime = Math.abs(selectedPickupTime - selectedReturnTime);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      console.log(diffTime + " milliseconds");
+      console.log(diffDays + " days");
+    }
+  }, [selectedPickupTime, selectedReturnTime]);
+
+  // SUBMIT RIDE DATA
+
+  const handleSubmit = () => {
+    console.log("pickup", pickupAddress);
+    // console.log("drop latlng", dropLatLng);
+  };
 
   // const MyMapComponent = compose(
   //   withProps({
@@ -155,7 +184,7 @@ const RideAdd = () => {
   //      * https://console.developers.google.com/apis/dashboard
   //      * The key "AIzaSyBkNaAGLEVq0YLQMi-PYEMabFeREadYe1Q" can be ONLY used in this sandbox (no forked).
   //      */
-  //       googleMapURL: 
+  //       googleMapURL:
   //       "https://maps.googleapis.com/maps/api/js?key=AIzaSyAIs4-oHUknPIC3Aq0fcnKUEB1IhWQD31s&v=3.exp&libraries=geometry,drawing,places",
   //     loadingElement: <div style={{ height: `100%` }} />,
   //     containerElement: <div style={{ height: `400px` }} />,
@@ -171,7 +200,6 @@ const RideAdd = () => {
   //   </GoogleMap>
   // ));
 
-
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -181,8 +209,8 @@ const RideAdd = () => {
               maintitle="Ride"
               breadcrumbItem="Add"
               isRefresh={false}
-            //   loading={loading}
-            //   callList={callColorList}
+              //   loading={loading}
+              //   callList={callColorList}
             />
 
             <Card>
@@ -284,8 +312,8 @@ const RideAdd = () => {
                       value={pickupSelectedAddress}
                       onChange={handlePickupAddressChange}
                       onSelect={handlePickupAddressSelect}
-                      onError={error => {
-                        console.log(error)
+                      onError={(error) => {
+                        console.log(error);
                       }}
                       clearItemsOnError={true}
                       shouldFetchSuggestions={pickupSelectedAddress.length > 3}
@@ -298,11 +326,10 @@ const RideAdd = () => {
                       }) => (
                         <div>
                           <TextField
-
                             {...getInputProps({
                               placeholder: "Search Places ...",
                               className: "location-search-input",
-                              // 
+                              //
                             })}
                             type="text"
                             required
@@ -310,9 +337,11 @@ const RideAdd = () => {
                             label="Pickup Location"
                             className="w-100"
                             value={pickupSelectedAddress}
-
                           />
-                          <div className="autocomplete-dropdown-container" style={{ fontSize: "14px", fontFamily: "emoji" }}>
+                          <div
+                            className="autocomplete-dropdown-container"
+                            style={{ fontSize: "14px", fontFamily: "emoji" }}
+                          >
                             {loading && <div>Loading...</div>}
                             {suggestions.map((suggestion, index) => {
                               const className = suggestion.active
@@ -322,13 +351,13 @@ const RideAdd = () => {
                               // inline style for demonstration purpose
                               const style = suggestion.active
                                 ? {
-                                  backgroundColor: "#fafafa",
-                                  cursor: "pointer",
-                                }
+                                    backgroundColor: "#fafafa",
+                                    cursor: "pointer",
+                                  }
                                 : {
-                                  backgroundColor: "#ffffff",
-                                  cursor: "pointer",
-                                };
+                                    backgroundColor: "#ffffff",
+                                    cursor: "pointer",
+                                  };
                               return (
                                 <div
                                   {...getSuggestionItemProps(suggestion, {
@@ -351,9 +380,9 @@ const RideAdd = () => {
                     <PlacesAutocomplete
                       value={dropSelectedAddress}
                       onChange={handleReturnAddressChange}
-                      onSelect={handleReturnAddressSelect}
-                      onError={error => {
-                        console.log(error)
+                      onSelect={handleDropAddressSelect}
+                      onError={(error) => {
+                        console.log(error);
                       }}
                       clearItemsOnError={true}
                       shouldFetchSuggestions={dropSelectedAddress.length > 3}
@@ -366,11 +395,10 @@ const RideAdd = () => {
                       }) => (
                         <div>
                           <TextField
-
                             {...getInputProps({
                               placeholder: "Search Places ...",
                               className: "location-search-input",
-                              // 
+                              //
                             })}
                             type="text"
                             required
@@ -378,9 +406,11 @@ const RideAdd = () => {
                             label="Drop Location"
                             className="w-100"
                             value={dropSelectedAddress}
-
                           />
-                          <div className="autocomplete-dropdown-container" style={{ fontSize: "14px", fontFamily: "emoji" }}>
+                          <div
+                            className="autocomplete-dropdown-container"
+                            style={{ fontSize: "14px", fontFamily: "emoji" }}
+                          >
                             {loading && <div>Loading...</div>}
                             {suggestions.map((suggestion, index) => {
                               const className = suggestion.active
@@ -390,13 +420,13 @@ const RideAdd = () => {
                               // inline style for demonstration purpose
                               const style = suggestion.active
                                 ? {
-                                  backgroundColor: "#fafafa",
-                                  cursor: "pointer",
-                                }
+                                    backgroundColor: "#fafafa",
+                                    cursor: "pointer",
+                                  }
                                 : {
-                                  backgroundColor: "#ffffff",
-                                  cursor: "pointer",
-                                };
+                                    backgroundColor: "#ffffff",
+                                    cursor: "pointer",
+                                  };
                               return (
                                 <div
                                   {...getSuggestionItemProps(suggestion, {
@@ -483,9 +513,13 @@ const RideAdd = () => {
                     />
                   </Col>
                 </Row>
-                <div className='d-flex justify-content-center'>
-                  <Button className='mt-5' onClick={handleSubmit} color="success" style={{ width: "250px" }}>
-
+                <div className="d-flex justify-content-center">
+                  <Button
+                    className="mt-5"
+                    onClick={handleSubmit}
+                    color="success"
+                    style={{ width: "250px" }}
+                  >
                     {/* {loading ?
 
                       <Spinner animation="border" variant="info" size='sm' />
@@ -493,14 +527,12 @@ const RideAdd = () => {
 
                     } */}
                     Add
-
                   </Button>
                 </div>
               </CardBody>
             </Card>
 
-              {/* <MyMapComponent isMarkerShown></MyMapComponent> */}
-
+            {/* <MyMapComponent isMarkerShown></MyMapComponent> */}
           </Container>
         </div>
       </GlobalWrapper>
