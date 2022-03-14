@@ -113,7 +113,7 @@ export const getCarTypes =
         const {
           data: { data, status, error },
         } = await requestApi().request(GET_CAR_TYPES);
-        console.log("carTypes", data);
+        // console.log("carTypes", data);
         if (status) {
           dispatch({
             type: GET_CAR_TYPES_REQUEST_SUCCESS,

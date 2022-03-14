@@ -82,3 +82,32 @@ export const selectUser = (user) => (dispatch) => {
     payload: user,
   });
 };
+
+
+// SELECT TRIP
+
+export const selectTrip = (value) => (dispatch) => {
+  dispatch({
+    type: actionType.SELECT_TRIP,
+    payload: value,
+  });
+};
+
+// SELECT PICKUP TIME
+
+export const selectPickupTime = (value) => (dispatch) => {
+  dispatch({
+    type: actionType.SELECT_PICKUP_TIME,
+    payload: value,
+  });
+};
+
+// SELECT RETURN TIME
+
+export const selectReturnTime = (value) => (dispatch) => {
+  dispatch({
+    type: actionType.SELECT_RETURN_TIME,
+    payload: value,
+  });
+};
+

@@ -15,6 +15,9 @@ const initialState = {
   typeKey: "all",
   selectedCarType: null,
   selectedUser: null,
+  selectedTrip : "1",
+  selectedPickupTime: new Date(),
+  selectedReturnTime: new Date()
 };
 
 const rideReducer = (state = initialState, action) => {
@@ -78,6 +81,30 @@ const rideReducer = (state = initialState, action) => {
       return {
         ...state,
         selectedUser: payload,
+      };
+
+      // SELECT TRIP 
+
+      case actionType.SELECT_TRIP:
+      return {
+        ...state,
+        selectedTrip: payload,
+      };
+
+      // SELECT PICKUP TIME 
+
+      case actionType.SELECT_PICKUP_TIME:
+      return {
+        ...state,
+        selectedPickupTime: payload,
+      };
+
+      // SELECTED RETURN TIME 
+
+      case actionType.SELECT_RETURN_TIME:
+      return {
+        ...state,
+        selectedReturnTime: payload,
       };
 
     default:
