@@ -181,7 +181,7 @@ const RideList = () => {
                             <Td style={{ maxWidth: "350px" }}>
                               <div>
                                 <p>{ride.dropOffLocation.address}</p>
-                                <span>{ride.returnTimeText}</span>
+                                {/* <span>{ride.returnTimeText}</span> */}
                               </div>
                             </Td>
                             <Td>

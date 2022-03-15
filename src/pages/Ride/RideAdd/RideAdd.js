@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Button, Card, CardBody, Col, Container, Row } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Container,
+  Row,
+  Spinner,
+} from "reactstrap";
 import styled from "styled-components";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
@@ -29,7 +37,7 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DateTimePicker from "@mui/lab/DateTimePicker";
 import { toast } from "react-toastify";
-import Directions from "../../../components/directions";
+// import Directions from "../../../components/Directions";
 // import {
 //   withScriptjs,
 //   withGoogleMap,
@@ -40,7 +48,7 @@ import Directions from "../../../components/directions";
 
 const RideAdd = () => {
   const dispatch = useDispatch();
-  const mapRef = useRef()
+  const mapRef = useRef();
   const { carTypes } = useSelector((state) => state.carTypesReducer);
 
   const {
@@ -49,7 +57,8 @@ const RideAdd = () => {
     selectedTrip,
     selectedPickupTime,
     selectedReturnTime,
-    status
+    status,
+    loading,
   } = useSelector((state) => state.rideReducer);
 
   const { users } = useSelector((state) => state.usersReducer);
@@ -72,11 +81,10 @@ const RideAdd = () => {
   const [map_, setMap] = useState();
   const [directionsRenderer, setdirectionsRenderer] = useState();
   const [directionsService, setdirectionsService] = useState();
-  const startRef = useRef()
-  const sidebar = useRef()
-  const endRef = useRef()
-  const floatingPanel = useRef()
-
+  const startRef = useRef();
+  const sidebar = useRef();
+  const endRef = useRef();
+  const floatingPanel = useRef();
 
   useEffect(() => {
     if (carTypes.length < 1) {
@@ -135,16 +143,26 @@ const RideAdd = () => {
   useEffect(() => {
     if (Object.keys(pickupAddress).length > 0) {
       getLatLng(pickupAddress).then((latlng) => setPickupLatLng(latlng));
-      const { geometry: { location }, formatted_address, address_components, place_id } = pickupAddress;
+      const {
+        geometry: { location },
+        formatted_address,
+        address_components,
+        place_id,
+      } = pickupAddress;
       // console.log("placeId",place_id)
       setPickupFullAddress(formatted_address);
-      setPickupPlaceId(place_id)
+      setPickupPlaceId(place_id);
     }
     if (Object.keys(dropAddress).length > 0) {
       getLatLng(dropAddress).then((latlng) => setDropLatLng(latlng));
-      const { geometry: { location }, formatted_address, address_components, place_id } = dropAddress;
-      setDropFullAddress(formatted_address)
-      setDropPlaceId(place_id)
+      const {
+        geometry: { location },
+        formatted_address,
+        address_components,
+        place_id,
+      } = dropAddress;
+      setDropFullAddress(formatted_address);
+      setDropPlaceId(place_id);
     }
   }, [pickupAddress, dropAddress]);
 
@@ -190,9 +208,6 @@ const RideAdd = () => {
   // }
 
   // GET DURATION
-
-
-
 
   //   useEffect(() => {
   //     if (directionsService &&  Object.keys(pickupLatLng).length > 0 &&
@@ -247,8 +262,6 @@ const RideAdd = () => {
   //     }
   // }, [directionsService]);
 
-
-
   // function getDirection(){
   //   const locationPoint = [
   //     { lat: pickupLatLng.lat, lng: pickupLatLng.lng },
@@ -261,10 +274,7 @@ const RideAdd = () => {
   //   console.log("dropLatLng",dropLatLng);
   //   console.log("dropLatLng",dropLatLng);
 
-
-
   //     console.log("inner")
-
 
   //       directionsService.route({
   //           origin: origin,
@@ -305,7 +315,6 @@ const RideAdd = () => {
 
   // }
 
-
   // SUBMIT RIDE DATA
 
   const handleSubmit = () => {
@@ -318,7 +327,7 @@ const RideAdd = () => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined
+        progress: undefined,
       });
     }
 
@@ -331,10 +340,13 @@ const RideAdd = () => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined
+        progress: undefined,
       });
     }
-    if (Object.keys(pickupAddress).length < 1 && Object.keys(dropAddress).length < 1) {
+    if (
+      Object.keys(pickupAddress).length < 1 &&
+      Object.keys(dropAddress).length < 1
+    ) {
       return toast.warn("Please Select Pickup and Drop Address", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -343,14 +355,19 @@ const RideAdd = () => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined
+        progress: undefined,
       });
     }
 
     // PICKUP DATA
 
     if (Object.keys(pickupAddress).length > 0) {
-      const { geometry: { location }, formatted_address, address_components, place_id } = pickupAddress;
+      const {
+        geometry: { location },
+        formatted_address,
+        address_components,
+        place_id,
+      } = pickupAddress;
       // console.log("placeId",place_id)
       // setPickupFullAddress(formatted_address);
       // setPickupPlaceId(place_id)
@@ -359,15 +376,14 @@ const RideAdd = () => {
       var pickup_locality_long_name;
       var pickup_sub_locality_long_name;
 
-      address_components.forEach(address_component => {
+      address_components.forEach((address_component) => {
         if (address_component.types.includes("country")) {
-          pickup_country_long_name = address_component.long_name
-          pickup_country_short_name = address_component.short_name
+          pickup_country_long_name = address_component.long_name;
+          pickup_country_short_name = address_component.short_name;
         } else if (address_component.types.includes("locality")) {
-          pickup_locality_long_name = address_component.long_name
-        }
-        else if (address_component.types.includes("sublocality")) {
-          pickup_sub_locality_long_name = address_component.long_name
+          pickup_locality_long_name = address_component.long_name;
+        } else if (address_component.types.includes("sublocality")) {
+          pickup_sub_locality_long_name = address_component.long_name;
         }
       });
     }
@@ -375,7 +391,12 @@ const RideAdd = () => {
     // DROP DATA
 
     if (Object.keys(dropAddress).length > 0) {
-      const { geometry: { location }, formatted_address, address_components, place_id } = dropAddress;
+      const {
+        geometry: { location },
+        formatted_address,
+        address_components,
+        place_id,
+      } = dropAddress;
       // setDropFullAddress(formatted_address)
       // setDropPlaceId(place_id)
       var drop_country_long_name;
@@ -383,23 +404,17 @@ const RideAdd = () => {
       var drop_locality_long_name;
       var drop_sub_locality_long_name;
 
-      address_components.forEach(address_component => {
+      address_components.forEach((address_component) => {
         if (address_component.types.includes("country")) {
-          drop_country_long_name = address_component.long_name
-          drop_country_short_name = address_component.short_name
+          drop_country_long_name = address_component.long_name;
+          drop_country_short_name = address_component.short_name;
         } else if (address_component.types.includes("locality")) {
-          drop_locality_long_name = address_component.long_name
-        }
-        else if (address_component.types.includes("sublocality")) {
-          drop_sub_locality_long_name = address_component.long_name
+          drop_locality_long_name = address_component.long_name;
+        } else if (address_component.types.includes("sublocality")) {
+          drop_sub_locality_long_name = address_component.long_name;
         }
       });
-
-
     }
-
-
-
 
     const data = {
       carTypeId: selectedCarType.id,
@@ -412,7 +427,7 @@ const RideAdd = () => {
         locality: pickup_locality_long_name,
         subLocality: pickup_sub_locality_long_name,
         country: pickup_country_long_name,
-        countryCode: pickup_country_short_name
+        countryCode: pickup_country_short_name,
       },
       dropOffLocation: {
         address: dropFullAddress,
@@ -422,45 +437,40 @@ const RideAdd = () => {
         locality: drop_locality_long_name,
         subLocality: drop_sub_locality_long_name,
         country: drop_country_long_name,
-        countryCode: drop_country_short_name
+        countryCode: drop_country_short_name,
       },
-
 
       duration: duration,
       distance: distance,
       tripType: selectedTrip,
       pickUpDate: selectedPickupTime,
       returnDate: selectedTrip == 0 ? null : selectedReturnTime,
-      extraNote: note
-    }
+      extraNote: note,
+    };
 
-    dispatch(addRide(data))
-
+    dispatch(addRide(data));
   };
 
-
-  // SUCCESS 
+  // SUCCESS
 
   useEffect(() => {
     if (status) {
-      setNote("")
+      setNote("");
       setPickupSelectedAddress("");
-      setDropSelectedAddress("")
+      setDropSelectedAddress("");
     }
-  }, [status])
-
-
-
+  }, [status]);
 
   /* eslint-disable no-undef */
   useEffect(() => {
-
-    if (Object.keys(pickupLatLng).length > 0 && Object.keys(dropLatLng).length > 0) {
+    if (
+      Object.keys(pickupLatLng).length > 0 &&
+      Object.keys(dropLatLng).length > 0
+    ) {
       const directionsRenderer_ = new google.maps.DirectionsRenderer();
       const directionsService_ = new google.maps.DirectionsService();
-      setdirectionsRenderer(directionsRenderer_)
-      setdirectionsService(directionsService_)
-
+      setdirectionsRenderer(directionsRenderer_);
+      setdirectionsService(directionsService_);
 
       const map = new google.maps.Map(mapRef.current, {
         center: { lat: 22.328127, lng: 91.805502 },
@@ -479,12 +489,7 @@ const RideAdd = () => {
 
       calculateAndDisplayRoute(directionsService_, directionsRenderer_);
     }
-
-
-
   }, [pickupLatLng, dropLatLng]);
-
-
 
   // const onChangeHandler = function () {
   //   calculateAndDisplayRoute(directionsService, directionsRenderer);
@@ -496,13 +501,10 @@ const RideAdd = () => {
 
     // console.log(start,end,directionsService,directionsRenderer);
 
-
-
     // const locationPoint = [
     //     { lat: 22.328127, lng: 91.805502 },
     //     { lat: 22.333903, lng: 91.820458 }
     // ]
-
 
     directionsService
       .route({
@@ -511,13 +513,10 @@ const RideAdd = () => {
         travelMode: google.maps.TravelMode.DRIVING,
       })
       .then((response) => {
-
         // console.log(response);
 
         const route = response.routes[0];
         // console.log("route", route);
-
-
 
         // console.log(route.legs[i].end_address);
 
@@ -525,9 +524,8 @@ const RideAdd = () => {
 
         directionsRenderer.setDirections(response);
 
-
-        setDistance((route.legs[0].distance.value).toString())
-        setDuration((route.legs[0].duration.value).toString())
+        setDistance(route.legs[0].distance.value.toString());
+        setDuration(route.legs[0].duration.value.toString());
 
         // console.log(route.legs[0].distance);
         // console.log(route.legs[0].duration);
@@ -546,15 +544,13 @@ const RideAdd = () => {
         //         summaryPanel += route.legs[i].distance.text + "<br><br>";
         // }
 
-
         // console.log(summaryPanel);
 
         // console.log(directionsRenderer.getPanel());
-
       })
-      .catch((e) => window.alert("Directions request failed due to " + e.message));
-
-
+      .catch((e) =>
+        window.alert("Directions request failed due to " + e.message)
+      );
 
     // directionsService
     //   .route({
@@ -568,7 +564,7 @@ const RideAdd = () => {
 
     //     directionsRenderer.setDirections(response);
 
-    //     console.log(directionsRenderer.getPanel()); 
+    //     console.log(directionsRenderer.getPanel());
 
     //   })
     //   .catch((e) => window.alert("Directions request failed due to " + e.message));
@@ -582,8 +578,8 @@ const RideAdd = () => {
               maintitle="Ride"
               breadcrumbItem="Add"
               isRefresh={false}
-            //   loading={loading}
-            //   callList={callColorList}
+              //   loading={loading}
+              //   callList={callColorList}
             />
 
             <Card>
@@ -612,7 +608,11 @@ const RideAdd = () => {
                       options={carTypes.length > 0 ? carTypes : []}
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
-                        <TextField {...params} label="Select a Car Type" required />
+                        <TextField
+                          {...params}
+                          label="Select a Car Type"
+                          required
+                        />
                       )}
                       renderOption={(props, option) => (
                         <Box
@@ -713,7 +713,11 @@ const RideAdd = () => {
                           />
                           <div
                             className="autocomplete-dropdown-container"
-                            style={{ fontSize: "14px", fontFamily: "emoji", color: "black" }}
+                            style={{
+                              fontSize: "14px",
+                              fontFamily: "emoji",
+                              color: "black",
+                            }}
                           >
                             {loading && <div>Loading...</div>}
                             {suggestions.map((suggestion, index) => {
@@ -724,13 +728,13 @@ const RideAdd = () => {
                               // inline style for demonstration purpose
                               const style = suggestion.active
                                 ? {
-                                  backgroundColor: "#fafafa",
-                                  cursor: "pointer",
-                                }
+                                    backgroundColor: "#fafafa",
+                                    cursor: "pointer",
+                                  }
                                 : {
-                                  backgroundColor: "#ffffff",
-                                  cursor: "pointer",
-                                };
+                                    backgroundColor: "#ffffff",
+                                    cursor: "pointer",
+                                  };
                               return (
                                 <div
                                   // style={{padding: "20px 0px !important"}}
@@ -740,7 +744,10 @@ const RideAdd = () => {
                                   })}
                                   key={index}
                                 >
-                                  <i className="ti-location-pin me-1" style={{ color: "black" }} />
+                                  <i
+                                    className="ti-location-pin me-1"
+                                    style={{ color: "black" }}
+                                  />
                                   <span>{suggestion.description}</span>
                                 </div>
                               );
@@ -784,7 +791,11 @@ const RideAdd = () => {
                           />
                           <div
                             className="autocomplete-dropdown-container"
-                            style={{ fontSize: "14px", fontFamily: "emoji", color: "black" }}
+                            style={{
+                              fontSize: "14px",
+                              fontFamily: "emoji",
+                              color: "black",
+                            }}
                           >
                             {loading && <div>Loading...</div>}
                             {suggestions.map((suggestion, index) => {
@@ -795,13 +806,13 @@ const RideAdd = () => {
                               // inline style for demonstration purpose
                               const style = suggestion.active
                                 ? {
-                                  backgroundColor: "#fafafa",
-                                  cursor: "pointer",
-                                }
+                                    backgroundColor: "#fafafa",
+                                    cursor: "pointer",
+                                  }
                                 : {
-                                  backgroundColor: "#ffffff",
-                                  cursor: "pointer",
-                                };
+                                    backgroundColor: "#ffffff",
+                                    cursor: "pointer",
+                                  };
                               return (
                                 <div
                                   {...getSuggestionItemProps(suggestion, {
@@ -810,7 +821,10 @@ const RideAdd = () => {
                                   })}
                                   key={index}
                                 >
-                                  <i className="ti-location-pin me-1" style={{ color: "black" }} />
+                                  <i
+                                    className="ti-location-pin me-1"
+                                    style={{ color: "black" }}
+                                  />
                                   <span>{suggestion.description}</span>
                                 </div>
                               );
@@ -825,7 +839,6 @@ const RideAdd = () => {
                 {/* TRIP TYPE AND PICKUP TIME */}
 
                 <Row>
-
                   <Col xl={6}>
                     <div>
                       <FormControl fullWidth>
@@ -866,20 +879,22 @@ const RideAdd = () => {
 
                 {/* RETURN DATE AND NOTE */}
                 <Row className="my-xl-4 my-0">
-                  {selectedTrip != 0 && <Col xl={6}>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DateTimePicker
-                        renderInput={(props) => (
-                          <TextField {...props} className="w-100" />
-                        )}
-                        label="Return Date and Time"
-                        value={selectedReturnTime}
-                        onChange={(newValue) => {
-                          dispatch(selectReturnTime(newValue));
-                        }}
-                      />
-                    </LocalizationProvider>
-                  </Col>}
+                  {selectedTrip != 0 && (
+                    <Col xl={6}>
+                      <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DateTimePicker
+                          renderInput={(props) => (
+                            <TextField {...props} className="w-100" />
+                          )}
+                          label="Return Date and Time"
+                          value={selectedReturnTime}
+                          onChange={(newValue) => {
+                            dispatch(selectReturnTime(newValue));
+                          }}
+                        />
+                      </LocalizationProvider>
+                    </Col>
+                  )}
 
                   <Col xl={6} className="my-4 my-xl-0">
                     <TextField
@@ -888,7 +903,8 @@ const RideAdd = () => {
                       className="w-100"
                       multiline
                       maxRows={4}
-                      onChange={event => setNote(event.target.value)}
+                      value={note}
+                      onChange={(event) => setNote(event.target.value)}
                     />
                   </Col>
                 </Row>
@@ -899,13 +915,11 @@ const RideAdd = () => {
                     color="success"
                     style={{ width: "250px" }}
                   >
-                    {/* {loading ?
-
-                      <Spinner animation="border" variant="info" size='sm' />
-                      : id ? "Edit" : "Add"
-
-                    } */}
-                    Add
+                    {loading ? (
+                      <Spinner animation="border" variant="info" size="sm" />
+                    ) : (
+                      "Add"
+                    )}
                   </Button>
                 </div>
               </CardBody>
@@ -915,14 +929,15 @@ const RideAdd = () => {
             {/* {Object.keys(pickupLatLng).length > 0 &&
               Object.keys(dropLatLng).length > 0 && <Directions pickupLatLng={pickupLatLng} dropLatLng={dropLatLng}></Directions>} */}
 
-
-
             <Row>
               <Col md={12}>
-                <div ref={mapRef} className="map" style={{ width: '100%', height: '250px' }}></div>
+                <div
+                  ref={mapRef}
+                  className="map"
+                  style={{ width: "100%", height: "250px" }}
+                ></div>
               </Col>
             </Row>
-
           </Container>
         </div>
       </GlobalWrapper>

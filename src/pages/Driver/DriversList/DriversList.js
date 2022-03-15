@@ -257,13 +257,14 @@ const DriversList = () => {
                               >
                                 <i className="fa fa-edit" />
                               </button>
-                              {/* <button
+                              <button
                                 className="btn btn-success "
                                 onClick={() =>
-                                  history.push(`/partner/${partner.id}`)}
+                                  history.push(`/driver/details/${driver.id}`)
+                                }
                               >
                                 <i className="fa fa-eye" />
-                              </button> */}
+                              </button>
                             </ButtonWrapper>
                           </Td>
                         </Tr>

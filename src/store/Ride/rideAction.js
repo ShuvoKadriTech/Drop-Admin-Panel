@@ -21,7 +21,7 @@ export const AllRides =
           params: {
             searchKey: searchKey,
             page: page,
-            pageSize: 2,
+            pageSize: 10,
             type: typeKey,
           },
         });
@@ -84,7 +84,6 @@ export const selectUser = (user) => (dispatch) => {
   });
 };
 
-
 // SELECT TRIP
 
 export const selectTrip = (value) => (dispatch) => {
@@ -112,24 +111,21 @@ export const selectReturnTime = (value) => (dispatch) => {
   });
 };
 
-
 // ADD RIDE
 
-export const addRide = (rideData) => async dispatch => {
+export const addRide = (rideData) => async (dispatch) => {
   console.log("data-----", rideData);
   try {
     dispatch({
       type: actionType.ADD_RIDE_REQUEST_SEND,
-    })
-
-    const { data } = await requestApi().request(ADD_RIDE, {
-
-      method: 'POST',
-      data: rideData
-
     });
 
-    if(data.status){
+    const { data } = await requestApi().request(ADD_RIDE, {
+      method: "POST",
+      data: rideData,
+    });
+
+    if (data.status) {
       toast.success(data.message, {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -138,26 +134,23 @@ export const addRide = (rideData) => async dispatch => {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined
+        progress: undefined,
       });
 
       dispatch({
         type: actionType.ADD_RIDE_REQUEST_SUCCESS,
-        payload: data.data.ride
-      })
-    }else{
+        payload: data.data.ride,
+      });
+    } else {
       dispatch({
         type: actionType.ADD_RIDE_REQUEST_FAIL,
-        payload: data.error
-      })
+        payload: data.error,
+      });
     }
-    
-
   } catch (error) {
     dispatch({
       type: actionType.ADD_RIDE_REQUEST_FAIL,
-      payload: error.message
-    })
+      payload: error.message,
+    });
   }
-}
-
+};

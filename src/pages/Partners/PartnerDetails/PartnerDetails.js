@@ -485,7 +485,7 @@ const PartnerDetails = () => {
                                       </button>
                                       <button
                                         className="btn btn-success "
-                                        nClick={() => CarDetails(car.id)}
+                                        onClick={() => CarDetails(car.id)}
                                         // onClick={() =>
                                         //   history.push(
                                         //     `/car/details/${car.id}`

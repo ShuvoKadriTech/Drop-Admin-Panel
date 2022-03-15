@@ -77,6 +77,7 @@ export const GET_ALL_DRIVERS_BY_PARTNER = ADMIN_ENDPOINT + "/driver/partner/";
 export const GET_SINGLE_DRIVER = ADMIN_ENDPOINT + "/driver/";
 export const EDIT_DRIVER = ADMIN_ENDPOINT + "/driver/edit";
 export const ALL_DRIVERS = ADMIN_ENDPOINT + "/driver";
+export const SINGLE_DRIVER = ADMIN_ENDPOINT + "/driver/";
 
 // CAR BRAND
 
@@ -108,7 +109,7 @@ export const ADD_CAR = ADMIN_ENDPOINT + "/cars/add-new";
 // RIDE
 
 export const ALL_RIDES = ADMIN_ENDPOINT + "/ride";
-export const ADD_RIDE = ADMIN_ENDPOINT + "/ride/add"
+export const ADD_RIDE = ADMIN_ENDPOINT + "/ride/add";
 
 // USERS
 
