@@ -1,4 +1,5 @@
 import * as actionType from "../actionType";
+import { selectPickupTime } from './rideAction';
 
 const initialState = {
   loading: false,
@@ -15,7 +16,7 @@ const initialState = {
   typeKey: "all",
   selectedCarType: null,
   selectedUser: null,
-  selectedTrip : "1",
+  selectedTrip : "0",
   selectedPickupTime: new Date(),
   selectedReturnTime: new Date()
 };
@@ -106,6 +107,37 @@ const rideReducer = (state = initialState, action) => {
         ...state,
         selectedReturnTime: payload,
       };
+
+
+      // ADD RIDE
+
+      case actionType.ADD_RIDE_REQUEST_SEND: 
+      return{
+        ...state,
+        loading: true,
+        status: false,
+        error: null
+      }
+      
+      case actionType.ADD_RIDE_REQUEST_SUCCESS: 
+        return{
+          ...state,
+          loading: false,
+          status: true,
+          rides: [...state.rides, payload],
+          selectedCarType: null,
+          selectedUser: null,
+          selectedTrip: "0",
+          selectPickupTime: new Date(),
+          selectedReturnTime: new Date(),
+        }
+
+        case actionType.ADD_RIDE_REQUEST_FAIL: 
+          return{
+            ...state,
+            loading: false,
+            error: payload
+          }
 
     default:
       return state;

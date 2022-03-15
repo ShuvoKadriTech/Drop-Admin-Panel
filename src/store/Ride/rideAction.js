@@ -1,4 +1,5 @@
-import { ALL_RIDES } from "../../network/Api";
+import { toast } from "react-toastify";
+import { ADD_RIDE, ALL_RIDES } from "../../network/Api";
 import * as actionType from "../actionType";
 import requestApi from "./../../network/httpRequest";
 
@@ -110,4 +111,53 @@ export const selectReturnTime = (value) => (dispatch) => {
     payload: value,
   });
 };
+
+
+// ADD RIDE
+
+export const addRide = (rideData) => async dispatch => {
+  console.log("data-----", rideData);
+  try {
+    dispatch({
+      type: actionType.ADD_RIDE_REQUEST_SEND,
+    })
+
+    const { data } = await requestApi().request(ADD_RIDE, {
+
+      method: 'POST',
+      data: rideData
+
+    });
+
+    if(data.status){
+      toast.success(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+
+      dispatch({
+        type: actionType.ADD_RIDE_REQUEST_SUCCESS,
+        payload: data.data.ride
+      })
+    }else{
+      dispatch({
+        type: actionType.ADD_RIDE_REQUEST_FAIL,
+        payload: data.error
+      })
+    }
+    
+
+  } catch (error) {
+    dispatch({
+      type: actionType.ADD_RIDE_REQUEST_FAIL,
+      payload: error.message
+    })
+  }
+}
 

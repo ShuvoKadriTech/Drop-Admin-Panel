@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Button, Card, CardBody, Col, Container, Row } from "reactstrap";
 import styled from "styled-components";
 import GlobalWrapper from "../../../components/GlobalWrapper";
@@ -7,6 +7,7 @@ import { Autocomplete, Box, TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getCarTypes } from "../../../store/Car/carTypes/carTypesAction";
 import {
+  addRide,
   selectCarType,
   selectPickupTime,
   selectReturnTime,
@@ -27,6 +28,8 @@ import Select from "@mui/material/Select";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DateTimePicker from "@mui/lab/DateTimePicker";
+import { toast } from "react-toastify";
+import Directions from "../../../components/directions";
 // import {
 //   withScriptjs,
 //   withGoogleMap,
@@ -37,7 +40,7 @@ import DateTimePicker from "@mui/lab/DateTimePicker";
 
 const RideAdd = () => {
   const dispatch = useDispatch();
-
+  const mapRef = useRef()
   const { carTypes } = useSelector((state) => state.carTypesReducer);
 
   const {
@@ -46,6 +49,7 @@ const RideAdd = () => {
     selectedTrip,
     selectedPickupTime,
     selectedReturnTime,
+    status
   } = useSelector((state) => state.rideReducer);
 
   const { users } = useSelector((state) => state.usersReducer);
@@ -58,6 +62,21 @@ const RideAdd = () => {
   const [dropSelectedAddress, setDropSelectedAddress] = useState("");
   const [dropAddress, setDropAddress] = useState({});
   const [dropLatLng, setDropLatLng] = useState({});
+  const [distance, setDistance] = useState("");
+  const [duration, setDuration] = useState("");
+  const [pickupFullAddress, setPickupFullAddress] = useState("");
+  const [dropFullAddress, setDropFullAddress] = useState("");
+  const [pickupPlaceId, setPickupPlaceId] = useState("");
+  const [dropPlaceId, setDropPlaceId] = useState("");
+  const [note, setNote] = useState("");
+  const [map_, setMap] = useState();
+  const [directionsRenderer, setdirectionsRenderer] = useState();
+  const [directionsService, setdirectionsService] = useState();
+  const startRef = useRef()
+  const sidebar = useRef()
+  const endRef = useRef()
+  const floatingPanel = useRef()
+
 
   useEffect(() => {
     if (carTypes.length < 1) {
@@ -116,90 +135,444 @@ const RideAdd = () => {
   useEffect(() => {
     if (Object.keys(pickupAddress).length > 0) {
       getLatLng(pickupAddress).then((latlng) => setPickupLatLng(latlng));
+      const { geometry: { location }, formatted_address, address_components, place_id } = pickupAddress;
+      // console.log("placeId",place_id)
+      setPickupFullAddress(formatted_address);
+      setPickupPlaceId(place_id)
     }
     if (Object.keys(dropAddress).length > 0) {
       getLatLng(dropAddress).then((latlng) => setDropLatLng(latlng));
+      const { geometry: { location }, formatted_address, address_components, place_id } = dropAddress;
+      setDropFullAddress(formatted_address)
+      setDropPlaceId(place_id)
     }
   }, [pickupAddress, dropAddress]);
 
   // GET DISTANCE
 
-  useEffect(() => {
-    if (
-      Object.keys(pickupLatLng).length > 0 &&
-      Object.keys(dropLatLng).length > 0
-    ) {
-      // let {lat,lng} = pickupLatLng;
-      // let {lat,lng} = dropLatLng;
-      calcDistance(
-        pickupLatLng.lat,
-        pickupLatLng.lng,
-        dropLatLng.lat,
-        dropLatLng.lng
-      );
-    }
-  }, [pickupLatLng, dropLatLng]);
+  // useEffect(() => {
+  //   if (
+  //     Object.keys(pickupLatLng).length > 0 &&
+  //     Object.keys(dropLatLng).length > 0
+  //   ) {
+  //     // let {lat,lng} = pickupLatLng;
+  //     // let {lat,lng} = dropLatLng;
 
-  const calcDistance = (lat1, lon1, lat2, lon2) => {
-    var R = 6371; // km
-    var dLat = toRad(lat2 - lat1);
-    var dLon = toRad(lon2 - lon1);
-    var lat1 = toRad(lat1);
-    var lat2 = toRad(lat2);
+  //     // getDirection();
 
-    var a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c;
-    console.log("distance", d);
-  };
+  //     calcDistance(
+  //       pickupLatLng.lat,
+  //       pickupLatLng.lng,
+  //       dropLatLng.lat,
+  //       dropLatLng.lng
+  //     );
+  //   }
+  // }, [pickupLatLng, dropLatLng]);
 
-  function toRad(Value) {
-    return (Value * Math.PI) / 180;
-  }
+  // const calcDistance = (lat1, lon1, lat2, lon2) => {
+  //   var R = 6371; // km
+  //   var dLat = toRad(lat2 - lat1);
+  //   var dLon = toRad(lon2 - lon1);
+  //   var lat1 = toRad(lat1);
+  //   var lat2 = toRad(lat2);
+
+  //   var a =
+  //     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+  //     Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+  //   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  //   var d = R * c;
+  //   console.log("distance", d * 1000)
+  //   setDistance(d * 1000)
+  // };
+
+  // function toRad(Value) {
+  //   return (Value * Math.PI) / 180;
+  // }
 
   // GET DURATION
 
-  useEffect(() => {
-    if (selectedPickupTime !== null && selectedReturnTime !== null) {
-      const diffTime = Math.abs(selectedPickupTime - selectedReturnTime);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      console.log(diffTime + " milliseconds");
-      console.log(diffDays + " days");
-    }
-  }, [selectedPickupTime, selectedReturnTime]);
+
+
+
+  //   useEffect(() => {
+  //     if (directionsService &&  Object.keys(pickupLatLng).length > 0 &&
+  //     Object.keys(dropLatLng).length > 0) {
+
+  //         const locationPoint = [
+  //           { lat: pickupLatLng.lat, lng: pickupLatLng.lng },
+  //           { lat: dropLatLng.lat, lng: dropLatLng.lng }
+  //         ]
+  //         const origin = locationPoint[0];
+  //         const destination = locationPoint[1];
+  //         if (directionsService) {
+  //             directionsService.route({
+  //                 origin: origin,
+  //                 destination: destination,
+  //                 travelMode: window.google.maps.TravelMode.DRIVING
+  //             },
+  //                 (result, status) => {
+  //                     if (status === window.google.maps.DirectionsStatus.OK) {
+  //                         const route = result.routes[0];
+  //                         const distanceInMeter = route.legs[0].distance.value
+  //                         const second = route.legs[0].duration.value;
+  //                         // const dd = moment.duration(second*1000).humanize(true,{})
+  //                         // var duration = moment.duration({
+  //                         //     seconds:second
+  //                         // });
+  //                         // console.log(dd.humanize());
+  //                         console.log("distance =>", distanceInMeter)
+  //                         console.log("duration =>", second)
+  //                         console.log(route.legs[0].distance.text);
+  //                         console.log(route.legs[0].duration.text);
+  //                         // console.log(route.legs[0].distance.value);
+  //                         // console.log(route.legs[0].duration.text);
+  //                         // console.log(route.legs[0].start_address);
+  //                         // console.log(route.legs[0].end_address);
+  //                         // console.log(route.legs[0].steps);
+  //                         localStorage.setItem("takeTime",second);
+  //                         localStorage.setItem("distance",distanceInMeter);
+  //                         // dispatch(setRentalItem({
+  //                         //     distance: distanceInMeter,
+  //                         //     takeTime: second,
+  //                         // }))
+  //                         // setDirections(result)
+  //                     } else {
+  //                         console.error(`error fetching directions ${result}`);
+  //                     }
+  //                 }
+  //             ).catch((e) => window.alert("Directions request failed due to " + e.message));
+  //         }
+  //     } else {
+  //         setDirectionsService(window.google.maps.DirectionsService())
+  //     }
+  // }, [directionsService]);
+
+
+
+  // function getDirection(){
+  //   const locationPoint = [
+  //     { lat: pickupLatLng.lat, lng: pickupLatLng.lng },
+  //     { lat: dropLatLng.lat, lng: dropLatLng.lng }
+  //   ]
+  //   const origin = locationPoint[0];
+  //   const destination = locationPoint[1];
+
+  //   console.log("pickupLatLng",pickupLatLng);
+  //   console.log("dropLatLng",dropLatLng);
+  //   console.log("dropLatLng",dropLatLng);
+
+
+
+  //     console.log("inner")
+
+
+  //       directionsService.route({
+  //           origin: origin,
+  //           destination: destination,
+  //           travelMode: window.google.maps.TravelMode.DRIVING
+  //       },
+  //           (result, status) => {
+  //               if (status === window.google.maps.DirectionsStatus.OK) {
+  //                   const route = result.routes[0];
+  //                   const distanceInMeter = route.legs[0].distance.value
+  //                   const second = route.legs[0].duration.value;
+  //                   // const dd = moment.duration(second*1000).humanize(true,{})
+  //                   // var duration = moment.duration({
+  //                   //     seconds:second
+  //                   // });
+  //                   // console.log(dd.humanize());
+  //                   console.log("distance =>", distanceInMeter)
+  //                   console.log("duration =>", second)
+  //                   console.log(route.legs[0].distance.text);
+  //                   console.log(route.legs[0].duration.text);
+  //                   // console.log(route.legs[0].distance.value);
+  //                   // console.log(route.legs[0].duration.text);
+  //                   // console.log(route.legs[0].start_address);
+  //                   // console.log(route.legs[0].end_address);
+  //                   // console.log(route.legs[0].steps);
+  //                   localStorage.setItem("takeTime",second);
+  //                   localStorage.setItem("distance",distanceInMeter);
+  //                   // dispatch(setRentalItem({
+  //                   //     distance: distanceInMeter,
+  //                   //     takeTime: second,
+  //                   // }))
+  //                   // setDirections(result)
+  //               } else {
+  //                   console.error(`error fetching directions ${result}`);
+  //               }
+  //           }
+  //       ).catch((e) => window.alert("Directions request failed due to " + e.message));
+
+  // }
+
 
   // SUBMIT RIDE DATA
 
   const handleSubmit = () => {
-    console.log("pickup", pickupAddress);
-    // console.log("drop latlng", dropLatLng);
+    if (selectedCarType == null) {
+      return toast.warn("Please Select a Car Type", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+
+    if (selectedUser == null) {
+      return toast.warn("Please Select a User", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+    if (Object.keys(pickupAddress).length < 1 && Object.keys(dropAddress).length < 1) {
+      return toast.warn("Please Select Pickup and Drop Address", {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined
+      });
+    }
+
+    // PICKUP DATA
+
+    if (Object.keys(pickupAddress).length > 0) {
+      const { geometry: { location }, formatted_address, address_components, place_id } = pickupAddress;
+      // console.log("placeId",place_id)
+      // setPickupFullAddress(formatted_address);
+      // setPickupPlaceId(place_id)
+      var pickup_country_long_name;
+      var pickup_country_short_name;
+      var pickup_locality_long_name;
+      var pickup_sub_locality_long_name;
+
+      address_components.forEach(address_component => {
+        if (address_component.types.includes("country")) {
+          pickup_country_long_name = address_component.long_name
+          pickup_country_short_name = address_component.short_name
+        } else if (address_component.types.includes("locality")) {
+          pickup_locality_long_name = address_component.long_name
+        }
+        else if (address_component.types.includes("sublocality")) {
+          pickup_sub_locality_long_name = address_component.long_name
+        }
+      });
+    }
+
+    // DROP DATA
+
+    if (Object.keys(dropAddress).length > 0) {
+      const { geometry: { location }, formatted_address, address_components, place_id } = dropAddress;
+      // setDropFullAddress(formatted_address)
+      // setDropPlaceId(place_id)
+      var drop_country_long_name;
+      var drop_country_short_name;
+      var drop_locality_long_name;
+      var drop_sub_locality_long_name;
+
+      address_components.forEach(address_component => {
+        if (address_component.types.includes("country")) {
+          drop_country_long_name = address_component.long_name
+          drop_country_short_name = address_component.short_name
+        } else if (address_component.types.includes("locality")) {
+          drop_locality_long_name = address_component.long_name
+        }
+        else if (address_component.types.includes("sublocality")) {
+          drop_sub_locality_long_name = address_component.long_name
+        }
+      });
+
+
+    }
+
+
+
+
+    const data = {
+      carTypeId: selectedCarType.id,
+      userId: selectedUser.id,
+      pickUpLocation: {
+        address: pickupFullAddress,
+        placeId: pickupPlaceId,
+        latitute: pickupLatLng.lat,
+        longitute: pickupLatLng.lng,
+        locality: pickup_locality_long_name,
+        subLocality: pickup_sub_locality_long_name,
+        country: pickup_country_long_name,
+        countryCode: pickup_country_short_name
+      },
+      dropOffLocation: {
+        address: dropFullAddress,
+        placeId: dropPlaceId,
+        latitute: dropLatLng.lat,
+        longitute: dropLatLng.lng,
+        locality: drop_locality_long_name,
+        subLocality: drop_sub_locality_long_name,
+        country: drop_country_long_name,
+        countryCode: drop_country_short_name
+      },
+
+
+      duration: duration,
+      distance: distance,
+      tripType: selectedTrip,
+      pickUpDate: selectedPickupTime,
+      returnDate: selectedTrip == 0 ? null : selectedReturnTime,
+      extraNote: note
+    }
+
+    dispatch(addRide(data))
+
   };
 
-  // const MyMapComponent = compose(
-  //   withProps({
-  //     /**
-  //      * Note: create and replace your own key in the Google console.
-  //      * https://console.developers.google.com/apis/dashboard
-  //      * The key "AIzaSyBkNaAGLEVq0YLQMi-PYEMabFeREadYe1Q" can be ONLY used in this sandbox (no forked).
-  //      */
-  //       googleMapURL:
-  //       "https://maps.googleapis.com/maps/api/js?key=AIzaSyAIs4-oHUknPIC3Aq0fcnKUEB1IhWQD31s&v=3.exp&libraries=geometry,drawing,places",
-  //     loadingElement: <div style={{ height: `100%` }} />,
-  //     containerElement: <div style={{ height: `400px` }} />,
-  //     mapElement: <div style={{ height: `100%` }} />
-  //   }),
-  //   withScriptjs,
-  //   withGoogleMap
-  // )(props => (
-  //   <GoogleMap defaultZoom={8} defaultCenter={{ lat: -34.397, lng: 150.644 }}>
-  //     {props.isMarkerShown && (
-  //       <Marker position={{ lat: -34.397, lng: 150.644 }} />
-  //     )}
-  //   </GoogleMap>
-  // ));
 
+  // SUCCESS 
+
+  useEffect(() => {
+    if (status) {
+      setNote("")
+      setPickupSelectedAddress("");
+      setDropSelectedAddress("")
+    }
+  }, [status])
+
+
+
+
+  /* eslint-disable no-undef */
+  useEffect(() => {
+
+    if (Object.keys(pickupLatLng).length > 0 && Object.keys(dropLatLng).length > 0) {
+      const directionsRenderer_ = new google.maps.DirectionsRenderer();
+      const directionsService_ = new google.maps.DirectionsService();
+      setdirectionsRenderer(directionsRenderer_)
+      setdirectionsService(directionsService_)
+
+
+      const map = new google.maps.Map(mapRef.current, {
+        center: { lat: 22.328127, lng: 91.805502 },
+        zoom: 12,
+        disableDefaultUI: true,
+        // mapTypeId: 'satellite',
+        // heading: 90,
+        // tilt: 45,
+      });
+
+      directionsRenderer_.setMap(map);
+      directionsRenderer_.setPanel(sidebar.current);
+
+      const control = floatingPanel.current;
+      map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
+
+      calculateAndDisplayRoute(directionsService_, directionsRenderer_);
+    }
+
+
+
+  }, [pickupLatLng, dropLatLng]);
+
+
+
+  // const onChangeHandler = function () {
+  //   calculateAndDisplayRoute(directionsService, directionsRenderer);
+  // };
+
+  function calculateAndDisplayRoute(directionsService, directionsRenderer) {
+    // const start = startRef.current.value;
+    // const end = endRef.current.value;
+
+    // console.log(start,end,directionsService,directionsRenderer);
+
+
+
+    // const locationPoint = [
+    //     { lat: 22.328127, lng: 91.805502 },
+    //     { lat: 22.333903, lng: 91.820458 }
+    // ]
+
+
+    directionsService
+      .route({
+        origin: pickupLatLng,
+        destination: dropLatLng,
+        travelMode: google.maps.TravelMode.DRIVING,
+      })
+      .then((response) => {
+
+        // console.log(response);
+
+        const route = response.routes[0];
+        // console.log("route", route);
+
+
+
+        // console.log(route.legs[i].end_address);
+
+        // console.log(route.legs[i].distance.text);
+
+        directionsRenderer.setDirections(response);
+
+
+        setDistance((route.legs[0].distance.value).toString())
+        setDuration((route.legs[0].duration.value).toString())
+
+        // console.log(route.legs[0].distance);
+        // console.log(route.legs[0].duration);
+        // console.log(route.legs[0].start_address);
+        // console.log(route.legs[0].end_address);
+        // console.log(route.legs[0].steps);
+
+        // var summaryPanel;
+        // for (let i = 0; i < route.legs.length; i++) {
+        //     const routeSegment = i + 1;
+
+        //     summaryPanel +=
+        //         "<b>Route Segment: " + routeSegment + "</b><br>";
+        //         summaryPanel += route.legs[i].start_address + " to ";
+        //         summaryPanel += route.legs[i].end_address + "<br>";
+        //         summaryPanel += route.legs[i].distance.text + "<br><br>";
+        // }
+
+
+        // console.log(summaryPanel);
+
+        // console.log(directionsRenderer.getPanel());
+
+      })
+      .catch((e) => window.alert("Directions request failed due to " + e.message));
+
+
+
+    // directionsService
+    //   .route({
+    //     origin: start,
+    //     destination: end,
+    //     travelMode: google.maps.TravelMode.DRIVING,
+    //   })
+    //   .then((response) => {
+
+    //     console.log(response);
+
+    //     directionsRenderer.setDirections(response);
+
+    //     console.log(directionsRenderer.getPanel()); 
+
+    //   })
+    //   .catch((e) => window.alert("Directions request failed due to " + e.message));
+  }
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -209,8 +582,8 @@ const RideAdd = () => {
               maintitle="Ride"
               breadcrumbItem="Add"
               isRefresh={false}
-              //   loading={loading}
-              //   callList={callColorList}
+            //   loading={loading}
+            //   callList={callColorList}
             />
 
             <Card>
@@ -239,7 +612,7 @@ const RideAdd = () => {
                       options={carTypes.length > 0 ? carTypes : []}
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
-                        <TextField {...params} label="Select a Car Type" />
+                        <TextField {...params} label="Select a Car Type" required />
                       )}
                       renderOption={(props, option) => (
                         <Box
@@ -282,7 +655,7 @@ const RideAdd = () => {
                       options={users.length > 0 ? users : []}
                       sx={{ width: "100%" }}
                       renderInput={(params) => (
-                        <TextField {...params} label="Select a User" />
+                        <TextField {...params} label="Select a User" required />
                       )}
                       renderOption={(props, option, index) => (
                         <Box
@@ -340,7 +713,7 @@ const RideAdd = () => {
                           />
                           <div
                             className="autocomplete-dropdown-container"
-                            style={{ fontSize: "14px", fontFamily: "emoji" }}
+                            style={{ fontSize: "14px", fontFamily: "emoji", color: "black" }}
                           >
                             {loading && <div>Loading...</div>}
                             {suggestions.map((suggestion, index) => {
@@ -351,21 +724,23 @@ const RideAdd = () => {
                               // inline style for demonstration purpose
                               const style = suggestion.active
                                 ? {
-                                    backgroundColor: "#fafafa",
-                                    cursor: "pointer",
-                                  }
+                                  backgroundColor: "#fafafa",
+                                  cursor: "pointer",
+                                }
                                 : {
-                                    backgroundColor: "#ffffff",
-                                    cursor: "pointer",
-                                  };
+                                  backgroundColor: "#ffffff",
+                                  cursor: "pointer",
+                                };
                               return (
                                 <div
+                                  // style={{padding: "20px 0px !important"}}
                                   {...getSuggestionItemProps(suggestion, {
                                     className,
                                     style,
                                   })}
                                   key={index}
                                 >
+                                  <i className="ti-location-pin me-1" style={{ color: "black" }} />
                                   <span>{suggestion.description}</span>
                                 </div>
                               );
@@ -409,7 +784,7 @@ const RideAdd = () => {
                           />
                           <div
                             className="autocomplete-dropdown-container"
-                            style={{ fontSize: "14px", fontFamily: "emoji" }}
+                            style={{ fontSize: "14px", fontFamily: "emoji", color: "black" }}
                           >
                             {loading && <div>Loading...</div>}
                             {suggestions.map((suggestion, index) => {
@@ -420,13 +795,13 @@ const RideAdd = () => {
                               // inline style for demonstration purpose
                               const style = suggestion.active
                                 ? {
-                                    backgroundColor: "#fafafa",
-                                    cursor: "pointer",
-                                  }
+                                  backgroundColor: "#fafafa",
+                                  cursor: "pointer",
+                                }
                                 : {
-                                    backgroundColor: "#ffffff",
-                                    cursor: "pointer",
-                                  };
+                                  backgroundColor: "#ffffff",
+                                  cursor: "pointer",
+                                };
                               return (
                                 <div
                                   {...getSuggestionItemProps(suggestion, {
@@ -435,6 +810,7 @@ const RideAdd = () => {
                                   })}
                                   key={index}
                                 >
+                                  <i className="ti-location-pin me-1" style={{ color: "black" }} />
                                   <span>{suggestion.description}</span>
                                 </div>
                               );
@@ -449,6 +825,7 @@ const RideAdd = () => {
                 {/* TRIP TYPE AND PICKUP TIME */}
 
                 <Row>
+
                   <Col xl={6}>
                     <div>
                       <FormControl fullWidth>
@@ -464,9 +841,9 @@ const RideAdd = () => {
                             dispatch(selectTrip(event.target.value))
                           }
                         >
-                          <MenuItem value={"1"}>Single</MenuItem>
-                          <MenuItem value={"2"}>Round</MenuItem>
-                          <MenuItem value={"3"}>Round with Car Body</MenuItem>
+                          <MenuItem value={"0"}>Single</MenuItem>
+                          <MenuItem value={"1"}>Round</MenuItem>
+                          <MenuItem value={"2"}>Round with Car Body</MenuItem>
                         </Select>
                       </FormControl>
                     </div>
@@ -489,7 +866,7 @@ const RideAdd = () => {
 
                 {/* RETURN DATE AND NOTE */}
                 <Row className="my-xl-4 my-0">
-                  <Col xl={6}>
+                  {selectedTrip != 0 && <Col xl={6}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                       <DateTimePicker
                         renderInput={(props) => (
@@ -502,7 +879,8 @@ const RideAdd = () => {
                         }}
                       />
                     </LocalizationProvider>
-                  </Col>
+                  </Col>}
+
                   <Col xl={6} className="my-4 my-xl-0">
                     <TextField
                       id="outlined-required"
@@ -510,6 +888,7 @@ const RideAdd = () => {
                       className="w-100"
                       multiline
                       maxRows={4}
+                      onChange={event => setNote(event.target.value)}
                     />
                   </Col>
                 </Row>
@@ -533,6 +912,17 @@ const RideAdd = () => {
             </Card>
 
             {/* <MyMapComponent isMarkerShown></MyMapComponent> */}
+            {/* {Object.keys(pickupLatLng).length > 0 &&
+              Object.keys(dropLatLng).length > 0 && <Directions pickupLatLng={pickupLatLng} dropLatLng={dropLatLng}></Directions>} */}
+
+
+
+            <Row>
+              <Col md={12}>
+                <div ref={mapRef} className="map" style={{ width: '100%', height: '250px' }}></div>
+              </Col>
+            </Row>
+
           </Container>
         </div>
       </GlobalWrapper>
