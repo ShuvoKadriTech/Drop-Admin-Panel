@@ -172,14 +172,14 @@ const RideList = () => {
                           >
                             <Th>{ride.bookingId}</Th>
 
-                            <Td style={{ maxWidth: "300px" }}>
+                            <Td style={{ maxWidth: "270px" }}>
                               <div>
                                 <p>{ride.pickupLocation.address}</p>
                                 <span><mark>{ride.pickUpTimeText}</mark></span>
                               </div>
                             </Td>
 
-                            <Td style={{ maxWidth: "300px" }}>
+                            <Td style={{ maxWidth: "270px" }}>
                               <div>
                                 <p>{ride.dropOffLocation.address}</p>
                                 {/* <span>{ride.returnTimeText}</span> */}
