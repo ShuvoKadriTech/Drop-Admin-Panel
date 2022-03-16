@@ -33,9 +33,9 @@ const DriverDetails = () => {
         setDriver(findDriver);
         // let nidImgs = [];
         let imgs = [];
-        const { nidBackPic, nidFontPic, licenseBackPic, licenseFontPic } =
+        const { nidBackPic, nidFontPic, licenseBackPic, licenseFontPic,img, partner: {img: partnerImg} } =
           findDriver;
-        imgs.push(nidBackPic, nidFontPic, licenseBackPic, licenseFontPic);
+          imgs.push(nidFontPic, nidBackPic, licenseBackPic, licenseFontPic,img,partnerImg);
         // licenseImgs.push(licenseFontPic, licenseBackPic);
         if (imgs.length > 0) {
           setDriverOthersImages(imgs);
@@ -60,7 +60,8 @@ const DriverDetails = () => {
         const { nidBackPic, nidFontPic, licenseBackPic, licenseFontPic, img, partner: {img: partnerImg} } =
           data.data.driver;
         imgs.push(nidFontPic, nidBackPic, licenseBackPic, licenseFontPic,img,partnerImg);
-        if (imgs.length > 0) {
+        if (imgs.length < 1) {
+
           setDriverOthersImages(imgs);
         }
       }
@@ -82,7 +83,7 @@ const DriverDetails = () => {
           // callList={callPartnerList}
           />
 
-          {isOpen && (
+          {/* {isOpen && (
             <Lightbox
               mainSrc={selectedImg}
               enableZoom={true}
@@ -91,9 +92,9 @@ const DriverDetails = () => {
                 setIsOpen(!isOpen);
               }}
             />
-          )}
+          )} */}
 
-          {/* NID IMAGES ZOOM */}
+          {/*  IMAGES ZOOM */}
 
           {isZoom ? (
             <Lightbox
@@ -142,7 +143,7 @@ const DriverDetails = () => {
                     <Col xl={4} className='d-flex justify-content-center align-items-center'>
                       <div>
                         <img
-                          className="rounded-circle avatar-xl"
+                          className="rounded-circle avatar-xl cursor-pointer"
                           alt="partner"
                           src={driver?.img}
                           onClick={()=>{setPhotoIndex(4); setIsZoom(true)} }
@@ -198,7 +199,7 @@ const DriverDetails = () => {
                     <Col xl={4} className='d-flex justify-content-center align-items-center'>
                       <div>
                         <img
-                          className="rounded-circle avatar-xl"
+                          className="rounded-circle avatar-xl cursor-pointer"
                           alt="partner"
                           src={driver?.partner?.img}
                           onClick={()=>{setPhotoIndex(5); setIsZoom(true)} }

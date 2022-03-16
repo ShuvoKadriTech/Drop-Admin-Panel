@@ -105,6 +105,7 @@ export const GET_CAR_FUEL_TYPES = ADMIN_ENDPOINT + "/car-fuel-types";
 
 export const ADD_CAR = ADMIN_ENDPOINT + "/cars/add-new";
 // export const EDIT_CAR = ADMIN_ENDPOINT + "/cars/edit-new";
+export const SINGLE_CAR = ADMIN_ENDPOINT + "/cars/single-car-by-id"
 
 // RIDE
 

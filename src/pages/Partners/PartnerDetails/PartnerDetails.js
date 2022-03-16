@@ -112,13 +112,13 @@ const PartnerDetails = () => {
 
   // CAR DETAILS
 
-  const CarDetails = (carId) => {
-    history.push({
-      pathname: `/car/details/${carId}`,
-      search: `?pID=${id}`,
-      // state: { detail: 'some_value' }
-    });
-  };
+  // const CarDetails = (carId) => {
+  //   history.push({
+  //     pathname: `/car/details/${carId}`,
+  //     search: `?pID=${id}`,
+  //     // state: { detail: 'some_value' }
+  //   });
+  // };
 
   return (
     <React.Fragment>
@@ -485,12 +485,11 @@ const PartnerDetails = () => {
                                       </button>
                                       <button
                                         className="btn btn-success "
-                                        onClick={() => CarDetails(car.id)}
-                                        // onClick={() =>
-                                        //   history.push(
-                                        //     `/car/details/${car.id}`
-                                        //   )
-                                        // }
+                                        onClick={() =>
+                                          history.push(
+                                            `/car/details/${car.id}`
+                                          )
+                                        }
                                       >
                                         <i className="fa fa-eye" />
                                       </button>
