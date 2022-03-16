@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardBody, CardTitle, Col, Container, Row } from "reactstrap";
+import { Button, Card, CardBody, CardTitle, Col, Container, Row } from "reactstrap";
 import styled from "styled-components";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import { useSelector } from "react-redux";
@@ -18,9 +18,9 @@ const DriverDetails = () => {
   const [driver, setDriver] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState("");
-  const [driverLicenseImages, setDriverLincenseImages] = useState([]);
+  // const [driverLicenseImages, setDriverLincenseImages] = useState([]);
   const [isView, setIsView] = useState(false);
-  const [driveNidImages, setDriverNidImages] = useState([]);
+  const [driveOthersImages, setDriverOthersImages] = useState([]);
   const [isZoom, setIsZoom] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
 
@@ -31,17 +31,14 @@ const DriverDetails = () => {
       // console.log("find driver=>", findDriver);
       if (findDriver) {
         setDriver(findDriver);
-        let nidImgs = [];
-        let licenseImgs = [];
+        // let nidImgs = [];
+        let imgs = [];
         const { nidBackPic, nidFontPic, licenseBackPic, licenseFontPic } =
           findDriver;
-        nidImgs.push(nidBackPic, nidFontPic);
-        licenseImgs.push(licenseFontPic, licenseBackPic);
-        if (licenseImgs.length > 0) {
-          setDriverLincenseImages(licenseImgs);
-        }
-        if (nidImgs.length > 0) {
-          setDriverNidImages(nidImgs);
+        imgs.push(nidBackPic, nidFontPic, licenseBackPic, licenseFontPic);
+        // licenseImgs.push(licenseFontPic, licenseBackPic);
+        if (imgs.length > 0) {
+          setDriverOthersImages(imgs);
         }
       } else {
         callApi(id);
@@ -59,17 +56,12 @@ const DriverDetails = () => {
       // console.log("single driver", data);
       if (data.status) {
         setDriver(data.data.driver);
-        let nidImgs = [];
-        let licenseImgs = [];
-        const { nidBackPic, nidFontPic, licenseBackPic, licenseFontPic } =
+        let imgs = [];
+        const { nidBackPic, nidFontPic, licenseBackPic, licenseFontPic, img, partner: {img: partnerImg} } =
           data.data.driver;
-        nidImgs.push(nidFontPic, nidBackPic);
-        licenseImgs.push(licenseFontPic, licenseBackPic);
-        if (nidImgs.length > 0) {
-          setDriverNidImages(nidImgs);
-        }
-        if (licenseImgs.length > 0) {
-          setDriverLincenseImages(licenseImgs);
+        imgs.push(nidFontPic, nidBackPic, licenseBackPic, licenseFontPic,img,partnerImg);
+        if (imgs.length > 0) {
+          setDriverOthersImages(imgs);
         }
       }
     } catch (error) {
@@ -87,7 +79,7 @@ const DriverDetails = () => {
             breadcrumbItem="Details"
             // loading={loading}
             isRefresh={true}
-            // callList={callPartnerList}
+          // callList={callPartnerList}
           />
 
           {isOpen && (
@@ -107,20 +99,20 @@ const DriverDetails = () => {
             <Lightbox
               // closeLabel={"close button"}
               // closeButtonAriaLabel={"close button"}
-              mainSrc={driveNidImages[photoIndex]}
-              nextSrc={driveNidImages[(photoIndex + 1) % driveNidImages.length]}
+              mainSrc={driveOthersImages[photoIndex]}
+              nextSrc={driveOthersImages[(photoIndex + 1) % driveOthersImages.length]}
               prevSrc={
-                driveNidImages[
-                  (photoIndex + driveNidImages.length - 1) %
-                    driveNidImages.length
+                driveOthersImages[
+                (photoIndex + driveOthersImages.length - 1) %
+                driveOthersImages.length
                 ]
               }
               onCloseRequest={() => setIsZoom(false)}
               onMovePrevRequest={
                 () =>
                   setPhotoIndex(
-                    (photoIndex + driveNidImages.length - 1) %
-                      driveNidImages.length
+                    (photoIndex + driveOthersImages.length - 1) %
+                    driveOthersImages.length
                   )
                 // setPhotoIndex({
                 //   photoIndex:
@@ -129,7 +121,7 @@ const DriverDetails = () => {
                 // })
               }
               onMoveNextRequest={
-                () => setPhotoIndex((photoIndex + 1) % driveNidImages.length)
+                () => setPhotoIndex((photoIndex + 1) % driveOthersImages.length)
                 // setPhotoIndex({
                 //   photoIndex: (photoIndex + 1) % carImageGalley.length,
                 // })
@@ -137,186 +129,100 @@ const DriverDetails = () => {
             />
           ) : null}
 
-          {/* LICENSE IMAGE VIEW */}
 
-          {isView ? (
-            <Lightbox
-              // closeLabel={"close button"}
-              // closeButtonAriaLabel={"close button"}
-              mainSrc={driverLicenseImages[photoIndex]}
-              nextSrc={
-                driverLicenseImages[
-                  (photoIndex + 1) % driverLicenseImages.length
-                ]
-              }
-              prevSrc={
-                driverLicenseImages[
-                  (photoIndex + driverLicenseImages.length - 1) %
-                    driverLicenseImages.length
-                ]
-              }
-              onCloseRequest={() => setIsView(false)}
-              onMovePrevRequest={
-                () =>
-                  setPhotoIndex(
-                    (photoIndex + driverLicenseImages.length - 1) %
-                      driverLicenseImages.length
-                  )
-                // setPhotoIndex({
-                //   photoIndex:
-                //     (photoIndex + carImageGalley.length - 1) %
-                //     carImageGalley.length
-                // })
-              }
-              onMoveNextRequest={
-                () =>
-                  setPhotoIndex((photoIndex + 1) % driverLicenseImages.length)
-                // setPhotoIndex({
-                //   photoIndex: (photoIndex + 1) % carImageGalley.length,
-                // })
-              }
-            />
-          ) : null}
 
-          {/* PARTNER INFORMATION */}
 
-          <Card>
-            <CardBody>
-              <CardTitle>Partner Details</CardTitle>
-              <Row>
-                <Col
-                  md={6}
-                  sm={12}
-                  className="d-flex justify-content-between flex-wrap "
-                  // style={{  borderRight: width > 1200 ?  "1px solid lightgray" : "none"}}
-                >
-                  {driver?.partner?.img ? (
-                    <ImageWrapper
-                      style={{
-                        width: "100%",
-                        height: "200px",
-                        padding: "10px 0px",
-                      }}
-                    >
-                      <img
-                        onClick={() => {
-                          setIsOpen(true);
-                          setSelectedImg(driver?.partner?.img);
-                        }}
-                        className="img-fluid cursor-pointer"
-                        alt="Veltrix"
-                        src={driver?.partner?.img}
-                        width="100%"
-                      />
-                      <small>Partner Image</small>
-                    </ImageWrapper>
-                  ) : null}
-                </Col>
-                <Col
-                  md={6}
-                  sm={12}
-                  className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
-                >
-                  <div className="ps-4">
-                    <Details>
-                      <h5>Name:</h5>
-                      <Value>{driver?.partner?.name}</Value>
-                    </Details>
-                    <Details>
-                      <h5>Gmail:</h5>
-                      <Value>{driver?.partner?.email}</Value>
-                    </Details>
-                    <Details>
-                      <h5>Phone:</h5>
-                      <Value>{driver?.partner?.phone}</Value>
-                    </Details>
-                    <Details>
-                      <h5>NID:</h5>
-                      <Value>{driver?.partner?.nid}</Value>
-                    </Details>
-                    <Details>
-                      <h5>Date-Of-Birth:</h5>
-                      <Value>{driver?.partner?.dob}</Value>
-                    </Details>
-                    <Details>
-                      <h5>Bidding Percent:</h5>
-                      <Value>{driver?.partner?.biddingPercent}%</Value>
-                    </Details>
-                  </div>
-                </Col>
-              </Row>
-            </CardBody>
-          </Card>
 
-          {/* DRIVER INFORMATION  */}
+          <Row>
+            <Col xl={6}>
+              <Card>
+                <CardBody>
+                  <CardTitle>Driver Information</CardTitle>
+                  <Row>
+                    <Col xl={4} className='d-flex justify-content-center align-items-center'>
+                      <div>
+                        <img
+                          className="rounded-circle avatar-xl"
+                          alt="partner"
+                          src={driver?.img}
+                          onClick={()=>{setPhotoIndex(4); setIsZoom(true)} }
+                        />
+                      </div>
+                    </Col>
+                    <Col xl={8}>
+                      <div className="ps-4">
+                        <Details>
+                          <h5>Name:</h5>
+                          <Value>{driver?.name}</Value>
+                        </Details>
+                        <Details>
+                          <h5>Gmail:</h5>
+                          <Value>{driver?.email}</Value>
+                        </Details>
+                        <Details>
+                          <h5>Phone:</h5>
+                          <Value>{driver?.phone}</Value>
+                        </Details>
+                        <Details>
+                          <h5>NID:</h5>
+                          <Value>{driver?.nid}</Value>
+                        </Details>
+                        <Details>
+                          <h5>Date-Of-Birth:</h5>
+                          <Value>{new Date(driver?.dob).toDateString()}</Value>
+                        </Details>
+                        <Details>
+                          <h5>Address:</h5>
+                          <Value>{driver?.address}</Value>
+                        </Details>
+                      </div>
+                    </Col>
+                  </Row>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col xl={6}>
+              <Card style={{ height: "250px" }}>
+                <CardBody>
+                  <CardTitle>
+                    <div className='d-flex justify-content-between align-items-center'>
+                      <span>Partner Information</span>
+                      <div onClick={() =>
+                        history.push(`/partner/${driver.partner.id}`)
+                      }>
+                        <Button>Details</Button>
+                      </div>
+                    </div>
+                  </CardTitle>
+                  <Row>
+                    <Col xl={4} className='d-flex justify-content-center align-items-center'>
+                      <div>
+                        <img
+                          className="rounded-circle avatar-xl"
+                          alt="partner"
+                          src={driver?.partner?.img}
+                          onClick={()=>{setPhotoIndex(5); setIsZoom(true)} }
+                        />
+                      </div>
+                    </Col>
+                    <Col xl={8} className="d-flex justify-content-start align-items-center">
+                      <div className="ps-4 ">
+                        <Details>
+                          <h5>Name:</h5>
+                          <Value>{driver?.partner?.name}</Value>
+                        </Details>
+                        <Details>
+                          <h5>Phone:</h5>
+                          <Value>{driver?.partner?.phone}</Value>
+                        </Details>
+                      </div>
+                    </Col>
+                  </Row>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
 
-          <Card>
-            <CardBody>
-              <CardTitle>Driver Information</CardTitle>
-              <Row>
-                <Col
-                  md={6}
-                  sm={12}
-                  className="d-flex justify-content-between flex-wrap "
-                  // style={{  borderRight: width > 1200 ?  "1px solid lightgray" : "none"}}
-                >
-                  {driver?.img ? (
-                    <ImageWrapper
-                      style={{
-                        width: "100%",
-                        height: "200px",
-                        padding: "10px 0px",
-                      }}
-                    >
-                      <img
-                        onClick={() => {
-                          setIsOpen(true);
-                          setSelectedImg(driver?.img);
-                        }}
-                        className="img-fluid cursor-pointer"
-                        alt="Veltrix"
-                        src={driver?.img}
-                        width="100%"
-                      />
-                      <small>Driver Image</small>
-                    </ImageWrapper>
-                  ) : null}
-                </Col>
-                <Col
-                  md={6}
-                  sm={12}
-                  className="d-flex justify-content-between  align-items-center mt-5 mt-md-0"
-                >
-                  <div className="ps-4">
-                    <Details>
-                      <h5>Name:</h5>
-                      <Value>{driver?.name}</Value>
-                    </Details>
-                    <Details>
-                      <h5>Gmail:</h5>
-                      <Value>{driver?.email}</Value>
-                    </Details>
-                    <Details>
-                      <h5>Phone:</h5>
-                      <Value>{driver?.phone}</Value>
-                    </Details>
-                    <Details>
-                      <h5>NID:</h5>
-                      <Value>{driver?.nid}</Value>
-                    </Details>
-                    <Details>
-                      <h5>Date-Of-Birth:</h5>
-                      <Value>{new Date(driver?.dob).toDateString()}</Value>
-                    </Details>
-                    <Details>
-                      <h5>Address:</h5>
-                      <Value>{driver?.address}</Value>
-                    </Details>
-                  </div>
-                </Col>
-              </Row>
-            </CardBody>
-          </Card>
 
           {/* DRIVER OTHERS IMAGES */}
 
@@ -325,62 +231,15 @@ const DriverDetails = () => {
               <CardTitle> Driver Others Images</CardTitle>
 
               <Row>
-                <Col
-                  md={6}
-                  sm={12}
-                  className="d-flex justify-content-between flex-wrap "
-                  // style={{  borderRight: width > 1200 ?  "1px solid lightgray" : "none"}}
-                >
-                  {driveNidImages ? (
-                    <ImageWrapper
-                      style={{
-                        width: "100%",
-                        height: "200px",
-                        padding: "10px 0px",
-                      }}
-                    >
-                      <img
-                        onClick={() => {
-                          setIsZoom(true);
-                          // setSelectedImg(driver?.licenseFontPic);
-                        }}
-                        className="img-fluid cursor-pointer"
-                        alt="Veltrix"
-                        src={driveNidImages[0]}
-                        width="100%"
-                      />
-                      <small>Driver NID Images</small>
-                    </ImageWrapper>
-                  ) : null}
-                </Col>
-                <Col
-                  md={6}
-                  sm={12}
-                  className="d-flex justify-content-between flex-wrap "
-                  // style={{  borderRight: width > 1200 ?  "1px solid lightgray" : "none"}}
-                >
-                  {driverLicenseImages ? (
-                    <ImageWrapper
-                      style={{
-                        width: "100%",
-                        height: "200px",
-                        padding: "10px 0px",
-                      }}
-                    >
-                      <img
-                        onClick={() => {
-                          setIsView(true);
-                          // setSelectedImg(driver?.licenseBackPic);
-                        }}
-                        className="img-fluid cursor-pointer"
-                        alt="Veltrix"
-                        src={driverLicenseImages[0]}
-                        width="100%"
-                      />
-                      <small>Driver Lincense Images</small>
-                    </ImageWrapper>
-                  ) : null}
-                </Col>
+                {driveOthersImages.length > 0 && [...driveOthersImages.slice(0,4)].map((img,index) => (
+
+                  <Col md={3} sm={6} className="d-flex justify-content-center align-content-center">
+                    <img src={img} alt='image' style={{height: "150px"}} className="img-thumbnail" onClick={()=>{setPhotoIndex(index); setIsZoom(true)} }  />
+                  </Col>
+
+                ))}
+
+
               </Row>
             </CardBody>
           </Card>

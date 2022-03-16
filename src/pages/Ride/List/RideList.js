@@ -152,6 +152,7 @@ const RideList = () => {
                       <Th>Booking Id</Th>
                       <Th>Pickup(Place/Time) </Th>
                       <Th>Drop Off(Place/Time) </Th>
+                      <Th>Bidding</Th>
                       <Th>User</Th>
                       <Th>Distance/Duration</Th>
                       <Th>Action</Th>
@@ -171,16 +172,22 @@ const RideList = () => {
                           >
                             <Th>{ride.bookingId}</Th>
 
-                            <Td style={{ maxWidth: "350px" }}>
+                            <Td style={{ maxWidth: "300px" }}>
                               <div>
                                 <p>{ride.pickupLocation.address}</p>
-                                <span>{ride.pickUpTimeText}</span>
+                                <span><mark>{ride.pickUpTimeText}</mark></span>
                               </div>
                             </Td>
 
-                            <Td style={{ maxWidth: "350px" }}>
+                            <Td style={{ maxWidth: "300px" }}>
                               <div>
                                 <p>{ride.dropOffLocation.address}</p>
+                                {/* <span>{ride.returnTimeText}</span> */}
+                              </div>
+                            </Td>
+                            <Td>
+                              <div>
+                                <p>{ride.biddings.length}</p>
                                 {/* <span>{ride.returnTimeText}</span> */}
                               </div>
                             </Td>
