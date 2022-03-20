@@ -218,21 +218,6 @@ const SidebarContent = (props) => {
             <li>
               <Link to="/#" className="has-arrow waves-effect">
                 <i className="ti-car" />
-                <span>{props.t("Ride")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/ride/list">{props.t("List")}</Link>
-                </li>
-                <li>
-                  <Link to="/ride/add">{props.t("Add")}</Link>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="ti-car" />
                 <span>{props.t("Car")}</span>
               </Link>
               <ul className="sub-menu" aria-expanded="false">
@@ -260,6 +245,78 @@ const SidebarContent = (props) => {
             </li>
 
             {/* RIDE  */}
+
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="ti-car" />
+                <span>{props.t("Ride")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/ride/list">{props.t("List")}</Link>
+                </li>
+                <li>
+                  <Link to="/ride/add">{props.t("Add")}</Link>
+                </li>
+              </ul>
+            </li>
+
+            {/*  POLICY */}
+
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="ti-lock" />
+                <span>{props.t("Policy")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li />
+                <li>
+                  <Link to="/#" className="has-arrow waves-effect">
+                    {props.t("Partner")}
+                  </Link>
+                  <ul className="sub-menu" aria-expanded="true">
+                    <li>
+                      <Link to="/partner/privacy-policy">
+                        {props.t("Privacy Policy")}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/partner/payment-policy">
+                        {props.t("Payment Policy")}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/partner/cancalltion-policy">
+                        {props.t("Cancalltion Policy")}
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <Link to="/#" className="has-arrow waves-effect">
+                    {props.t("User")}
+                  </Link>
+                  <ul className="sub-menu" aria-expanded="true">
+                    <li>
+                      <Link to="/user/privacy-policy">
+                        {props.t("Privacy Policy")}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/user/payment-policy">
+                        {props.t("Payment Policy")}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/user/cancalltion-policy">
+                        {props.t("Cancalltion Policy")}
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
 
             {/* Admin Controls */}
 

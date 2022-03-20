@@ -262,7 +262,7 @@ const PartnersList = () => {
                               <button
                                 className="btn btn-success "
                                 onClick={() =>
-                                  history.push(`/partner/${partner.id}`)
+                                  history.push(`/partner/details/${partner.id}`)
                                 }
                               >
                                 <i className="fa fa-eye" />

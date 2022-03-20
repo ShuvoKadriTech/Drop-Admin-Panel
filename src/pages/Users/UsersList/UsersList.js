@@ -25,17 +25,24 @@ import {
   updateStatusKey,
   usersList,
 } from "../../../store/Users/UsersAction";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import AppPagination from "../../../components/AppPagination";
 
 const BlankPage = () => {
-
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { loading, users, statusKey, searchKey, createdByKey,paging,hasNextPage,hasPreviousPage,currentPage } = useSelector(
-    (state) => state.usersReducer
-  );
+  const {
+    loading,
+    users,
+    statusKey,
+    searchKey,
+    createdByKey,
+    paging,
+    hasNextPage,
+    hasPreviousPage,
+    currentPage,
+  } = useSelector((state) => state.usersReducer);
 
   useEffect(() => {
     if (statusKey || searchKey || createdByKey) {
@@ -92,9 +99,7 @@ const BlankPage = () => {
                             dispatch(updateStatusKey(event.target.value))
                           }
                         >
-                          <MenuItem value={"all"}>
-                            All
-                          </MenuItem>
+                          <MenuItem value={"all"}>All</MenuItem>
                           <MenuItem value={"pending"}>Pending</MenuItem>
                           <MenuItem value={"block"}>Block</MenuItem>
                           <MenuItem value={"permanent-block"}>
@@ -213,9 +218,9 @@ const BlankPage = () => {
                                 </button>
                                 <button
                                   className="btn btn-success "
-                                  // onClick={() =>
-                                  //   history.push(`/partner/${partner.id}`)
-                                  // }
+                                  onClick={() =>
+                                    history.push(`/user/details/${user.id}`)
+                                  }
                                 >
                                   <i className="fa fa-eye" />
                                 </button>
@@ -229,7 +234,7 @@ const BlankPage = () => {
                         <Td>
                           <Spinner
                             style={{
-                            position: "fixed",
+                              position: "fixed",
                               left: "50%",
                               top: "50%",
                             }}
@@ -251,19 +256,18 @@ const BlankPage = () => {
             </Card>
 
             <Row>
-            <Col xl={12}>
-              <div className="d-flex justify-content-center">
-                <AppPagination
-                  paging={paging}
-                  hasNextPage={hasNextPage}
-                  hasPreviousPage={hasPreviousPage}
-                  currentPage={currentPage}
-                  lisener={(page) => dispatch(usersList(true, page))}
-                />
-              </div>
-            </Col>
-          </Row>
-
+              <Col xl={12}>
+                <div className="d-flex justify-content-center">
+                  <AppPagination
+                    paging={paging}
+                    hasNextPage={hasNextPage}
+                    hasPreviousPage={hasPreviousPage}
+                    currentPage={currentPage}
+                    lisener={(page) => dispatch(usersList(true, page))}
+                  />
+                </div>
+              </Col>
+            </Row>
           </Container>
         </div>
       </GlobalWrapper>
@@ -288,8 +292,6 @@ const SearchWrapper = styled.div`
       border: none;
       color: black !important;
     }
-
-
   }
 `;
 

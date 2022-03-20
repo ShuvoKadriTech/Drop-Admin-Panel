@@ -145,6 +145,12 @@ import RideList from "../pages/Ride/List/RideList";
 import CarDetails from "../pages/Car/CarDetails/CarDetails";
 import AddUser from "../pages/Users/AddUser/AddUser";
 import RideAdd from "../pages/Ride/RideAdd/RideAdd";
+import PrivacyPolicy from "../components/PrivacyPolicy/PrivacyPolicy";
+import PaymentPolicy from "../components/PaymentPolicy/PaymentPolicy";
+import CancallationPolicy from "../components/CancallationPolicy/CancallationPolicy";
+import PartnerPrivacyPolicy from "./../pages/Partners/PartnerPrivacyPolicy/PartnerPrivacyPolicy";
+import UserPrivacyPolicy from "../pages/Users/UserPrivacyPolicy/UserPrivacyPolicy";
+import UserDetails from "../pages/Users/UserDetails/UserDetails";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -165,13 +171,14 @@ const userRoutes = [
   { path: "/users/list", component: UsersList },
   { path: "/users/add", component: AddUser },
   { path: "/users/edit/:id", component: AddUser },
+  { path: "/user/details/:id", component: UserDetails },
 
   // Partners
 
   { path: "/partner/list", component: PartnersList },
   { path: "/partner/add", component: PartnerAdd },
   { path: "/partner/edit/:id", component: PartnerAdd },
-  { path: "/partner/:id", component: PartnerDetails },
+  { path: "/partner/details/:id", component: PartnerDetails },
 
   // DRIVER
 
@@ -211,6 +218,18 @@ const userRoutes = [
   // RIDE
   { path: "/ride/list", component: RideList },
   { path: "/ride/add", component: RideAdd },
+
+  // PARTNER POLICY
+
+  { path: "/partner/privacy-policy", component: PartnerPrivacyPolicy },
+  { path: "/partner/payment-policy", component: PaymentPolicy },
+  { path: "/partner/cancalltion-policy", component: CancallationPolicy },
+
+  // USER POLICY
+
+  { path: "/user/privacy-policy", component: UserPrivacyPolicy },
+  { path: "/user/payment-policy", component: PaymentPolicy },
+  { path: "/user/cancalltion-policy", component: CancallationPolicy },
 
   // ADMIN CONTROL
 
