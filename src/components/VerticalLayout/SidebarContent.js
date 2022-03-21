@@ -275,6 +275,11 @@ const SidebarContent = (props) => {
                     {props.t("Partner")}
                   </Link>
                   <ul className="sub-menu" aria-expanded="true">
+                  <li>
+                      <Link to="/partner/about-us">
+                        {props.t("About Us")}
+                      </Link>
+                    </li>
                     <li>
                       <Link to="/partner/privacy-policy">
                         {props.t("Privacy Policy")}
@@ -286,8 +291,13 @@ const SidebarContent = (props) => {
                       </Link>
                     </li>
                     <li>
-                      <Link to="/partner/cancalltion-policy">
-                        {props.t("Cancalltion Policy")}
+                      <Link to="/partner/cancellation-policy">
+                        {props.t("Cancellation Policy")}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/partner/refund-policy">
+                        {props.t("Refund Policy")}
                       </Link>
                     </li>
                   </ul>
@@ -298,6 +308,11 @@ const SidebarContent = (props) => {
                     {props.t("User")}
                   </Link>
                   <ul className="sub-menu" aria-expanded="true">
+                  <li>
+                      <Link to="/user/about-us">
+                        {props.t("About Us")}
+                      </Link>
+                    </li>
                     <li>
                       <Link to="/user/privacy-policy">
                         {props.t("Privacy Policy")}
@@ -309,8 +324,13 @@ const SidebarContent = (props) => {
                       </Link>
                     </li>
                     <li>
-                      <Link to="/user/cancalltion-policy">
-                        {props.t("Cancalltion Policy")}
+                      <Link to="/user/cancellation-policy">
+                        {props.t("Cancellation Policy")}
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/user/refund-policy">
+                        {props.t("Refund Policy")}
                       </Link>
                     </li>
                   </ul>

@@ -1,6 +1,6 @@
 
 import React from "react";
-
+import GlobalWrapper from "../GlobalWrapper";
 import { Editor } from "react-draft-wysiwyg";
 import {
   Button,
@@ -13,11 +13,8 @@ import {
   Form,
   Row,
 } from "reactstrap";
-import GlobalWrapper from "../GlobalWrapper";
-import Breadcrumbs from "../../components/Common/Breadcrumb";
-import { EditorState } from "draft-js";
 
-const PaymentPolicy = ({title}) => {
+const CancellationPolicy = ({title}) => {
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -27,7 +24,7 @@ const PaymentPolicy = ({title}) => {
               <Col>
                 <Card>
                   <CardBody>
-                    <CardTitle className="h4">{title} Payment Policy</CardTitle>
+                    <CardTitle className="h4">{title} Cancellation Policy</CardTitle>
                     <Form method="post">
                       <Editor
                         onChange={(editorState) => console.log(editorState)}
@@ -53,4 +50,4 @@ const PaymentPolicy = ({title}) => {
   );
 };
 
-export default PaymentPolicy;
+export default CancellationPolicy;

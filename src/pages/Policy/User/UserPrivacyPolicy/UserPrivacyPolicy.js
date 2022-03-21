@@ -1,8 +1,9 @@
 import React from "react";
-import GlobalWrapper from "../../../components/GlobalWrapper";
-import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { Container } from "reactstrap";
-import PrivacyPolicy from "../../../components/PrivacyPolicy/PrivacyPolicy";
+import GlobalWrapper from "../../../../components/GlobalWrapper";
+import PrivacyPolicy from "../../../../components/PrivacyPolicy/PrivacyPolicy";
+import Breadcrumbs from "../../../../components/Common/Breadcrumb";
+import Breadcrumb from "../../../../components/Common/Breadcrumb";
 
 const UserPrivacyPolicy = () => {
   return (
@@ -11,7 +12,7 @@ const UserPrivacyPolicy = () => {
         <div className="page-content">
           <Container fluid={true}></Container>
 
-          <Breadcrumbs
+          <Breadcrumb
             maintitle="User"
             breadcrumbItem="Privacy Policy"
             isRefresh={false}

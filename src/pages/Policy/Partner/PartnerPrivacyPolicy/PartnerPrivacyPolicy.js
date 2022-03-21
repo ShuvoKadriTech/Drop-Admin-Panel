@@ -1,8 +1,10 @@
 import React from "react";
 import { Container } from "reactstrap";
-import GlobalWrapper from "../../../components/GlobalWrapper";
-import PrivacyPolicy from "../../../components/PrivacyPolicy/PrivacyPolicy";
-import Breadcrumbs from "../../../components/Common/Breadcrumb";
+
+
+import Breadcrumbs from "../../../../components/Common/Breadcrumb";
+import GlobalWrapper from "../../../../components/GlobalWrapper";
+import PrivacyPolicy from "../../../../components/PrivacyPolicy/PrivacyPolicy";
 
 const PartnerPrivacyPolicy = () => {
   return (

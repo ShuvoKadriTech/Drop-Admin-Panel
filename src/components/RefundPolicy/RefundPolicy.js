@@ -1,23 +1,9 @@
+import React from 'react'
+import { Editor } from 'react-draft-wysiwyg'
+import { Button, Card, CardBody, CardTitle, Col, Container, Form, Row } from 'reactstrap'
+import GlobalWrapper from '../GlobalWrapper'
 
-import React from "react";
-
-import { Editor } from "react-draft-wysiwyg";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardSubtitle,
-  CardTitle,
-  Col,
-  Container,
-  Form,
-  Row,
-} from "reactstrap";
-import GlobalWrapper from "../GlobalWrapper";
-import Breadcrumbs from "../../components/Common/Breadcrumb";
-import { EditorState } from "draft-js";
-
-const PaymentPolicy = ({title}) => {
+const RefundPolicy = ({title}) => {
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -27,7 +13,7 @@ const PaymentPolicy = ({title}) => {
               <Col>
                 <Card>
                   <CardBody>
-                    <CardTitle className="h4">{title} Payment Policy</CardTitle>
+                    <CardTitle className="h4">{title} Refund Policy</CardTitle>
                     <Form method="post">
                       <Editor
                         onChange={(editorState) => console.log(editorState)}
@@ -50,7 +36,7 @@ const PaymentPolicy = ({title}) => {
         </div>
       </GlobalWrapper>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default PaymentPolicy;
+export default RefundPolicy
