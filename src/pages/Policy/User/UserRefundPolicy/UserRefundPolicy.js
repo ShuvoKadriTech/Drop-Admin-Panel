@@ -26,4 +26,4 @@ const UserRefundPolicy = () => {
   )
 }
 
-export default UserRefundPolicy
+export default UserRefundPolicy;
