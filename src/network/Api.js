@@ -101,11 +101,12 @@ export const ADD_MODEL_YEAR = ADMIN_ENDPOINT + "/car-year/add-new";
 
 export const GET_CAR_FUEL_TYPES = ADMIN_ENDPOINT + "/car-fuel-types";
 
-// ADD CAR FOR PARTNER
+//  CAR FOR PARTNER
 
 export const ADD_CAR = ADMIN_ENDPOINT + "/cars/add-new";
 // export const EDIT_CAR = ADMIN_ENDPOINT + "/cars/edit-new";
-export const SINGLE_CAR = ADMIN_ENDPOINT + "/cars/single-car-by-id"
+export const SINGLE_CAR = ADMIN_ENDPOINT + "/cars/single-car-by-id";
+export const EDIT_CAR = ADMIN_ENDPOINT + "/cars/edit";
 
 // RIDE
 
@@ -118,5 +119,9 @@ export const ALL_USERS = ADMIN_ENDPOINT + "/user";
 export const ADD_USER = ADMIN_ENDPOINT + "/user/add";
 export const EDIT_USER = ADMIN_ENDPOINT + "/user/update";
 export const SINGLE_USER = ADMIN_ENDPOINT + "/user/single-user-info-by-id";
+
+// POLICY
+
+export const ADD_POLICY = ADMIN_ENDPOINT + "/policy/add-policy";
 
 // END ADMIN API

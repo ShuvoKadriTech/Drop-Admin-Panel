@@ -7,6 +7,7 @@ import {
   EDIT_PARTNER,
   GET_ALL_DRIVERS_BY_PARTNER,
   ADD_CAR,
+  EDIT_CAR,
 } from "../../network/Api";
 import requestApi from "../../network/httpRequest";
 import * as actionType from "../actionType";
@@ -424,20 +425,9 @@ export const addCar = (carData) => async (dispatch) => {
       data: carData,
     });
 
-    console.log("CAR DATA-----", data);
+    // console.log("CAR DATA-----", data);
 
     if (data.status) {
-      // toast.success(data.message, {
-      //   // position: "bottom-right",
-      //   position: toast.POSITION.TOP_RIGHT,
-      //   autoClose: 3000,
-      //   hideProgressBar: true,
-      //   closeOnClick: true,
-      //   pauseOnHover: true,
-      //   draggable: true,
-      //   progress: undefined,
-      // });
-
       dispatch({
         type: actionType.ADD_CAR_REQUEST_SUCCESS,
         payload: data.data.car,
@@ -500,22 +490,21 @@ export const getAllCarsByPartner = (partnerId) => async (dispatch) => {
   }
 };
 
+// EDIT CAR
 
-// EDIT CAR 
+export const editCar = (value) => async (dispatch) => {
+  console.log("values--", value);
 
-// export const editCar = (value) => async (dispatch) => {
+  try {
+    dispatch({
+      type: actionType.EDIT_CAR_REQUEST_SEND,
+    });
 
+    const { data } = await requestApi().request(EDIT_CAR, {
+      method: "POST",
+      data: value,
+    });
 
-// try {
-//   dispatch({
-//     type: actionType.EDIT_CAR_REQUEST_SEND
-//   })
-
-//   const {data} = await requestApi().request()
-
-// } catch (error) {
-  
-// }
-
-
-// }
+    console.log("response----", data);
+  } catch (error) {}
+};
