@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Container } from "reactstrap";
-
 
 import Breadcrumbs from "../../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../../components/GlobalWrapper";
-import PrivacyPolicy from "../../../../components/PrivacyPolicy/PrivacyPolicy";
+import TextEditor from "../../../../components/TextEditor/TextEditor";
+import requestApi from "./../../../../network/httpRequest";
+import { GET_SINGLE_POLICY } from "./../../../../network/Api";
 
 const PartnerPrivacyPolicy = () => {
   return (
@@ -21,7 +23,10 @@ const PartnerPrivacyPolicy = () => {
             //   callList={callColorList}
           />
 
-          <PrivacyPolicy title="Partner" />
+          <TextEditor
+            title="Partner Privacy Policy"
+            type="partnerPrivacyPolicy"
+          />
         </div>
       </GlobalWrapper>
     </React.Fragment>

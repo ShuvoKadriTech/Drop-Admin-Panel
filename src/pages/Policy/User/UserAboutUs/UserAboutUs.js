@@ -1,8 +1,7 @@
-import React from 'react'
-import { Container } from 'reactstrap'
-import GlobalWrapper from '../../../../components/GlobalWrapper'
+import React from "react";
+import { Container } from "reactstrap";
+import GlobalWrapper from "../../../../components/GlobalWrapper";
 import Breadcrumbs from "../../../../components/Common/Breadcrumb";
-import AboutUs from '../../../../components/AboutUs/AboutUs';
 
 const UserAboutUs = () => {
   return (
@@ -19,11 +18,11 @@ const UserAboutUs = () => {
             //   callList={callColorList}
           />
 
-          <AboutUs title="User" />
+          {/* <AboutUs title="User" /> */}
         </div>
       </GlobalWrapper>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default UserAboutUs
+export default UserAboutUs;

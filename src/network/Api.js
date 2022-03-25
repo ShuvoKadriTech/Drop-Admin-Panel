@@ -123,5 +123,6 @@ export const SINGLE_USER = ADMIN_ENDPOINT + "/user/single-user-info-by-id";
 // POLICY
 
 export const ADD_POLICY = ADMIN_ENDPOINT + "/policy/add-policy";
+export const GET_SINGLE_POLICY = ADMIN_ENDPOINT + "/policy";
 
 // END ADMIN API

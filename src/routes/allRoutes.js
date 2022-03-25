@@ -146,13 +146,10 @@ import CarDetails from "../pages/Car/CarDetails/CarDetails";
 import AddUser from "../pages/Users/AddUser/AddUser";
 import RideAdd from "../pages/Ride/RideAdd/RideAdd";
 
-import CancallationPolicy from "../components/CancellationPolicy/CancellationPolicy";
-
-
 import UserDetails from "../pages/Users/UserDetails/UserDetails";
 import PartnerPrivacyPolicy from "../pages/Policy/Partner/PartnerPrivacyPolicy/PartnerPrivacyPolicy";
 import PartnerPaymentPolicy from "../pages/Policy/Partner/PartnerPaymentPolicy/PartnerPaymentPolicy";
-import PartnerCancellationPolicy from './../pages/Policy/Partner/PartnerCancellationPolicy/PartnerCancellationPolicy';
+import PartnerCancellationPolicy from "./../pages/Policy/Partner/PartnerCancellationPolicy/PartnerCancellationPolicy";
 import UserPaymentPolicy from "../pages/Policy/User/UserPaymentPolicy/UserPaymentPolicy";
 import UserCancellationPolicy from "../pages/Policy/User/UserCancellationPolicy/UserCancellationPolicy";
 import PartnerAboutUs from "../pages/Policy/Partner/PartnerAboutUs/PartnerAboutUs";
@@ -160,9 +157,6 @@ import UserAboutUs from "../pages/Policy/User/UserAboutUs/UserAboutUs";
 import PartnerRefundPolicy from "../pages/Policy/Partner/PartnerRefundPolicy/PartnerRefundPolicy";
 import UserPrivacyPolicy from "../pages/Policy/User/UserPrivacyPolicy/UserPrivacyPolicy";
 import UserRefundPolicy from "../pages/Policy/User/UserRefundPolicy/UserRefundPolicy";
-
-
-
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -235,7 +229,10 @@ const userRoutes = [
 
   { path: "/partner/privacy-policy", component: PartnerPrivacyPolicy },
   { path: "/partner/payment-policy", component: PartnerPaymentPolicy },
-  { path: "/partner/cancellation-policy", component: PartnerCancellationPolicy },
+  {
+    path: "/partner/cancellation-policy",
+    component: PartnerCancellationPolicy,
+  },
   { path: "/partner/about-us", component: PartnerAboutUs },
   { path: "/partner/refund-policy", component: PartnerRefundPolicy },
 
@@ -244,7 +241,7 @@ const userRoutes = [
   { path: "/user/privacy-policy", component: UserPrivacyPolicy },
   { path: "/user/payment-policy", component: UserPaymentPolicy },
   { path: "/user/cancellation-policy", component: UserCancellationPolicy },
-  {path: "/user/about-us", component: UserAboutUs },
+  { path: "/user/about-us", component: UserAboutUs },
   { path: "/user/refund-policy", component: UserRefundPolicy },
 
   // ADMIN CONTROL

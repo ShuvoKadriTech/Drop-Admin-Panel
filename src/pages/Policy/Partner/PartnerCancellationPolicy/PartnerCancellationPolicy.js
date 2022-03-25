@@ -1,9 +1,8 @@
-import React from 'react'
-import { Container } from 'reactstrap';
-import GlobalWrapper from '../../../../components/GlobalWrapper';
+import React from "react";
+import { Container } from "reactstrap";
+import GlobalWrapper from "../../../../components/GlobalWrapper";
 import Breadcrumbs from "../../../../components/Common/Breadcrumb";
-import CancellationPolicy from '../../../../components/CancellationPolicy/CancellationPolicy';
-
+import TextEditor from "../../../../components/TextEditor/TextEditor";
 
 const PartnerCancellationPolicy = () => {
   return (
@@ -14,17 +13,20 @@ const PartnerCancellationPolicy = () => {
 
           <Breadcrumbs
             maintitle="Partner"
-            breadcrumbItem="Cancellation Policy"
+            breadcrumbItem="Ride Cancellation Policy"
             isRefresh={false}
             //   loading={loading}
             //   callList={callColorList}
           />
 
-          <CancellationPolicy title="Partner" />
+          <TextEditor
+            title="Partner Ride Cancellation Policy"
+            type="partnerRideCancellationPolicy"
+          />
         </div>
       </GlobalWrapper>
     </React.Fragment>
-  )
-}
+  );
+};
 
 export default PartnerCancellationPolicy;

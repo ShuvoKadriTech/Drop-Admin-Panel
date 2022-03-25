@@ -1,8 +1,8 @@
-import React from 'react'
-import { Container } from 'reactstrap'
-import Breadcrumb from '../../../../components/Common/Breadcrumb'
-import GlobalWrapper from '../../../../components/GlobalWrapper'
-import RefundPolicy from '../../../../components/RefundPolicy/RefundPolicy'
+import React from "react";
+import { Container } from "reactstrap";
+import Breadcrumb from "../../../../components/Common/Breadcrumb";
+import GlobalWrapper from "../../../../components/GlobalWrapper";
+import TextEditor from "../../../../components/TextEditor/TextEditor";
 
 const UserRefundPolicy = () => {
   return (
@@ -19,11 +19,14 @@ const UserRefundPolicy = () => {
             //   callList={callColorList}
           />
 
-          <RefundPolicy title="User" />
+          <TextEditor
+            title="User Refund Policy"
+            type="userPaymentRefundPolicy"
+          />
         </div>
       </GlobalWrapper>
     </React.Fragment>
-  )
-}
+  );
+};
 
 export default UserRefundPolicy;

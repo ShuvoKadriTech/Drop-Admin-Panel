@@ -1,9 +1,9 @@
+import React from "react";
+import { Container } from "reactstrap";
+import GlobalWrapper from "../../../../components/GlobalWrapper";
 
-import React from 'react'
-import { Container } from 'reactstrap';
-import GlobalWrapper from '../../../../components/GlobalWrapper';
-import PaymentPolicy from '../../../../components/PaymentPolicy/PaymentPolicy';
 import Breadcrumbs from "../../../../components/Common/Breadcrumb";
+import TextEditor from "../../../../components/TextEditor/TextEditor";
 
 const UserPaymentPolicy = () => {
   return (
@@ -20,11 +20,11 @@ const UserPaymentPolicy = () => {
             //   callList={callColorList}
           />
 
-          <PaymentPolicy title="User" />
+          <TextEditor title="User Payment Policy" type="userPaymentPolicy" />
         </div>
       </GlobalWrapper>
     </React.Fragment>
-  )
-}
+  );
+};
 
 export default UserPaymentPolicy;

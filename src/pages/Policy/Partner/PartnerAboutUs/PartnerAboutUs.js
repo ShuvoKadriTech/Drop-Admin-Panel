@@ -1,8 +1,9 @@
-import React from 'react'
-import { Container } from 'reactstrap'
-import GlobalWrapper from '../../../../components/GlobalWrapper';
+import React from "react";
+import { Container } from "reactstrap";
+import GlobalWrapper from "../../../../components/GlobalWrapper";
 import Breadcrumbs from "../../../../components/Common/Breadcrumb";
-import AboutUs from '../../../../components/AboutUs/AboutUs';
+import TextEditor from "../../../../components/TextEditor/TextEditor";
+
 const PartnerAboutUs = () => {
   return (
     <React.Fragment>
@@ -18,11 +19,11 @@ const PartnerAboutUs = () => {
             //   callList={callColorList}
           />
 
-          <AboutUs title="Partner" />
+          <TextEditor title="Partner About Us" type="partnerAboutUs" />
         </div>
       </GlobalWrapper>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default PartnerAboutUs
+export default PartnerAboutUs;

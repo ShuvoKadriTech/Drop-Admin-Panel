@@ -1,9 +1,8 @@
 import React from "react";
 import { Container } from "reactstrap";
 import GlobalWrapper from "../../../../components/GlobalWrapper";
-import PrivacyPolicy from "../../../../components/PrivacyPolicy/PrivacyPolicy";
-import Breadcrumbs from "../../../../components/Common/Breadcrumb";
 import Breadcrumb from "../../../../components/Common/Breadcrumb";
+import TextEditor from "../../../../components/TextEditor/TextEditor";
 
 const UserPrivacyPolicy = () => {
   return (
@@ -20,7 +19,7 @@ const UserPrivacyPolicy = () => {
             //   callList={callColorList}
           />
 
-          <PrivacyPolicy title="User" />
+          <TextEditor title="User Privacy Policy" type="userPrivacyPolicy" />
         </div>
       </GlobalWrapper>
     </React.Fragment>

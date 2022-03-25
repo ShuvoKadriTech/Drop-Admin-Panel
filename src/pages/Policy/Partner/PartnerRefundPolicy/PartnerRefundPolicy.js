@@ -1,8 +1,8 @@
-import React from 'react'
-import { Container } from 'reactstrap'
-import GlobalWrapper from '../../../../components/GlobalWrapper'
+import React from "react";
+import { Container } from "reactstrap";
+import GlobalWrapper from "../../../../components/GlobalWrapper";
 import Breadcrumbs from "../../../../components/Common/Breadcrumb";
-import RefundPolicy from '../../../../components/RefundPolicy/RefundPolicy';
+import TextEditor from "../../../../components/TextEditor/TextEditor";
 
 const PartnerRefundPolicy = () => {
   return (
@@ -13,17 +13,20 @@ const PartnerRefundPolicy = () => {
 
           <Breadcrumbs
             maintitle="Partner"
-            breadcrumbItem="Privacy Policy"
+            breadcrumbItem="Refund Policy"
             isRefresh={false}
             //   loading={loading}
             //   callList={callColorList}
           />
 
-          <RefundPolicy title="Partner" />
+          <TextEditor
+            title="Partner Refund Policy"
+            type="partnerPaymentRefundPolicy"
+          />
         </div>
       </GlobalWrapper>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default PartnerRefundPolicy
+export default PartnerRefundPolicy;
