@@ -19,7 +19,7 @@ const PartnerAboutUs = () => {
             //   callList={callColorList}
           />
 
-          <TextEditor title="Partner About Us" type="partnerAboutUs" />
+          <TextEditor title="Partner About Us" type="partnerAppAboutUs" />
         </div>
       </GlobalWrapper>
     </React.Fragment>

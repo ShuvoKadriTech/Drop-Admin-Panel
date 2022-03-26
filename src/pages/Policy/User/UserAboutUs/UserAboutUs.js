@@ -2,6 +2,7 @@ import React from "react";
 import { Container } from "reactstrap";
 import GlobalWrapper from "../../../../components/GlobalWrapper";
 import Breadcrumbs from "../../../../components/Common/Breadcrumb";
+import TextEditor from "../../../../components/TextEditor/TextEditor";
 
 const UserAboutUs = () => {
   return (
@@ -17,8 +18,7 @@ const UserAboutUs = () => {
             //   loading={loading}
             //   callList={callColorList}
           />
-
-          {/* <AboutUs title="User" /> */}
+          <TextEditor title="Partner About Us" type="userAppAboutUs" />
         </div>
       </GlobalWrapper>
     </React.Fragment>
