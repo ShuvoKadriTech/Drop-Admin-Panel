@@ -125,4 +125,9 @@ export const SINGLE_USER = ADMIN_ENDPOINT + "/user/single-user-info-by-id";
 export const ADD_POLICY = ADMIN_ENDPOINT + "/policy/add-policy";
 export const GET_SINGLE_POLICY = ADMIN_ENDPOINT + "/policy";
 
+// USER PAYMENT CONDITION
+
+export const ADD_USER_PAYMENT_CONDITION =
+  ADMIN_ENDPOINT + "/setting/add-user-payment-condition";
+
 // END ADMIN API

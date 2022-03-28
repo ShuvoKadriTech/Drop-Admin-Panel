@@ -275,10 +275,8 @@ const SidebarContent = (props) => {
                     {props.t("Partner")}
                   </Link>
                   <ul className="sub-menu" aria-expanded="true">
-                  <li>
-                      <Link to="/partner/about-us">
-                        {props.t("About Us")}
-                      </Link>
+                    <li>
+                      <Link to="/partner/about-us">{props.t("About Us")}</Link>
                     </li>
                     <li>
                       <Link to="/partner/privacy-policy">
@@ -308,10 +306,8 @@ const SidebarContent = (props) => {
                     {props.t("User")}
                   </Link>
                   <ul className="sub-menu" aria-expanded="true">
-                  <li>
-                      <Link to="/user/about-us">
-                        {props.t("About Us")}
-                      </Link>
+                    <li>
+                      <Link to="/user/about-us">{props.t("About Us")}</Link>
                     </li>
                     <li>
                       <Link to="/user/privacy-policy">
@@ -361,6 +357,35 @@ const SidebarContent = (props) => {
                 </li>
                 <li>
                   <Link to="/role">{props.t("Role")}</Link>
+                </li>
+              </ul>
+            </li>
+
+            {/* SETTINGS */}
+
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="fas fa-cog" />
+                <span>{props.t("Setting")}</span>
+              </Link>
+              <ul className="sub-menu " aria-expanded="false">
+                {/* <li>
+                  <Link to="/#" className="has-arrow waves-effect">
+                    {props.t("Payment Condition")}
+                  </Link>
+                  <ul className="sub-menu" aria-expanded="true">
+                    <li>
+                      <Link to="/user-payment-condition/list">
+                        {props.t("List")}
+                      </Link>
+                    </li>
+                  </ul>
+                  
+                </li> */}
+                <li>
+                  <Link to="/user-payment-condition">
+                    {props.t("Payment Condition")}
+                  </Link>
                 </li>
               </ul>
             </li>

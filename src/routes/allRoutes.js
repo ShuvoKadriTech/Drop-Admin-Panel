@@ -157,6 +157,7 @@ import UserAboutUs from "../pages/Policy/User/UserAboutUs/UserAboutUs";
 import PartnerRefundPolicy from "../pages/Policy/Partner/PartnerRefundPolicy/PartnerRefundPolicy";
 import UserPrivacyPolicy from "../pages/Policy/User/UserPrivacyPolicy/UserPrivacyPolicy";
 import UserRefundPolicy from "../pages/Policy/User/UserRefundPolicy/UserRefundPolicy";
+import UserPaymentCondition from "../pages/Setting/UserPaymentCondition/UserPaymentCondition";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -249,6 +250,10 @@ const userRoutes = [
   { path: "/admin-list", component: AdminList },
   { path: "/create-admin", component: CreateAdmin },
   { path: "/role", component: Role },
+
+  // USER PAYMENT CONDITION
+
+  { path: "/user-payment-condition", component: UserPaymentCondition },
 
   // //calendar
   { path: "/calendar", component: Calendar },
