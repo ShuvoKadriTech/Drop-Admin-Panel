@@ -130,4 +130,10 @@ export const GET_SINGLE_POLICY = ADMIN_ENDPOINT + "/policy";
 export const ADD_USER_PAYMENT_CONDITION =
   ADMIN_ENDPOINT + "/setting/add-user-payment-condition";
 
+export const GET_ALL_PAYMENT_CONDITIONS =
+  ADMIN_ENDPOINT + "/setting/get-all-user-payment-condition";
+  
+
+export const EDIT_USER_PAYMENT_CONDITION = ADMIN_ENDPOINT + "/setting/edit-user-payment-condition"
+
 // END ADMIN API

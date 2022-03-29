@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import {
@@ -15,19 +15,29 @@ import {
   FormGroup,
 } from "reactstrap";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { addUserPaymentCondition } from "../../../store/UserPaymentCondition/UserPaymentConditionAction";
+import {
+  addUserPaymentCondition,
+  getAllPaymentConditions,
+  editPaymentCondition
+} from "../../../store/UserPaymentCondition/UserPaymentConditionAction";
+
 
 const UserPaymentCondition = () => {
   const dispatch = useDispatch();
 
-  const [minKilometer, setMinKilometer] = useState(0);
-  const [maxKilometer, setMaxKilometer] = useState(0);
-  const [percentage, setPercentage] = useState(0);
+  const { loading, userPaymentConditions, status } = useSelector(
+    (state) => state.userPaymentConditionReducer
+  );
+
+  const [minKilometer, setMinKilometer] = useState("");
+  const [maxKilometer, setMaxKilometer] = useState("");
+  const [percentage, setPercentage] = useState("");
+  const [conditionId, setConditionId] = useState(null);
 
   const submitConditon = () => {
-    if (minKilometer == null || minKilometer == 0) {
+    if (minKilometer == null || minKilometer == "") {
       return toast.warn("Enter Min Kilometer ", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -39,7 +49,7 @@ const UserPaymentCondition = () => {
         progress: undefined,
       });
     }
-    if (maxKilometer == null || maxKilometer == 0) {
+    if (maxKilometer == null || maxKilometer == "") {
       return toast.warn("Enter Max Kilometer ", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -51,7 +61,7 @@ const UserPaymentCondition = () => {
         progress: undefined,
       });
     }
-    if (percentage == null || percentage == 0) {
+    if (percentage == null || percentage == "") {
       return toast.warn("Enter Percentage ", {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -64,13 +74,56 @@ const UserPaymentCondition = () => {
       });
     }
 
-    dispatch(
-      addUserPaymentCondition({
+    if(conditionId){
+      dispatch(editPaymentCondition({
+        id: conditionId,
         minKilometer,
         maxKilometer,
         percentage,
-      })
-    );
+      }))
+    }else{
+      dispatch(
+        addUserPaymentCondition({
+          minKilometer,
+          maxKilometer,
+          percentage,
+        })
+      );
+    }
+
+    
+  };
+
+  useEffect(() => {
+    if (status) {
+      setMinKilometer("");
+      setMaxKilometer("");
+      setPercentage("");
+      setConditionId(null)
+        }
+  }, [status]);
+
+  // GET ALL CONDITIONS
+
+  useEffect(() => {
+    callConditionsList();
+  }, []);
+
+  const callConditionsList = (refresh = false) => {
+    dispatch(getAllPaymentConditions(refresh));
+  };
+
+  // EDIT CONDITON EVENT
+
+  const handleEditCondition = (id) => {
+    const find = userPaymentConditions.find((item) => item.id == id);
+    const { maxKilometer, minKilometer, percentage } = find;
+    setMinKilometer(minKilometer.toString());
+    setMaxKilometer(maxKilometer.toString());
+    setPercentage(percentage.toString());
+    setConditionId(id);
+   
+    window.scroll(0, 0);
   };
 
   return (
@@ -82,8 +135,8 @@ const UserPaymentCondition = () => {
               maintitle="Setting"
               breadcrumbItem="User Payment Condition"
               hideSettingBtn={true}
-              // loading={loading}
-              // callList={callColorList}
+              loading={loading}
+              callList={callConditionsList}
             />
 
             <Row>
@@ -96,6 +149,7 @@ const UserPaymentCondition = () => {
 
                     <Row className="mb-3">
                       <Col xl={12} sm={12} md={12}>
+                        <span>Min Kilometer</span>
                         <Input
                           value={minKilometer}
                           onChange={(event) => {
@@ -103,13 +157,14 @@ const UserPaymentCondition = () => {
                           }}
                           id="minKilometer"
                           className="form-control"
-                          type="number"
+                          type="text"
                           placeholder="Enter minimum Kilometer"
                           required
                         />
                       </Col>
 
                       <Col xl={12} sm={12} md={12} className="my-4">
+                        <span>Max Kilometer</span>
                         <Input
                           // style={{ border: '1px solid red' }}
                           value={maxKilometer}
@@ -118,13 +173,14 @@ const UserPaymentCondition = () => {
                           }}
                           id="maxKilometer"
                           className="form-control"
-                          type="number"
+                          type="text"
                           placeholder="Enter a Max Kilometer"
                           required
                         />
                       </Col>
 
                       <Col xl={12} sm={12} md={12}>
+                        <span>Percentage</span>
                         <Input
                           // style={{ border: '1px solid red' }}
                           value={percentage}
@@ -142,8 +198,13 @@ const UserPaymentCondition = () => {
 
                     <Row>
                       <Button color="primary" onClick={submitConditon}>
-                        {/* {colorId ? "Edit" : "Add"} */}
-                        Add
+                        {loading ? (
+                          <Spinner animation="border" size="sm" variant="info" />
+                        ) : conditionId ? (
+                          "Edit"
+                        ) : (
+                          "Add"
+                        )}
                       </Button>
                     </Row>
                   </CardBody>
@@ -158,7 +219,7 @@ const UserPaymentCondition = () => {
                   >
                     <Card>
                       <CardBody>
-                        <CardTitle className="h4"> Color List</CardTitle>
+                        <CardTitle className="h4"> Payment Condition List</CardTitle>
 
                         <Table
                           id="tech-companies-1"
@@ -167,42 +228,41 @@ const UserPaymentCondition = () => {
                           <Thead>
                             <Tr>
                               <Th>Serial No</Th>
-                              <Th>Color Name</Th>
-                              <Th>Color Code</Th>
+                              <Th>Min KM</Th>
+                              <Th>Max KM</Th>
+                              <Th>Percentage</Th>
                               <Th>Action</Th>
                             </Tr>
                           </Thead>
                           <Tbody>
-                            {/* {colors.map((color, index) => {
-                              return (
-                                <Tr
-                                  key={index}
-                                  className="align-middle"
-                                  style={{
-                                    fontSize: "15px",
-                                    fontWeight: "500"
-                                  }}
-                                >
-                                  <Th>
-                                    {index + 1}
-                                  </Th>
-                                  <Td>
-                                    {color.name}
-                                  </Td>
-                                  <Td style={{ color: `${color.colorCode}` }}>
-                                    {color.colorCode}
-                                  </Td>
-                                  <Td>
-                                    <button
-                                      className="btn btn-info "
-                                      onClick={() => handleEditColor(color.id)}
-                                    >
-                                      <i className="fa fa-edit" />
-                                    </button>
-                                  </Td>
-                                </Tr>
-                              );
-                            })} */}
+                            {userPaymentConditions &&
+                              userPaymentConditions.map((item, index) => {
+                                return (
+                                  <Tr
+                                    key={index}
+                                    className="align-middle"
+                                    style={{
+                                      fontSize: "15px",
+                                      fontWeight: "500",
+                                    }}
+                                  >
+                                    <Th>{index + 1}</Th>
+                                    <Td>{item.minKilometer}</Td>
+                                    <Td>{item.maxKilometer}</Td>
+                                    <Td>{item.percentage}</Td>
+                                    <Td>
+                                      <button
+                                        className="btn btn-info "
+                                        onClick={() =>
+                                          handleEditCondition(item.id)
+                                        }
+                                      >
+                                        <i className="fa fa-edit" />
+                                      </button>
+                                    </Td>
+                                  </Tr>
+                                );
+                              })}
                           </Tbody>
                         </Table>
                       </CardBody>

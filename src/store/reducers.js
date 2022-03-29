@@ -26,6 +26,7 @@ import { driverReducer } from "./Driver/driverReducer";
 import rideReducer from "./Ride/rideReducer";
 import usersReducer from "./Users/UsersReducer";
 import policyReducer from "./Policy/policyReducer";
+import userPaymentConditionReducer from "./UserPaymentCondition/UserPaymentConditionReducer";
 
 const rootReducer = combineReducers({
   // public
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
   rideReducer,
   usersReducer,
   policyReducer,
+  userPaymentConditionReducer,
 });
 
 export default rootReducer;
