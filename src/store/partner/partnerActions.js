@@ -239,7 +239,7 @@ export const addDriver = (driver) => async (dispatch) => {
 // EDIT DRIVER
 
 export const editDriver = (updateData) => async (dispatch) => {
-  console.log("props", updateData);
+  // console.log("props", updateData);
   try {
     dispatch({
       type: actionType.EDIT_DRIVER_REQUEST_SEND,
@@ -450,6 +450,9 @@ export const addCar = (carData) => async (dispatch) => {
         type: actionType.ADD_CAR_REQUEST_FAIL,
         payload: data.error,
       });
+      dispatch({
+        type: actionType.SET_STATUS_FALSE,
+      });
     }
   } catch (error) {
     dispatch({
@@ -505,6 +508,56 @@ export const editCar = (value) => async (dispatch) => {
       data: value,
     });
 
-    console.log("response----", data);
-  } catch (error) {}
+    if(data.status){
+      toast.success(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setTimeout(()=>{
+        dispatch({
+          type: actionType.EDIT_CAR_REQUEST_SUCCESS,
+          payload: data.data.car
+        })
+      })
+      
+    }else{
+      toast.warn(data.error, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      
+      dispatch({
+        type: actionType.EDIT_CAR_REQUEST_FAIL,
+        payload: data.error
+      },300)
+      
+      
+    }
+  } catch (error) {
+    dispatch({
+      type: actionType.EDIT_CAR_REQUEST_FAIL,
+      payload: error.message
+    })
+  }
 };
+
+
+// SET STATUS FALSE 
+
+export const setStatusFalse = () => dispatch =>{
+  dispatch({
+    type: actionType.SET_STATUS_FALSE,
+  });
+}

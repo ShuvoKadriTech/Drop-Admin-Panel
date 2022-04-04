@@ -166,155 +166,6 @@ const RideAdd = () => {
     }
   }, [pickupAddress, dropAddress]);
 
-  // GET DISTANCE
-
-  // useEffect(() => {
-  //   if (
-  //     Object.keys(pickupLatLng).length > 0 &&
-  //     Object.keys(dropLatLng).length > 0
-  //   ) {
-  //     // let {lat,lng} = pickupLatLng;
-  //     // let {lat,lng} = dropLatLng;
-
-  //     // getDirection();
-
-  //     calcDistance(
-  //       pickupLatLng.lat,
-  //       pickupLatLng.lng,
-  //       dropLatLng.lat,
-  //       dropLatLng.lng
-  //     );
-  //   }
-  // }, [pickupLatLng, dropLatLng]);
-
-  // const calcDistance = (lat1, lon1, lat2, lon2) => {
-  //   var R = 6371; // km
-  //   var dLat = toRad(lat2 - lat1);
-  //   var dLon = toRad(lon2 - lon1);
-  //   var lat1 = toRad(lat1);
-  //   var lat2 = toRad(lat2);
-
-  //   var a =
-  //     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-  //     Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
-  //   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  //   var d = R * c;
-  //   console.log("distance", d * 1000)
-  //   setDistance(d * 1000)
-  // };
-
-  // function toRad(Value) {
-  //   return (Value * Math.PI) / 180;
-  // }
-
-  // GET DURATION
-
-  //   useEffect(() => {
-  //     if (directionsService &&  Object.keys(pickupLatLng).length > 0 &&
-  //     Object.keys(dropLatLng).length > 0) {
-
-  //         const locationPoint = [
-  //           { lat: pickupLatLng.lat, lng: pickupLatLng.lng },
-  //           { lat: dropLatLng.lat, lng: dropLatLng.lng }
-  //         ]
-  //         const origin = locationPoint[0];
-  //         const destination = locationPoint[1];
-  //         if (directionsService) {
-  //             directionsService.route({
-  //                 origin: origin,
-  //                 destination: destination,
-  //                 travelMode: window.google.maps.TravelMode.DRIVING
-  //             },
-  //                 (result, status) => {
-  //                     if (status === window.google.maps.DirectionsStatus.OK) {
-  //                         const route = result.routes[0];
-  //                         const distanceInMeter = route.legs[0].distance.value
-  //                         const second = route.legs[0].duration.value;
-  //                         // const dd = moment.duration(second*1000).humanize(true,{})
-  //                         // var duration = moment.duration({
-  //                         //     seconds:second
-  //                         // });
-  //                         // console.log(dd.humanize());
-  //                         console.log("distance =>", distanceInMeter)
-  //                         console.log("duration =>", second)
-  //                         console.log(route.legs[0].distance.text);
-  //                         console.log(route.legs[0].duration.text);
-  //                         // console.log(route.legs[0].distance.value);
-  //                         // console.log(route.legs[0].duration.text);
-  //                         // console.log(route.legs[0].start_address);
-  //                         // console.log(route.legs[0].end_address);
-  //                         // console.log(route.legs[0].steps);
-  //                         localStorage.setItem("takeTime",second);
-  //                         localStorage.setItem("distance",distanceInMeter);
-  //                         // dispatch(setRentalItem({
-  //                         //     distance: distanceInMeter,
-  //                         //     takeTime: second,
-  //                         // }))
-  //                         // setDirections(result)
-  //                     } else {
-  //                         console.error(`error fetching directions ${result}`);
-  //                     }
-  //                 }
-  //             ).catch((e) => window.alert("Directions request failed due to " + e.message));
-  //         }
-  //     } else {
-  //         setDirectionsService(window.google.maps.DirectionsService())
-  //     }
-  // }, [directionsService]);
-
-  // function getDirection(){
-  //   const locationPoint = [
-  //     { lat: pickupLatLng.lat, lng: pickupLatLng.lng },
-  //     { lat: dropLatLng.lat, lng: dropLatLng.lng }
-  //   ]
-  //   const origin = locationPoint[0];
-  //   const destination = locationPoint[1];
-
-  //   console.log("pickupLatLng",pickupLatLng);
-  //   console.log("dropLatLng",dropLatLng);
-  //   console.log("dropLatLng",dropLatLng);
-
-  //     console.log("inner")
-
-  //       directionsService.route({
-  //           origin: origin,
-  //           destination: destination,
-  //           travelMode: window.google.maps.TravelMode.DRIVING
-  //       },
-  //           (result, status) => {
-  //               if (status === window.google.maps.DirectionsStatus.OK) {
-  //                   const route = result.routes[0];
-  //                   const distanceInMeter = route.legs[0].distance.value
-  //                   const second = route.legs[0].duration.value;
-  //                   // const dd = moment.duration(second*1000).humanize(true,{})
-  //                   // var duration = moment.duration({
-  //                   //     seconds:second
-  //                   // });
-  //                   // console.log(dd.humanize());
-  //                   console.log("distance =>", distanceInMeter)
-  //                   console.log("duration =>", second)
-  //                   console.log(route.legs[0].distance.text);
-  //                   console.log(route.legs[0].duration.text);
-  //                   // console.log(route.legs[0].distance.value);
-  //                   // console.log(route.legs[0].duration.text);
-  //                   // console.log(route.legs[0].start_address);
-  //                   // console.log(route.legs[0].end_address);
-  //                   // console.log(route.legs[0].steps);
-  //                   localStorage.setItem("takeTime",second);
-  //                   localStorage.setItem("distance",distanceInMeter);
-  //                   // dispatch(setRentalItem({
-  //                   //     distance: distanceInMeter,
-  //                   //     takeTime: second,
-  //                   // }))
-  //                   // setDirections(result)
-  //               } else {
-  //                   console.error(`error fetching directions ${result}`);
-  //               }
-  //           }
-  //       ).catch((e) => window.alert("Directions request failed due to " + e.message));
-
-  // }
-
   // SUBMIT RIDE DATA
 
   const handleSubmit = () => {
@@ -496,16 +347,6 @@ const RideAdd = () => {
   // };
 
   function calculateAndDisplayRoute(directionsService, directionsRenderer) {
-    // const start = startRef.current.value;
-    // const end = endRef.current.value;
-
-    // console.log(start,end,directionsService,directionsRenderer);
-
-    // const locationPoint = [
-    //     { lat: 22.328127, lng: 91.805502 },
-    //     { lat: 22.333903, lng: 91.820458 }
-    // ]
-
     directionsService
       .route({
         origin: pickupLatLng,
@@ -664,12 +505,14 @@ const RideAdd = () => {
                           {...props}
                           key={option.id}
                         >
-                          <img
-                            loading="lazy"
-                            width="60"
-                            src={option.img}
-                            alt=""
-                          />
+                          <div style={{width:"40px", height: "60px", marginRight: "10px"}}>
+                            <img
+                              loading="lazy"
+                              style={{width: "100%", height: "100%"}}
+                              src={option.img}
+                              alt=""
+                            />
+                          </div>
                           {option.name}
                         </Box>
                       )}

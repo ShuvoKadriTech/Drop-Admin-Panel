@@ -32,6 +32,7 @@ import {
   selectModelYear,
   selectCarFuel,
   editCar,
+  setStatusFalse,
 } from "./../../../store/partner/partnerActions";
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { removeAllSelectedGalleryImage } from "../../../store/action/galleryAction";
@@ -85,7 +86,7 @@ const CarAdd = () => {
   useEffect(() => {
     if (carTypes.length > 0) {
       const pID = searchParams.get("pID");
-      console.log("partner Id ===-", pID);
+      // console.log("partner Id ===-", pID);
       if (pID) {
         const findPartner = partners.find((partner) => partner.id == pID);
         if (findPartner) {
@@ -159,7 +160,7 @@ const CarAdd = () => {
       // console.log("selectedPartner----------", selectedPartner);
       // console.log("id------", id);
       const findCar = partner?.cars.find((car) => car.id == id);
-      // console.log("findCar------------------", findCar);
+      console.log("findCar------------------", findCar);
       // selectedCarType = findCar.car_type;
       if (findCar) {
         const {
@@ -343,6 +344,8 @@ const CarAdd = () => {
       history.goBack();
     }
   }, [status]);
+
+  
 
   return (
     <React.Fragment>

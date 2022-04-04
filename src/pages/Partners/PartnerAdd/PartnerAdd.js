@@ -192,25 +192,15 @@ const PartnerAdd = () => {
         history.goBack();
       }
       else {
-        toast.success(message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        });
-        setName(null);
-        setEmail(null);
-        setNid(null);
-        setPhone(null);
-        setDateOfBirth(null);
-        setPartnerImage(null);
-        setNidFrontImage(null);
-        setNidBackImage(null);
-        setBiddingPercent(null);
+        setName("");
+        setEmail("");
+        setNid("");
+        setPhone("");
+        setDateOfBirth("");
+        setPartnerImage("");
+        setNidFrontImage("");
+        setNidBackImage("");
+        setBiddingPercent("");
       }
 
     }

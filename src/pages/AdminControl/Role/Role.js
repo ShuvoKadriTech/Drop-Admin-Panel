@@ -28,6 +28,7 @@ import {
   editRole,
   getAllRoles
 } from "../../../store/AdminControl/Role/roleAction";
+import styled from "styled-components";
 
 const Role = () => {
   const [role, setRole] = useState("");
@@ -254,6 +255,7 @@ const Role = () => {
                                     {role.createdAt.toLocaleString()}
                                   </Td>
                                   <Td>
+                                    <ButtonWrapper>
                                     <button
                                       className={role.deletedAt !== null && role.deletedAt ? "btn btn-secondary" : "btn btn-info"}
                                       onClick={() => handleEdit(role.id)}
@@ -275,6 +277,7 @@ const Role = () => {
                                       data-toggle="tooltip" 
                                       data-placement="top" 
                                       title="Delete"
+                                      style={{margin:"0px 4px"}}
                                     >
                                       <i className="fa fa-trash" />
                                     </button>
@@ -288,6 +291,8 @@ const Role = () => {
                                     >
                                       <i className="fa fa-trash-restore" />
                                     </button>
+                                    </ButtonWrapper>
+                                    
                                   </Td>
                                 </Tr>
                               );
@@ -306,5 +311,17 @@ const Role = () => {
     </React.Fragment>
   );
 };
+
+const ButtonWrapper = styled.div`
+  .btn {
+    width: 30px;
+    height: 30px;
+    padding: 6px 0px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.42857;
+  }
+`;
 
 export default Role;

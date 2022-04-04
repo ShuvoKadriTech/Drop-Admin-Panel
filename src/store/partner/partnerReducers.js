@@ -314,6 +314,40 @@ const partnerReducer = (state = initialState, action) => {
         status: false,
       };
 
+
+      // EDIT CAR 
+
+      case actionType.EDIT_CAR_REQUEST_SEND:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        status: false,
+      };
+
+    case actionType.EDIT_CAR_REQUEST_SUCCESS:
+      // const newData = state.drivers.map(
+      //   driver => (driver.id == payload.id ? payload : driver)
+      // );
+      return {
+        ...state,
+
+        loading: false,
+        // drivers: updateData,
+        status: true,
+        error: null,
+      };
+
+    case actionType.EDIT_CAR_REQUEST_FAIL:
+      return {
+        ...state,
+
+        loading: false,
+        // drivers: updateData,
+        status: false,
+        error: payload,
+      };
+
     default:
       return state;
   }

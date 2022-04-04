@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardBody, CardTitle, Col, Container, Row } from "reactstrap";
+import { Card, CardBody, CardTitle, Col, Container, Row, Spinner } from "reactstrap";
 import styled from "styled-components";
 import GlobalWrapper from "../../../components/GlobalWrapper";
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
@@ -11,14 +11,16 @@ import { GET_SINGLE_CAR_TYPE, SINGLE_PARTNER } from "../../../network/Api";
 import { Tbody, Td, Th, Thead, Tr, Table } from "react-super-responsive-table";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
+import { setStatusFalse } from "../../../store/partner/partnerActions";
 // import { getAllDriversByPartner } from "../../../store/partner/partnerActions";
 
 const PartnerDetails = () => {
   // const dispatch = useDispatch();
   const { id } = useParams();
   const history = useHistory();
+  const dispatch = useDispatch();
 
-  const { message, error, partners, drivers } = useSelector(
+  const { partners, loading} = useSelector(
     (state) => state.partnerReducer
   );
 
@@ -120,6 +122,12 @@ const PartnerDetails = () => {
   //   });
   // };
 
+  // SET STATUS FALSE 
+
+  useEffect(()=>{
+    dispatch(setStatusFalse())
+  },[])
+
   return (
     <React.Fragment>
       <GlobalWrapper>
@@ -129,7 +137,7 @@ const PartnerDetails = () => {
               maintitle="Partner"
               breadcrumbItem="Details"
               // loading={loading}
-              isRefresh={true}
+              isRefresh={false}
               // callList={callPartnerList}
             />
 
@@ -256,6 +264,7 @@ const PartnerDetails = () => {
                 </Row>
               </CardBody>
             </Card>
+
 
             {partner.nidFontPic || partner.nidBackPic ? (
               <Card>
@@ -506,6 +515,12 @@ const PartnerDetails = () => {
                 </div>
               </Col>
             </Row>
+            
+            
+
+            
+
+            
           </Container>
         </div>
       </GlobalWrapper>
