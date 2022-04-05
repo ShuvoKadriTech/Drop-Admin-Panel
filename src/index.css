@@ -19,11 +19,4 @@ code {
   height: 100% !important;
 }
 
-.button {
-  padding: 6px 0px !important;
-  border-radius: 15px !important;
-  text-align: center !important;
-  font-size: 12px !important;
-  line-height: 1.42857 !important;
-  color: red !important;
-}
+

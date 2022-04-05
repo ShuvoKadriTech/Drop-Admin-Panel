@@ -63,6 +63,8 @@ const CarAdd = () => {
     selectedCarFuel,
     loading,
   } = useSelector((state) => state.partnerReducer);
+
+  const {status: carListStatus} = useSelector(state => state.carReducer)
   const { carTypes, carFuels } = useSelector((state) => state.carTypesReducer);
 
   const [openPartnerSearch, setOpenPartnerSearch] = useState(false);
@@ -338,12 +340,13 @@ const CarAdd = () => {
   // SUCCESS
 
   useEffect(() => {
-    if (status) {
+    if (status || carListStatus) {
       // const pID = searchParams.get('pID')
       // history.push(`/partner/${pID}`);
       history.goBack();
     }
-  }, [status]);
+  }, [status,carListStatus]);
+
 
   
 
@@ -905,6 +908,9 @@ const CarAdd = () => {
             <h5 className="modal-title mt-0" id="myModalLabel">
               Select Partner
             </h5>
+          
+            <i onClick={()=>history.goBack()} className="fa fa-window-close cursor-pointer" style={{fontSize: "20px"}}></i>
+            
           </div>
           <div className="modal-body">
             <SearchWrapper>

@@ -136,4 +136,8 @@ export const GET_ALL_PAYMENT_CONDITIONS =
 
 export const EDIT_USER_PAYMENT_CONDITION = ADMIN_ENDPOINT + "/setting/edit-user-payment-condition"
 
+// GET ALL CARS
+
+export const GET_ALL_CARS = ADMIN_ENDPOINT + "/cars"
+
 // END ADMIN API

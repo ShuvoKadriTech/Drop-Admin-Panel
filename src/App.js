@@ -75,7 +75,7 @@ const App = props => {
             />
           ))}
 
-          {userRoutes.map((route, idx) => (
+        {userRoutes.map((route, idx) => (
             <Authmiddleware
               path={route.path}
               layout={Layout}

@@ -158,6 +158,7 @@ import PartnerRefundPolicy from "../pages/Policy/Partner/PartnerRefundPolicy/Par
 import UserPrivacyPolicy from "../pages/Policy/User/UserPrivacyPolicy/UserPrivacyPolicy";
 import UserRefundPolicy from "../pages/Policy/User/UserRefundPolicy/UserRefundPolicy";
 import UserPaymentCondition from "../pages/Setting/UserPaymentCondition/UserPaymentCondition";
+import CarList from "../pages/Car/CarLlist/CarList";
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -205,6 +206,8 @@ const userRoutes = [
   { path: "/add-car-type", component: AddCarType },
   { path: "/car-type/edit/:id", component: AddCarType },
   { path: "/car-type/:id", component: CarTypeDetails },
+  { path: "/car/list", component: CarList },
+  
 
   // CAR BRAND
 

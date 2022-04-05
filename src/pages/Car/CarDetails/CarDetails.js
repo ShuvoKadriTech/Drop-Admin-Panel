@@ -86,7 +86,7 @@ const CarDetails = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumbs
-              maintitle="Partner"
+              maintitle="Quicar"
               breadcrumbItem="Details"
               title="Car"
               isRefresh={false}
