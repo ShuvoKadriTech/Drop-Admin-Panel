@@ -71,30 +71,19 @@ const carTypesReducer = (state = initialState, action) => {
         loading: true,
       };
 
-    case EDIT_CAR_TYPE_REQUEST_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        message: payload,
-        error: null,
-      };
 
     case GET_UPDATE_CAR_DATA:
-      const oldData = state.carTypes.find((i) => i.id === payload.id);
-
-      const newCarData = {
-        ...oldData,
-        payload,
-      };
+      
       const updateData = state.carTypes.map((item) =>
-        item.id === payload.id ? newCarData : item
+        item.id == payload.carType.id ? payload.carType : item
       );
       return {
         ...state,
         loading: false,
-        message: null,
+        message: payload.message,
         error: null,
         carTypes: updateData,
+
       };
 
     case EDIT_CAR_TYPE_REQUEST_FAIL:
@@ -419,14 +408,14 @@ const carTypesReducer = (state = initialState, action) => {
       };
 
     case actionType.ADD_MODEL_YEAR_REQUEST_SUCCESS:
-      console.log("typeId", payload.typeId);
+      // console.log("typeId", payload.typeId);
       const singleType = state.carTypes.find(
         (type) => type.id == payload.typeId
       );
-      console.log("type", singleType);
+      // console.log("type", singleType);
 
       const item = singleType.carBrands.find((b) => b.id == payload.bId);
-      console.log("brand", item);
+      // console.log("brand", item);
       let getModel = item.carModels.find(
         (m) => m.id == payload.modelYear.car_years.carModelId
       );

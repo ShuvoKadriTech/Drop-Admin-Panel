@@ -37,7 +37,7 @@ const AddCarType = () => {
   const route = useHistory();
   const { id } = useParams();
 
-  const { carTypes, message, error } = useSelector(
+  const { carTypes, message, loading} = useSelector(
     state => state.carTypesReducer
   );
 
@@ -117,16 +117,6 @@ const AddCarType = () => {
         route.goBack();
       }
       else{
-        toast.success(message, {
-          // position: "bottom-right",
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        });
         setImage(null);
         setMaxSeat(0);
         setMinSeat(0);
@@ -134,19 +124,8 @@ const AddCarType = () => {
       }
       
     }
-    if (error) {
-      return toast.warn(error, {
-        // position: "bottom-right",
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-      });
-    }
-  }, [message , error])
+   
+  }, [message])
 
   const submitCarType = async () => {
     if (!name || name == "") {
@@ -352,13 +331,13 @@ const AddCarType = () => {
                         />
                       </div>
                     </Row>
-
+                      
                     <Button
                       disabled={isLoading}
                       color="primary w-100"
                       onClick={submitCarType}
                     >
-                      {" "}{"Submit"}{" "}
+                      {loading ? <Spinner size="sm"></Spinner> : "Submit"}
                     </Button>
                   </CardBody>
                 </Card>

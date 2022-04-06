@@ -42,19 +42,22 @@ import { GET_CAR_TYPE_FULL_DETAILS } from "./../../../network/Api";
 // ADD CAR TYPES
 
 export const addCarType = (carData) => async (dispatch, getState) => {
+  // console.log("car type data", carData)
   try {
     dispatch({
       type: ADD_CAR_TYPE_REQUEST_SEND,
     });
 
     const {
-      data: { status, message, error, data },
+      data
     } = await requestApi().request(ADD_CAR_TYPE, {
       method: "POST",
       data: carData,
     });
 
-    if (status) {
+    console.log("response data", data)
+
+    if (data.status) {
       toast.success(data.message, {
         // position: "bottom-right",
         position: toast.POSITION.TOP_RIGHT,
@@ -67,12 +70,10 @@ export const addCarType = (carData) => async (dispatch, getState) => {
       });
       dispatch({
         type: ADD_CAR_TYPE_REQUEST_SUCCESS,
-        payload: { data, message },
+        payload: { data:data.data, message:data.message },
       });
 
-      dispatch({
-        type: CLEAR_SUCCESS_MESSAGE,
-      });
+      
     } else {
       toast.warn(data.error, {
         // position: "bottom-right",
@@ -86,7 +87,7 @@ export const addCarType = (carData) => async (dispatch, getState) => {
       });
       dispatch({
         type: ADD_CAR_TYPE_REQUEST_FAIL,
-        payload: error,
+        payload: data.error,
       });
     }
   } catch (error) {
@@ -147,21 +148,29 @@ export const editCarType = (carData) => async (dispatch) => {
       data: carData,
     });
 
-    console.log(data);
+    // console.log(data);
 
     if (data.status) {
-      if (data.message) {
-        dispatch({
-          type: EDIT_CAR_TYPE_REQUEST_SUCCESS,
-          payload: data.message,
-        });
-      }
-      if (data.data.carType) {
-        dispatch({
-          type: GET_UPDATE_CAR_DATA,
-          payload: data.data.carType,
-        });
-      }
+      toast.success(data.message, {
+        // position: "bottom-right",
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+        setTimeout(()=>{
+          dispatch({
+            type: GET_UPDATE_CAR_DATA,
+            payload: {
+              carType:data.data.carType,
+              message: data.message
+            },
+          });
+        },400)
+      
     } else {
       dispatch({
         type: EDIT_CAR_TYPE_REQUEST_FAIL,
@@ -178,34 +187,6 @@ export const editCarType = (carData) => async (dispatch) => {
   }
 };
 
-// export const getCarTypeDetails = carTypeId => async dispatch => {
-//   try {
-//     dispatch({
-//       type: GET_SINGLE_CAR_TYPE_REQUEST_SEND
-//     });
-
-//     const { data } = await requestApi().request(GET_CAR_TYPE_FULL_DETAILS, {
-//       params: { id: carTypeId }
-//     });
-//     // console.log("car type", data);
-//     if (data.status) {
-//       dispatch({
-//         type: GET_SINGLE_CAR_TYPE_REQUEST_SUCCESS,
-//         payload: data.data.carType
-//       });
-//     } else {
-//       dispatch({
-//         type: GET_SINGLE_CAR_TYPE_REQUEST_FAIL,
-//         payload: data.error
-//       });
-//     }
-//   } catch (error) {
-//     dispatch({
-//       type: GET_SINGLE_CAR_TYPE_REQUEST_FAIL,
-//       payload: error.message
-//     });
-//   }
-// };
 
 // ADD CAR TYPE BRAND
 
@@ -619,6 +600,15 @@ export const getCarFuelTypes = () => async (dispatch) => {
     });
   }
 };
+
+
+// CLEAR SUCCESS MESSAGE 
+
+export const clearSuccessMessage = () => dispatch =>{
+  dispatch({
+    type: CLEAR_SUCCESS_MESSAGE,
+  });
+}
 
 
 

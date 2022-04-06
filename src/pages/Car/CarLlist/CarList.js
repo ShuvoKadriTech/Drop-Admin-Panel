@@ -41,7 +41,9 @@ const CarList = () => {
   const [photoIndex, setPhotoIndex] = useState(0);
 
   useEffect(() => {
-    callCarList()
+    // callCarList()
+    dispatch(setCarStatusFalse())
+    dispatch(getAllCars(true));
   }, []);
 
 
@@ -67,9 +69,7 @@ const CarList = () => {
     // history.push(`/partner/edit/${partner.id}`)
   };
 
-  useEffect(()=>{
-    dispatch(setCarStatusFalse())
-  },[])
+ 
 
   return (
     <React.Fragment>

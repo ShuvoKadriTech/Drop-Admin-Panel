@@ -318,7 +318,8 @@ const DriverAdd = () => {
         <div className="page-content">
           <Container fluid={true}>
             <Breadcrumbs
-              maintitle="Driver"
+              maintitle="Quicer"
+              title="Driver"
               breadcrumbItem={id ? "Edit" : "Add"}
               hideSettingBtn={true}
               isRefresh={false}

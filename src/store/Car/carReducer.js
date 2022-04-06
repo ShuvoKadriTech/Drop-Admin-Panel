@@ -34,7 +34,7 @@ const carReducer = (state = initialState, action) => {
         hasNextPage: payload.paginate.metadata.hasNextPage,
         currentPage: payload.paginate.metadata.page.currentPage,
         hasPreviousPage: payload.paginate.metadata.hasPreviousPage,
-        status: true
+        status: false
       };
 
     case actionType.GET_ALL_CARS_REQUEST_FAIL:

@@ -54,7 +54,7 @@ const DriversList = () => {
       //   callPartnerList();
       // }
 
-      callDriverList();
+      callDriverList(true);
     }
   }, [searchKey, statusKey, currentStatusKey]);
 
@@ -92,6 +92,7 @@ const DriversList = () => {
   // EDIT PARTNER
 
   const handleEdit = (driverId, partnerId) => {
+    
     history.push({
       pathname: `/driver/edit/${driverId}`,
       search: `?pID=${partnerId}`,

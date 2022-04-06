@@ -13,7 +13,7 @@ import GlobalWrapper from "../../../components/GlobalWrapper";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { getCarTypes } from "../../../store/Car/carTypes/carTypesAction";
+import { clearSuccessMessage, getCarTypes } from "../../../store/Car/carTypes/carTypesAction";
 
 import Button from "@mui/material/Button";
 import ConfirmDialog from "../../../components/ConfirmDialog/ConfirmDialog";
@@ -35,7 +35,7 @@ const CarTypes = () => {
 
   useEffect(() => {
     // console.log(carTypes);
-
+    dispatch(clearSuccessMessage())
     callCarList();
   }, []);
 

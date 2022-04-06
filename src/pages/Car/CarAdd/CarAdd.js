@@ -6,6 +6,10 @@ import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation, Link, useParams } from "react-router-dom";
 import ImageSelectionDialog from "./../../Utility/ImageSelectionDialog";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 // import SendIcon from "@mui/icons-material/Send";
 import Button from "@mui/material/Button";
 import {
@@ -64,7 +68,6 @@ const CarAdd = () => {
     loading,
   } = useSelector((state) => state.partnerReducer);
 
-  const {status: carListStatus} = useSelector(state => state.carReducer)
   const { carTypes, carFuels } = useSelector((state) => state.carTypesReducer);
 
   const [openPartnerSearch, setOpenPartnerSearch] = useState(false);
@@ -81,7 +84,7 @@ const CarAdd = () => {
   const [imageId, setImageId] = useState(null);
   const [modal_fullscreen, setmodal_fullscreen] = useState(false);
   const [carImages, setCarImages] = useState([]);
-  const [loaded, setLoaded] = useState(false);
+  const [statusKey, setStatusKey] = useState("active");
 
   // GET PARTNER
 
@@ -199,7 +202,7 @@ const CarAdd = () => {
         setCarSmartCardFont(carSmartCardFont);
         setCarSmartCardBack(carSmartCardBack);
         setCarImages(car_images);
-        setCarRegisterNumber(carRegisterNumber);
+      setCarRegisterNumber(carRegisterNumber);
       }
       // selectedCarType = findCar.carType;
     }
@@ -326,10 +329,11 @@ const CarAdd = () => {
       carSmartCardFont,
       carSmartCardBack,
       carImages: carImagesPath,
+      status: statusKey
     };
 
     if (id) {
-      dispatch(editCar({ ...data, id:id }));
+      dispatch(editCar({ ...data, id: id }));
     } else {
       dispatch(addCar(data));
     }
@@ -340,15 +344,12 @@ const CarAdd = () => {
   // SUCCESS
 
   useEffect(() => {
-    if (status || carListStatus) {
+    if (status) {
       // const pID = searchParams.get('pID')
       // history.push(`/partner/${pID}`);
-      history.goBack();
+      history.goBack(); 
     }
-  }, [status,carListStatus]);
-
-
-  
+  }, [status]);
 
   return (
     <React.Fragment>
@@ -653,9 +654,35 @@ const CarAdd = () => {
                     />
                   </Col>
                 </Row>
-                {/* CAR SMART CAR IMAGES */}
+
                 <Row className="py-xl-4">
+                  
                   <Col xl={6}>
+                    <div>
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                          Status
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={statusKey}
+                          label="Status"
+                          onChange={(event) => setStatusKey(event.target.value)}
+                        >
+                          <MenuItem value={"active"} active>
+                            Active
+                          </MenuItem>
+                          <MenuItem value={"pending"}>Pending</MenuItem>
+                          <MenuItem value={"block"}>Block</MenuItem>
+                          <MenuItem value={"permanent-block"}>
+                            Permanent Block
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    </div>
+                  </Col>
+                  <Col xl={6} className="py-4 py-xl-0">
                     <div>
                       <TextField
                         required
@@ -908,9 +935,12 @@ const CarAdd = () => {
             <h5 className="modal-title mt-0" id="myModalLabel">
               Select Partner
             </h5>
-          
-            <i onClick={()=>history.goBack()} className="fa fa-window-close cursor-pointer" style={{fontSize: "20px"}}></i>
-            
+
+            <i
+              onClick={() => history.goBack()}
+              className="fa fa-window-close cursor-pointer"
+              style={{ fontSize: "20px" }}
+            ></i>
           </div>
           <div className="modal-body">
             <SearchWrapper>

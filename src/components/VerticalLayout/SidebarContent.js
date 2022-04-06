@@ -223,9 +223,16 @@ const SidebarContent = (props) => {
               <ul className="sub-menu" aria-expanded="false">
                 <li />
                 <li>
+                  <Link to="/car/list">{props.t("List")} </Link>
+                </li>
+                <li>
+                  <Link to="/car/Add">{props.t("Add")} </Link>
+                </li>
+                <li>
                   <Link to="/#" className="has-arrow waves-effect">
                     {props.t("Car Types")}
                   </Link>
+                  
                   <ul className="sub-menu" aria-expanded="true">
                     <li>
                       <Link to="/car-types">{props.t("List")}</Link>
@@ -235,12 +242,7 @@ const SidebarContent = (props) => {
                     </li>
                   </ul>
                 </li>
-                <li>
-                  <Link to="/car/list">{props.t("List")} </Link>
-                </li>
-                <li>
-                  <Link to="/car/Add">{props.t("Add")} </Link>
-                </li>
+                
                 <li>
                   <Link to="/color">{props.t("Color")} </Link>
                 </li>
