@@ -138,6 +138,11 @@ export const EDIT_USER_PAYMENT_CONDITION = ADMIN_ENDPOINT + "/setting/edit-user-
 
 // GET ALL CARS
 
-export const GET_ALL_CARS = ADMIN_ENDPOINT + "/cars"
+export const GET_ALL_CARS = ADMIN_ENDPOINT + "/cars";
+
+
+// TUTORIAL 
+
+export const ALL_TUTORIAL = ADMIN_ENDPOINT + "/tutorial"
 
 // END ADMIN API

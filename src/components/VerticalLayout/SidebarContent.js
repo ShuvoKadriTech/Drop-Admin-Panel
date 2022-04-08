@@ -369,6 +369,25 @@ const SidebarContent = (props) => {
               </ul>
             </li>
 
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="ti-youtube" />
+                <span>{props.t("Tutorials")}</span>
+              </Link>
+              <ul className="sub-menu " aria-expanded="false">
+                <li>
+                  <Link to="/tutorials/list">
+                    {props.t("List")}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/tutorials/add">
+                    {props.t("Add")}
+                  </Link>
+                </li>
+              </ul>
+            </li>
+
             {/* SETTINGS */}
 
             <li>

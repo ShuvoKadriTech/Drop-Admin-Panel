@@ -69,6 +69,32 @@ const CarList = () => {
     // history.push(`/partner/edit/${partner.id}`)
   };
 
+  const getData = () =>{
+    console.log("fatching data")
+  }
+
+  const debounce = (func, delay) => {
+    // console.log("")
+    let timer;
+    return ()=>{
+      clearTimeout(timer);
+      
+      timer = setTimeout(() => {
+        func();
+      }, delay);
+    }
+    // console.log("yes....");
+   
+  };
+
+ 
+  const searchKeyListener = debounce(getData, 300);
+    //  console.log("calling-----------")
+    
+
+  
+
+  
  
 
   return (
@@ -162,9 +188,7 @@ const CarList = () => {
                           id="search"
                           autoComplete="off"
                           // value={searchKey}
-                          // onChange={(event) =>
-                          //   searchKeyListener(event.target.value)
-                          // }
+                          onChange={()=> searchKeyListener()}
                         />
                       </div>
                     </SearchWrapper>
@@ -212,6 +236,7 @@ const CarList = () => {
                       <Th>Parnter Name</Th>
                       <Th>Car Type</Th>
                       <Th>Model</Th>
+                      <Th>Status</Th>
                       <Th>Action</Th>
                     </Tr>
                   </Thead>
@@ -247,6 +272,7 @@ const CarList = () => {
                           <Td>{car.partner.name}</Td>
                           <Td>{car.car_type.name}</Td>
                           <Td>{car.car_brand.name}</Td>
+                          <Td>{car.status}</Td>
                           <Td>
                             <div>
                               <button

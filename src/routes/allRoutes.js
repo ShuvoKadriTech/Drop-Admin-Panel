@@ -159,6 +159,8 @@ import UserPrivacyPolicy from "../pages/Policy/User/UserPrivacyPolicy/UserPrivac
 import UserRefundPolicy from "../pages/Policy/User/UserRefundPolicy/UserRefundPolicy";
 import UserPaymentCondition from "../pages/Setting/UserPaymentCondition/UserPaymentCondition";
 import CarList from "../pages/Car/CarLlist/CarList";
+import TutorialList from './../pages/Tutorial/TutorialList/TutorialList';
+import TutorialAdd from './../pages/Tutorial/TutorialAdd/TutorialAdd';
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
@@ -257,6 +259,9 @@ const userRoutes = [
   // USER PAYMENT CONDITION
 
   { path: "/user-payment-condition", component: UserPaymentCondition },
+
+  {path: "/tutorials/list", component: TutorialList },
+  {path: "/tutorials/add", component: TutorialAdd },
 
   // //calendar
   { path: "/calendar", component: Calendar },

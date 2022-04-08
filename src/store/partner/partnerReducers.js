@@ -326,14 +326,13 @@ const partnerReducer = (state = initialState, action) => {
       };
 
     case actionType.EDIT_CAR_REQUEST_SUCCESS:
-      // const newData = state.drivers.map(
-      //   driver => (driver.id == payload.id ? payload : driver)
-      // );
+  
+
       return {
         ...state,
 
         loading: false,
-        // drivers: updateData,
+        // cars: newData,
         status: true,
         error: null,
       };
@@ -341,9 +340,7 @@ const partnerReducer = (state = initialState, action) => {
     case actionType.EDIT_CAR_REQUEST_FAIL:
       return {
         ...state,
-
         loading: false,
-        // drivers: updateData,
         status: false,
         error: payload,
       };

@@ -84,14 +84,14 @@ const DriverAdd = () => {
   // PARTNER ID
   useEffect(() => {
     const pID = searchParams.get("pID");
-    console.log("partner Id ===-", pID);
+    // console.log("partner Id ===-", pID);
     if (pID) {
       const findPartner = partners.find((partner) => partner.id == pID);
       if (findPartner) {
-        console.log("find partner", findPartner);
+        // console.log("find partner", findPartner);
         setPartner(findPartner);
       } else {
-        console.log("call partner for api");
+        // console.log("call partner for api");
         callPartner(pID);
       }
     } else {
@@ -102,10 +102,10 @@ const DriverAdd = () => {
   const setPartner = (partner) => {
     setSelectedPartner(partner);
 
-    console.log("selected partner", partner);
+    // console.log("selected partner", partner);
 
     if (id) {
-      console.log("selected partner-----", partner);
+      // console.log("selected partner-----", partner);
       if (partner) {
         const findDriver = partner.drivers.find((driver) => driver.id == id);
         if (findDriver) {

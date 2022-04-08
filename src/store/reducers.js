@@ -28,6 +28,7 @@ import usersReducer from "./Users/UsersReducer";
 import policyReducer from "./Policy/policyReducer";
 import userPaymentConditionReducer from "./UserPaymentCondition/UserPaymentConditionReducer";
 import carReducer from './Car/carReducer';
+import tutorialReducer from './tutorial/tutorialReducer';
 
 const rootReducer = combineReducers({
   // public
@@ -52,7 +53,8 @@ const rootReducer = combineReducers({
   usersReducer,
   policyReducer,
   userPaymentConditionReducer,
-  carReducer
+  carReducer,
+  tutorialReducer
 });
 
 export default rootReducer;

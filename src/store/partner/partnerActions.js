@@ -496,7 +496,7 @@ export const getAllCarsByPartner = (partnerId) => async (dispatch) => {
 // EDIT CAR
 
 export const editCar = (value) => async (dispatch) => {
-  console.log("values--", value);
+  // console.log("values--", value);
 
   try {
     dispatch({
@@ -507,6 +507,8 @@ export const editCar = (value) => async (dispatch) => {
       method: "POST",
       data: value,
     });
+
+    // console.log("car edit response", data)
 
     if(data.status){
       toast.success(data.message, {
@@ -524,7 +526,7 @@ export const editCar = (value) => async (dispatch) => {
           type: actionType.EDIT_CAR_REQUEST_SUCCESS,
           payload: data.data.car
         })
-      })
+      },300)
       
     }else{
       toast.warn(data.error, {
