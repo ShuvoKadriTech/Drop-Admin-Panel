@@ -1,4 +1,4 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import Breadcrumb from "../../../components/Common/Breadcrumb";
 import GlobalWrapper from "./../../../components/GlobalWrapper";
 import {
@@ -15,25 +15,39 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllTutorial, updateTutorialTypeKey } from "../../../store/tutorial/tutorialAction";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteTutorial,
+  getAllTutorial,
+  updateTutorialTypeKey,
+} from "../../../store/tutorial/tutorialAction";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 
-
 const TutorialList = () => {
+  const dispatch = useDispatch();
 
-    const dispatch = useDispatch();
+  const { loading, tutorials, typeKey } = useSelector(
+    (state) => state.tutorialReducer
+  );
 
-    const {loading, tutorials, typeKey} = useSelector(state => state.tutorialReducer)
-
-
-    useEffect(()=>{
-        callTutorialList(true)
-    },[])
-
-    const callTutorialList = (refresh = false) =>{
-        dispatch(getAllTutorial(refresh))
+  useEffect(() => {
+    if (typeKey) {
+      callTutorialList(true);
+    } else {
+      callTutorialList();
     }
+  }, [typeKey]);
+
+  const callTutorialList = (refresh = false) => {
+    dispatch(getAllTutorial(refresh));
+  };
+
+
+  // DELETE TUTORIAL 
+
+  const handleDelete = (id) =>{
+      dispatch(deleteTutorial({id}))
+  }
 
   return (
     <React.Fragment>
@@ -44,8 +58,8 @@ const TutorialList = () => {
               maintitle="Quicar"
               title="Tutorials"
               breadcrumbItem="List"
-                loading={loading}
-                callList={callTutorialList}
+              loading={loading}
+              callList={callTutorialList}
               isAddNew={true}
               addNewRoute="tutorials/add"
             />
@@ -53,7 +67,7 @@ const TutorialList = () => {
             <Card>
               <CardBody>
                 <div className="d-flex justify-content-center">
-                  <FormControl style={{width: '50%'}}>
+                  <FormControl style={{ width: "50%" }}>
                     <InputLabel id="demo-simple-select-label">
                       Status
                     </InputLabel>
@@ -66,9 +80,7 @@ const TutorialList = () => {
                         dispatch(updateTutorialTypeKey(event.target.value))
                       }
                     >
-                      <MenuItem value={"all"}>
-                        All
-                      </MenuItem>
+                      <MenuItem value={"all"}>All</MenuItem>
                       <MenuItem value={"user"}>User</MenuItem>
                       <MenuItem value={"partner"}>Partner</MenuItem>
                     </Select>
@@ -91,16 +103,15 @@ const TutorialList = () => {
                 >
                   <Thead>
                     <Tr>
-                      <Th>Image</Th>
-                      <Th>Parnter Name</Th>
-                      <Th>Car Type</Th>
-                      <Th>Model</Th>
-                      <Th>Status</Th>
+                      <Th>Thumbnil</Th>
+                      <Th>Title</Th>
+                      <Th>Type</Th>
+                      <Th>Youtube Video ID</Th>
                       <Th>Action</Th>
                     </Tr>
                   </Thead>
                   <Tbody style={{ position: "relative" }}>
-                    {/* {cars.map((car, index) => {
+                    {tutorials.map((item, index) => {
                       return (
                         <Tr
                           key={index}
@@ -113,12 +124,12 @@ const TutorialList = () => {
                           <Th>
                             <div style={{ width: "50px", height: "50px" }}>
                               <img
-                                  onClick={() => {
-                                    showImageGallery(car.car_images)
-                                  }}
+                                onClick={() => {
+                                  // showImageGallery(car.car_images)
+                                }}
                                 className="img-fluid cursor-pointer"
                                 alt=""
-                                src={car.car_images[0].path}
+                                src={item.thumbnail}
                                 style={{
                                   width: "100%",
                                   height: "100%",
@@ -128,48 +139,42 @@ const TutorialList = () => {
                             </div>
                           </Th>
 
-                          <Td>{car.partner.name}</Td>
-                          <Td>{car.car_type.name}</Td>
-                          <Td>{car.car_brand.name}</Td>
-                          <Td>{car.status}</Td>
+                          <Td>{item.title}</Td>
+                          <Td>{item.type}</Td>
+                          <Td>{item.youtubeVideoId}</Td>
                           <Td>
                             <div>
                               <button
                                 className="btn btn-info me-3 button"
-                                onClick={() =>
-                                  editCar(car.id, car.partner.id)
-                                }
+                                // onClick={() =>
+                                //   editCar(car.id, car.partner.id)
+                                // }
                               >
                                 <i className="fa fa-edit" />
                               </button>
                               <button
-                                className="btn btn-success button"
-                                onClick={() =>
-                                  history.push(
-                                    `/car/details/${car.id}`
-                                  )
-                                }
+                                className="btn btn-danger button"
+                                onClick={() => handleDelete(item.id)}
                               >
-                                <i className="fa fa-eye" />
+                                <i className="fa fa-trash" />
                               </button>
                             </div>
                           </Td>
                         </Tr>
                       );
-                    })} */}
+                    })}
+                    
                   </Tbody>
-                  {/* {loading && (
-                    <Spinner
-                      style={{ position: "fixed", left: "50%", top: "50%" }}
-                      animation="border"
-                      variant="info"
-                    />
-                  )} */}
                 </Table>
+                {loading && (
+                      <Spinner
+                        style={{ position: "fixed", left: "50%", top: "60%" }}
+                        animation="border"
+                        variant="info"
+                      />
+                    )}
               </CardBody>
             </Card>
-
-
           </Container>
         </div>
       </GlobalWrapper>

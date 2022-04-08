@@ -145,4 +145,7 @@ export const GET_ALL_CARS = ADMIN_ENDPOINT + "/cars";
 
 export const ALL_TUTORIAL = ADMIN_ENDPOINT + "/tutorial"
 
+export const ADD_TUTORIAL = ADMIN_ENDPOINT + "/tutorial/add";
+export const DELETE_TUTORIAL = ADMIN_ENDPOINT + "/tutorial/delete";
+
 // END ADMIN API

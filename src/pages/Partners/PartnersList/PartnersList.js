@@ -142,7 +142,7 @@ const PartnersList = () => {
                           dispatch(updateStatusKey(event.target.value))
                         }
                       >
-                        <MenuItem value={"all"} active>
+                        <MenuItem value={"all"}>
                           All
                         </MenuItem>
                         <MenuItem value={"pending"}>Pending</MenuItem>
