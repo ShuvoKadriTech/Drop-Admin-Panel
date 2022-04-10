@@ -123,47 +123,38 @@ import Texteditor from "../pages/banner/Texteditor";
 // User List
 
 import UsersList from "../pages/Users/UsersList/UsersList";
-import PartnersList from "../pages/Partners/PartnersList/PartnersList";
-import CarTypes from "../pages/Car/CarTypes/CarTypes";
-import AddCarType from "../pages/Car/AddCarType/AddCarType";
-import Color from "../pages/Car/Color/Color";
-import Year from "../pages/Car/Year/Year";
+
 import AdminList from "../pages/AdminControl/Admins/AdminList.js/AdminList";
 import CreateAdmin from "../pages/AdminControl/Admins/CreateAdmin/CreateAdmin";
 import Role from "../pages/AdminControl/Role/Role";
-import CarTypeDetails from "../pages/Car/CarTypeDetails/CarTypeDetails";
-import PartnerAdd from "../pages/Partners/PartnerAdd/PartnerAdd";
-
-import PartnerDetails from "../pages/Partners/PartnerDetails/PartnerDetails";
-import DriverAdd from "../pages/Driver/DriverAdd/DriverAdd";
-import CarBrand from "../pages/Car/CarBrand/CarBrand";
-import CarModel from "../pages/Car/CarModel/CarModel";
-import DriversList from "./../pages/Driver/DriversList/DriversList";
-import DriverDetails from "../pages/Driver/DriverDetails/DriverDetails";
-import CarAdd from "../pages/Car/CarAdd/CarAdd";
-import RideList from "../pages/Ride/List/RideList";
-import CarDetails from "../pages/Car/CarDetails/CarDetails";
-import AddUser from "../pages/Users/AddUser/AddUser";
-import RideAdd from "../pages/Ride/RideAdd/RideAdd";
-
 import UserDetails from "../pages/Users/UserDetails/UserDetails";
-import PartnerPrivacyPolicy from "../pages/Policy/Partner/PartnerPrivacyPolicy/PartnerPrivacyPolicy";
-import PartnerPaymentPolicy from "../pages/Policy/Partner/PartnerPaymentPolicy/PartnerPaymentPolicy";
-import PartnerCancellationPolicy from "./../pages/Policy/Partner/PartnerCancellationPolicy/PartnerCancellationPolicy";
-import UserPaymentPolicy from "../pages/Policy/User/UserPaymentPolicy/UserPaymentPolicy";
-import UserCancellationPolicy from "../pages/Policy/User/UserCancellationPolicy/UserCancellationPolicy";
-import PartnerAboutUs from "../pages/Policy/Partner/PartnerAboutUs/PartnerAboutUs";
-import UserAboutUs from "../pages/Policy/User/UserAboutUs/UserAboutUs";
-import PartnerRefundPolicy from "../pages/Policy/Partner/PartnerRefundPolicy/PartnerRefundPolicy";
-import UserPrivacyPolicy from "../pages/Policy/User/UserPrivacyPolicy/UserPrivacyPolicy";
-import UserRefundPolicy from "../pages/Policy/User/UserRefundPolicy/UserRefundPolicy";
-import UserPaymentCondition from "../pages/Setting/UserPaymentCondition/UserPaymentCondition";
-import CarList from "../pages/Car/CarLlist/CarList";
-import TutorialList from './../pages/Tutorial/TutorialList/TutorialList';
-import TutorialAdd from './../pages/Tutorial/TutorialAdd/TutorialAdd';
+import SellerList from './../pages/Seller/SellerList/SellerList';
+import SellerAdd from './../pages/Seller/SellerAdd/SellerAdd';
+import ShopList from './../pages/Shops/ShopList/ShopList';
+import ShopAdd from './../pages/Shops/ShopAdd/ShopAdd';
+import DeliverymanList from './../pages/Deliveryman/DeliverymanList/DeliverymanList';
+import DeliverymanAdd from './../pages/Deliveryman/DeliverymanAdd/DeliverymanAdd';
+import OrdersList from './../pages/Orders/OrdersList/OrdersList';
+import DealsList from "../pages/Deals/DealsList/DealsList";
+import DealsAdd from "../pages/Deals/DealsAdd/DealsAdd";
+import DropPayList from "../pages/DropPay/DropPayList/DropPayList";
+import transactions from './../pages/Transactions/transactions';
+import PercentageSetting from './../pages/AppWallet/PercentageSetting/PercentageSetting';
+import AdminLogHistory from './../pages/AppWallet/AdminLogHistory/AdminLogHistory';
+import SellerTransactions from './../pages/AppWallet/SellerTransactions/SellerTransactions';
+import DeliveryTransactions from './../pages/AppWallet/DeliveryTransactions/DeliveryTransactions';
+import PaymentHistory from './../pages/AppWallet/PaymentHistory/PaymentHistory';
+import Chat from './../pages/Chat/Chat';
+import CategoryList from './../pages/Categories&Tags/Category/CategoryList/CategoryList';
+import CategoryAdd from './../pages/Categories&Tags/Category/CategoryAdd/CategoryAdd';
+import TagsList from './../pages/Categories&Tags/Tags/TagsList/TagsList';
+import TagAdd from './../pages/Categories&Tags/Tags/TagAdd/TagAdd';
+
 
 const userRoutes = [
   { path: "/dashboard", component: Dashboard },
+
+  {path:"/orders/list", component: OrdersList},
 
   { path: "/image-gallery", component: PagesGallery },
   { path: "/image-folder", component: ImageFolder },
@@ -179,89 +170,62 @@ const userRoutes = [
   // Users
 
   { path: "/users/list", component: UsersList },
-  { path: "/users/add", component: AddUser },
-  { path: "/users/edit/:id", component: AddUser },
+
   { path: "/user/details/:id", component: UserDetails },
 
-  // Partners
+  // SELLER
 
-  { path: "/partner/list", component: PartnersList },
-  { path: "/partner/add", component: PartnerAdd },
-  { path: "/partner/edit/:id", component: PartnerAdd },
-  { path: "/partner/details/:id", component: PartnerDetails },
+  {path: "/seller/list", component: SellerList},
+  {path: "/seller/add", component: SellerAdd},
 
-  // DRIVER
+  // SHOPS
 
-  { path: "/driver/add", component: DriverAdd },
-  { path: "/driver/edit/:id", component: DriverAdd },
-  { path: "/driver/details/:id", component: DriverDetails },
+  {path: "/shops/list", component: ShopList},
+  {path: "/shops/add", component: ShopAdd},
 
-  { path: "/drivers", component: DriversList },
 
-  // CAR
-  { path: "/car/add", component: CarAdd },
-  { path: "/car/edit/:id", component: CarAdd },
-  { path: "/car/details/:id", component: CarDetails },
+  // DELIVERY MAN
 
-  // CAR TYPES
-  { path: "/car-types", component: CarTypes },
-  { path: "/add-car-type", component: AddCarType },
-  { path: "/car-type/edit/:id", component: AddCarType },
-  { path: "/car-type/:id", component: CarTypeDetails },
-  { path: "/car/list", component: CarList },
-  
+  {path: "/deliveryman/list", component: DeliverymanList},
+  {path: "/deliveryman/add", component: DeliverymanAdd},
 
-  // CAR BRAND
+  {path: "/deals/list", component: DealsList},
+  {path: "/deals/add", component: DealsAdd},
 
-  { path: "/car-type/brand/:id", component: CarBrand },
+  // DROP PAY
+  {path: "/drop-pay", component: DropPayList},
 
-  // CAR MODEL
+  // TRANSACTIONS 
 
-  { path: "/car-type/brand/model/:id", component: CarModel },
+  { path: "/transactions",  component:transactions},
 
-  // COLOR
+  // APP WALLET 
 
-  { path: "/color", component: Color },
+  {path: "/add-wallet/percentage-setting", component: PercentageSetting},
+  {path: "/add-wallet/admin-log-history", component: AdminLogHistory},
+  {path: "/add-wallet/seller-transactions", component: SellerTransactions},
+  {path: "/add-wallet/delivery-transactions", component: DeliveryTransactions},
+  {path: "/add-wallet/payments-history", component: PaymentHistory},
 
-  // YEAR
+  // CHAT
 
-  { path: "/year", component: Year },
+  {path: "/chat", component: Chat},
 
-  // RIDE
-  { path: "/ride/list", component: RideList },
-  { path: "/ride/add", component: RideAdd },
+  // CATEGORIES AND TAGS
 
-  // PARTNER POLICY
+  {path: "/categories/list", component: CategoryList},
+  {path: "/categories/add", component: CategoryAdd},
 
-  { path: "/partner/privacy-policy", component: PartnerPrivacyPolicy },
-  { path: "/partner/payment-policy", component: PartnerPaymentPolicy },
-  {
-    path: "/partner/cancellation-policy",
-    component: PartnerCancellationPolicy,
-  },
-  { path: "/partner/about-us", component: PartnerAboutUs },
-  { path: "/partner/refund-policy", component: PartnerRefundPolicy },
-
-  // USER POLICY
-
-  { path: "/user/privacy-policy", component: UserPrivacyPolicy },
-  { path: "/user/payment-policy", component: UserPaymentPolicy },
-  { path: "/user/cancellation-policy", component: UserCancellationPolicy },
-  { path: "/user/about-us", component: UserAboutUs },
-  { path: "/user/refund-policy", component: UserRefundPolicy },
+  {path: "/tags/list", component: TagsList},
+  {path: "/tags/add", component: TagAdd},
 
   // ADMIN CONTROL
 
-  { path: "/admin-list", component: AdminList },
-  { path: "/create-admin", component: CreateAdmin },
-  { path: "/role", component: Role },
+  { path: "/admin/list", component: AdminList },
+  { path: "/admin/create", component: CreateAdmin },
+  { path: "/admin/role", component: Role },
 
-  // USER PAYMENT CONDITION
 
-  { path: "/user-payment-condition", component: UserPaymentCondition },
-
-  {path: "/tutorials/list", component: TutorialList },
-  {path: "/tutorials/add", component: TutorialAdd },
 
   // //calendar
   { path: "/calendar", component: Calendar },

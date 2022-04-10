@@ -92,14 +92,20 @@ const SidebarContent = (props) => {
       <SimpleBar style={{ maxHeight: "100%" }} ref={ref}>
         <div id="sidebar-menu">
           <ul className="metismenu list-unstyled" id="side-menu">
-            <li className="menu-title">{props.t("Main")} </li>
+            {/* <li className="menu-title">{props.t("Main")} </li> */}
             <li>
               <Link to="/dashboard" className="waves-effect">
                 <i className="ti-home" />
-                <span className="badge rounded-pill bg-primary float-end">
-                  2
-                </span>
                 <span>{props.t("Dashboard")}</span>
+              </Link>
+            </li>
+
+            {/* ORDERS */}
+
+            <li>
+              <Link to="/orders/list" className="waves-effect">
+                <i className="fas fa-cart-plus" />
+                <span>{props.t("Orders")}</span>
               </Link>
             </li>
 
@@ -117,10 +123,16 @@ const SidebarContent = (props) => {
               </Link>
               <ul className="sub-menu" aria-expanded="false">
                 <li>
-                  <Link to="/banner">{props.t("Banner List")} </Link>
+                  <Link to="/banner">
+                    <i className="fas fa-clipboard-list" />
+                    <span>{props.t("List")} </span>
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/banner-add">{props.t("Banner Add")}</Link>
+                  <Link to="/banner-add">
+                    <i className="fas fa-plus-circle" />
+                    <span>{props.t("Add")}</span>
+                  </Link>
                 </li>
               </ul>
             </li>
@@ -132,32 +144,23 @@ const SidebarContent = (props) => {
               </Link>
               <ul className="sub-menu" aria-expanded="false">
                 <li>
-                  <Link to="/image-gallery">{props.t("Image Gallery")} </Link>
+                  <Link to="/image-gallery">
+                    <i className="fas fa-photo-video" />
+                    <span>{props.t("Image Gallery")}</span>
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/image-folder">{props.t("Image Folder")}</Link>
+                  <Link to="/image-folder">
+                    <i className="fas fa-folder" />
+                    <span>{props.t("Image Folder")}</span>
+                  </Link>
                 </li>
 
                 <li>
-                  <Link to="/image-upload">{props.t("Image Upload")} </Link>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="ti-email" />
-                <span>{props.t("Email")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/email-inbox">{props.t("Inbox")}</Link>
-                </li>
-                <li>
-                  <Link to="/email-read">{props.t("Email Read")} </Link>
-                </li>
-                <li>
-                  <Link to="/email-compose">{props.t("Email Compose")} </Link>
+                  <Link to="/image-upload">
+                    <i className="fas fa-image" />
+                    <span>{props.t("Image Upload")}</span>
+                  </Link>
                 </li>
               </ul>
             </li>
@@ -165,16 +168,77 @@ const SidebarContent = (props) => {
             {/* USERS MENU */}
 
             <li>
+              <Link to="/users/list" className="waves-effect">
+                <i className="fas fa-user-friends" />
+                <span>{props.t("User")}</span>
+              </Link>
+            </li>
+
+            {/* SELLER */}
+
+            <li>
               <Link to="/#" className="has-arrow waves-effect">
-                <i className="ti-user" />
-                <span>{props.t("Users")}</span>
+                <i className="fas fa-user-friends" />
+                <span>{props.t("Seller")}</span>
               </Link>
               <ul className="sub-menu" aria-expanded="false">
                 <li>
-                  <Link to="/users/list">{props.t("List")}</Link>
+                  <Link to="/seller/list">
+                    <i className="fas fa-clipboard-list" />
+                    <span>{props.t("List")} </span>
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/users/add">{props.t("Add")} </Link>
+                  <Link to="/seller/add">
+                    <i className="fas fa-plus-circle" />
+                    <span>{props.t("Add")}</span>
+                  </Link>
+                </li>
+              </ul>
+            </li>
+
+            {/* SHOPS */}
+
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="fas fa-home" />
+                <span>{props.t("Shops")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/shops/list">
+                    <i className="fas fa-clipboard-list" />
+                    <span>{props.t("List")} </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/shops/add">
+                    <i className="fas fa-plus-circle" />
+                    <span>{props.t("Add")}</span>
+                  </Link>
+                </li>
+              </ul>
+            </li>
+
+            {/* DELIVERY MANS */}
+
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="fas fa-user-friends" />
+                <span>{props.t("Delivery Man")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                <li>
+                  <Link to="/deliveryman/list">
+                    <i className="fas fa-clipboard-list" />
+                    <span>{props.t("List")} </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/deliveryman/add">
+                    <i className="fas fa-plus-circle" />
+                    <span>{props.t("Add")}</span>
+                  </Link>
                 </li>
                 {/* <li>
                   <Link to="/email-compose">{props.t("Email Compose")} </Link>
@@ -182,166 +246,98 @@ const SidebarContent = (props) => {
               </ul>
             </li>
 
-            {/* PARTNER MENU */}
+            {/* DEALS */}
 
             <li>
               <Link to="/#" className="has-arrow waves-effect">
-                <i className="ti-user" />
-                <span>{props.t("Partners")}</span>
+                <i className="fas fa-handshake" />
+                <span>{props.t("Deals")}</span>
               </Link>
               <ul className="sub-menu" aria-expanded="false">
                 <li>
-                  <Link to="/partner/list">{props.t("List")}</Link>
-                </li>
-                <li>
-                  <Link to="/partner/add">{props.t("Add")}</Link>
-                </li>
-              </ul>
-            </li>
-            {/* DRIVER MENU */}
-            <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="ti-user" />
-                <span>{props.t("Driver")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/drivers">{props.t("List")}</Link>
-                </li>
-                <li>
-                  <Link to="/driver/add">{props.t("Add")}</Link>
-                </li>
-              </ul>
-            </li>
-            {/* CAR TYPES */}
-
-            <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="ti-car" />
-                <span>{props.t("Car")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li />
-                <li>
-                  <Link to="/car/list">{props.t("List")} </Link>
-                </li>
-                <li>
-                  <Link to="/car/Add">{props.t("Add")} </Link>
-                </li>
-                <li>
-                  <Link to="/#" className="has-arrow waves-effect">
-                    {props.t("Car Types")}
+                  <Link to="/deals/list">
+                    <i className="fas fa-clipboard-list" />
+                    <span>{props.t("List")} </span>
                   </Link>
-                  
-                  <ul className="sub-menu" aria-expanded="true">
-                    <li>
-                      <Link to="/car-types">{props.t("List")}</Link>
-                    </li>
-                    <li>
-                      <Link to="/add-car-type">{props.t("Add")}</Link>
-                    </li>
-                  </ul>
-                </li>
-                
-                <li>
-                  <Link to="/color">{props.t("Color")} </Link>
                 </li>
                 <li>
-                  <Link to="/year">{props.t("Year")} </Link>
+                  <Link to="/deals/add">
+                    <i className="fas fa-plus-circle" />
+                    <span>{props.t("Add")}</span>
+                  </Link>
                 </li>
               </ul>
             </li>
 
-            {/* RIDE  */}
+            {/* DROP PAY */}
 
             <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="ti-car" />
-                <span>{props.t("Ride")}</span>
+              <Link to="/drop-pay" className="waves-effect">
+                <i className="fas fa-comment-dollar" />
+                <span>{props.t("Drop Pay")}</span>
               </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li>
-                  <Link to="/ride/list">{props.t("List")}</Link>
-                </li>
-                <li>
-                  <Link to="/ride/add">{props.t("Add")}</Link>
-                </li>
-              </ul>
             </li>
 
-            {/*  POLICY */}
+            {/* TRANSACTIONS */}
 
             <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="ti-lock" />
-                <span>{props.t("Policy")}</span>
+              <Link to="/transactions" className="waves-effect">
+                <i className="fas fa-exchange-alt" />
+                <span>{props.t("Transactions")}</span>
               </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                <li />
-                <li>
-                  <Link to="/#" className="has-arrow waves-effect">
-                    {props.t("Partner")}
-                  </Link>
-                  <ul className="sub-menu" aria-expanded="true">
-                    <li>
-                      <Link to="/partner/about-us">{props.t("About Us")}</Link>
-                    </li>
-                    <li>
-                      <Link to="/partner/privacy-policy">
-                        {props.t("Privacy Policy")}
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/partner/payment-policy">
-                        {props.t("Payment Policy")}
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/partner/cancellation-policy">
-                        {props.t("Cancellation Policy")}
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/partner/refund-policy">
-                        {props.t("Refund Policy")}
-                      </Link>
-                    </li>
-                  </ul>
-                </li>
+            </li>
 
+            {/* APP WALLET */}
+              
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="fas fa-wallet" />
+                <span>{props.t("App Wallet")}</span>
+              </Link>
+              <ul className="sub-menu " aria-expanded="false">
                 <li>
-                  <Link to="/#" className="has-arrow waves-effect">
-                    {props.t("User")}
+                  <Link to="/add-wallet/percentage-setting">
+                    <i className="ti-settings" />
+                    <span>{props.t("Percentage Setting")}</span>
                   </Link>
-                  <ul className="sub-menu" aria-expanded="true">
-                    <li>
-                      <Link to="/user/about-us">{props.t("About Us")}</Link>
-                    </li>
-                    <li>
-                      <Link to="/user/privacy-policy">
-                        {props.t("Privacy Policy")}
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/user/payment-policy">
-                        {props.t("Payment Policy")}
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/user/cancellation-policy">
-                        {props.t("Cancellation Policy")}
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/user/refund-policy">
-                        {props.t("Refund Policy")}
-                      </Link>
-                    </li>
-                  </ul>
+                </li>
+                <li>
+                  <Link to="/add-wallet/admin-log-history">
+                    <i className="fas fa-history" />
+                    <span>{props.t("Admin Log History")}</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/add-wallet/seller-transactions">
+                    <i className="fas fa-exchange-alt" />
+                    <span>{props.t("Seller TRX")}</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/add-wallet/delivery-transactions">
+                    <i className="fas fa-exchange-alt" />
+                    <span>{props.t("Delivery TRX")}</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/add-wallet/payments-history">
+                    <i className="ti-money" />
+                    <span>{props.t("Payments History")}</span>
+                  </Link>
                 </li>
               </ul>
             </li>
 
+            {/* CHAT */}
+
+            <li>
+              <Link to="/chats" className="waves-effect">
+                <i className="fab fa-rocketchat" />
+                <span>{props.t("Chat")}</span>
+              </Link>
+            </li>
+
+            
             {/* Admin Controls */}
 
             <li>
@@ -352,68 +348,84 @@ const SidebarContent = (props) => {
               <ul className="sub-menu " aria-expanded="false">
                 <li>
                   <Link to="/#" className="has-arrow waves-effect">
-                    {props.t("Admins")}
+                  <i className="fas fa-user-friends" />
+                    <span>{props.t("Admins")}</span>
                   </Link>
                   <ul className="sub-menu" aria-expanded="true">
                     <li>
-                      <Link to="/admin-list">{props.t("List")}</Link>
+                      <Link to="/admin/list">
+                        <i className="fas fa-clipboard-list" />
+                        <span>{props.t("List")} </span>
+                      </Link>
                     </li>
                     <li>
-                      <Link to="/create-admin">{props.t("Create")}</Link>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <Link to="/role">{props.t("Role")}</Link>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="ti-youtube" />
-                <span>{props.t("Tutorials")}</span>
-              </Link>
-              <ul className="sub-menu " aria-expanded="false">
-                <li>
-                  <Link to="/tutorials/list">
-                    {props.t("List")}
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/tutorials/add">
-                    {props.t("Add")}
-                  </Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* SETTINGS */}
-
-            <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="fas fa-cog" />
-                <span>{props.t("Setting")}</span>
-              </Link>
-              <ul className="sub-menu " aria-expanded="false">
-                {/* <li>
-                  <Link to="/#" className="has-arrow waves-effect">
-                    {props.t("Payment Condition")}
-                  </Link>
-                  <ul className="sub-menu" aria-expanded="true">
-                    <li>
-                      <Link to="/user-payment-condition/list">
-                        {props.t("List")}
+                      <Link to="/admin/create">
+                        <i className="fas fa-plus-circle" />
+                        <span>{props.t("Create")}</span>
                       </Link>
                     </li>
                   </ul>
-                  
-                </li> */}
+                </li>
                 <li>
-                  <Link to="/user-payment-condition">
-                    {props.t("Payment Condition")}
+                  <Link to="/admin/role">
+                    <i className="fas fa-user-tie" />
+                    <span>{props.t("Role")}</span>
                   </Link>
                 </li>
+              </ul>
+            </li>
+
+
+            {/* CATEGORIES AND TAGS */}
+
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="fas fa-list" />
+                <span>{props.t("Categories & Tags")}</span>
+              </Link>
+              <ul className="sub-menu " aria-expanded="false">
+                <li>
+                  <Link to="/#" className="has-arrow waves-effect">
+                  <i className="fas fa-list" />
+                    <span>{props.t("Categories")}</span>
+                  </Link>
+                  <ul className="sub-menu" aria-expanded="true">
+                    <li>
+                      <Link to="/categories/list">
+                        <i className="fas fa-clipboard-list" />
+                        <span>{props.t("List")} </span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/categories/add">
+                        <i className="fas fa-plus-circle" />
+                        <span>{props.t("Add")}</span>
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <Link to="/#" className="has-arrow waves-effect">
+                    <i className="fas fa-tags" />
+                    <span>{props.t("Tags")}</span>
+                  </Link>
+                  <ul className="sub-menu" aria-expanded="true">
+                    <li>
+                      <Link to="/tags/list">
+                        <i className="fas fa-clipboard-list" />
+                        <span>{props.t("List")} </span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/tags/add">
+                        <i className="fas fa-plus-circle" />
+                        <span>{props.t("Add")}</span>
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+
               </ul>
             </li>
 

@@ -16,19 +16,9 @@ import galleryReducer from "./reducer/imageGallery.reducer";
 import imageReducer from "./reducer/image/imageFolder.reducer";
 import folderCreateReducer from "./reducer/image/folderCreate.reducer";
 import bannerReducer from "./banner/bannerReducer";
-
-import colorReducers from "./Car/color/colorReducers";
-import carTypesReducer from "./Car/carTypes/carTypesReducer";
-import yearReducer from "./Car/year/yearReducer";
 import { roleReducer } from "./AdminControl/Role/roleReducer";
-import partnerReducer from "./partner/partnerReducers";
-import { driverReducer } from "./Driver/driverReducer";
-import rideReducer from "./Ride/rideReducer";
 import usersReducer from "./Users/UsersReducer";
-import policyReducer from "./Policy/policyReducer";
-import userPaymentConditionReducer from "./UserPaymentCondition/UserPaymentConditionReducer";
-import carReducer from './Car/carReducer';
-import tutorialReducer from './tutorial/tutorialReducer';
+
 
 const rootReducer = combineReducers({
   // public
@@ -43,18 +33,8 @@ const rootReducer = combineReducers({
   imageReducer,
   createFolder: folderCreateReducer,
   bannerReducer,
-  carTypesReducer,
-  colorReducers,
-  yearReducer,
   roleReducer,
-  partnerReducer,
-  driverReducer,
-  rideReducer,
   usersReducer,
-  policyReducer,
-  userPaymentConditionReducer,
-  carReducer,
-  tutorialReducer
 });
 
 export default rootReducer;
