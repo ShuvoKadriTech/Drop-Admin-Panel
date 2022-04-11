@@ -21,6 +21,7 @@ import { GET_SINGLE_BANNER } from './../../network/Api';
 import { addBanner, editBanner } from "../../store/banner/bannerAction";
 import htmlToDraft from 'html-to-draftjs';
 import { OPEN_EDIT_PAGE } from '../../store/actionType';
+import Breadcrumb from '../../components/Common/Breadcrumb';
 
 
 
@@ -189,11 +190,19 @@ useEffect(()=>{
 
             <Container fluid={true}>
 
+            <Breadcrumb
+              maintitle="Drop"
+              breadcrumbItem={"Uplaod"}
+              title="Banner"
+              // loading={loading}
+              // callList={callCarList}
+              isRefresh={false}
+            />
 
                 <Row>
                     <Col xl={4}>
-                        <div >
-                            <h2>IMAGE UPLOAD </h2>
+                        <div className="pt-4">
+                            <h4>Upload Image </h4>
                             <Card style={{ width: '200px', height: '230px' }} className='cursor-pointer' onClick={() => setmodal_fullscreen(!modal_fullscreen)}>
                                 <div className='d-flex justify-content-center align-content-center h-100percen' >
                                     <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '50px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -235,7 +244,7 @@ useEffect(()=>{
 
                         <Card className='mt-5'>
                             <CardBody>
-                                <CardTitle className="h4">Add Banner</CardTitle>
+                                {/* <CardTitle className="h4">Add Banner</CardTitle> */}
 
 
                                 <Row className="mb-3">
@@ -243,7 +252,7 @@ useEffect(()=>{
                                         htmlFor="example-text-input"
                                         className="col-md-2 col-form-label"
                                     >
-                                        Title
+                                        Name
                                     </label>
                                     <div className="col-md-10">
                                         <input
@@ -258,11 +267,13 @@ useEffect(()=>{
                                 </Row>
 
                                 <Row className="mb-3">
-                                    <label className="col-md-2 col-form-label">Type</label>
-                                    <div className="col-md-10">
-                                        <select className="form-control" placeholder='Select a Type' value={type} onChange={(e) => changeType(e)}>
-                                            <option value={1}>User</option>
-                                            <option value={2}>Partner</option>
+                                    <label className="col-md-2 col-form-label">Page</label>
+                                    <div className="col-md-10 ">
+                                        <select className="form-control cursor-pointer" placeholder='Select a Page' value={type} onChange={(e) => changeType(e)}>
+                                            <option value={1}>Pharmacy</option>
+                                            <option value={2}>Resturant</option>
+                                            <option value={3}>Grocery</option>
+                                            <option value={4}>Main</option>
                                         </select>
                                     </div>
                                 </Row>
@@ -270,16 +281,32 @@ useEffect(()=>{
 
 
                                 <Row className="mb-3">
-                                    <label className="col-md-2 col-form-label">Status</label>
+                                    <label className="col-md-2 col-form-label">Banner Text </label>
                                     <div className="col-md-10">
-                                        <select className="form-control" placeholder='Select a Type' value={status} onChange={(e) => changeStatus(e)}>
-                                            <option value={1}>Active</option>
-                                            <option value={2}>DeActivate</option>
-                                        </select>
+                                    <input
+                                            className="form-control"
+                                            type="text"
+                                            value={title}
+                                            onChange={(e) => setTitle(e.target.value)}
+                                            placeholder='Enter Banner Text'
+                                        // onError={true}
+                                        />
                                     </div>
                                 </Row>
 
-
+                                <Row className="mb-3">
+                                    <label className="col-md-2 col-form-label">Button Text </label>
+                                    <div className="col-md-10">
+                                    <input
+                                            className="form-control"
+                                            type="text"
+                                            value={title}
+                                            onChange={(e) => setTitle(e.target.value)}
+                                            placeholder='Enter Button Text'
+                                        // onError={true}
+                                        />
+                                    </div>
+                                </Row>
 
                                 <Row className="mb-3">
                                     <label className="col-md-2 col-form-label">Description</label>

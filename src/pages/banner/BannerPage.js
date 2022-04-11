@@ -218,7 +218,7 @@ const BannerPage = () => {
                 <Row>
                   {list.map((item, index) => {
                     return (
-                      <Col key={index} xl={4} md={6} sm={12} key={index}>
+                      <Col key={index} xl={4} md={6} sm={12}>
                         <Card className="align-items-center">
                           <ImageView>
                             <>
